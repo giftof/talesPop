@@ -1,12 +1,13 @@
 using UnityEngine;
 using System;
 using System.Linq;
+using Newtonsoft.Json.Linq;
 
 
 
 public static class Common
 {
-    public static T StringToEnum<T>(string from, T _) where T : struct
+    public static T StringToEnum<T>(string from) where T : struct
     {
         var name = Enum.GetNames(typeof(T)).FirstOrDefault(e => e.Equals(from));
         T result = default;

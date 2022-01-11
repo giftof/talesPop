@@ -10,12 +10,15 @@ using Newtonsoft.Json.Linq;
 
 namespace TalesPop.Items
 {
-    public enum Category
+    public enum ItemCategory
     {
-        Stackable,
-        Solid,
         Bag,
+        Potion,
+        Weapon,
+        Armor,
     }
+
+
 
     public static class ItemArgs
     {
@@ -29,7 +32,14 @@ namespace TalesPop.Items
 
 
 
-    public abstract class Item
+    public interface IItem
+    {
+        public abstract void Operate();
+    }
+
+
+
+    public abstract class Item : IItem
     {
         [JsonProperty]
         public int uid;
@@ -38,18 +48,25 @@ namespace TalesPop.Items
         [JsonProperty]
         public int nameId;
         [JsonProperty]
-        public Category category;
+        public ItemCategory category;
         [JsonProperty]
         public int capacity;
         [JsonProperty]
         public int maxCapacity;
 
         [JsonIgnore]
-        public JObject parsed;
+        protected JObject parsed;
 
         public Item(string json)
         {
-            JsonParse(json);
+            this.parsed = JObject.Parse(json);
+            SetData(GetCategory(parsed));
+        }
+
+        public Item(JObject jObject, ItemCategory itemCategory)
+        {
+            this.parsed = jObject;
+            SetData(itemCategory);
         }
 
         public abstract void Operate();
@@ -58,17 +75,19 @@ namespace TalesPop.Items
         /* Privates						*/
         /********************************/
 
-        private void JsonParse(string json)
+        protected void SetData(ItemCategory itemCategory)
         {
-            JObject jObject = JObject.Parse(json);
+            uid = parsed[ItemArgs.uid].Value<int>();
+            name = parsed[ItemArgs.name].Value<string>();
+            nameId = parsed[ItemArgs.nameId].Value<int>();
+            capacity = parsed[ItemArgs.capacity].Value<int>();
+            maxCapacity = parsed[ItemArgs.maxCapacity].Value<int>();
+            category = itemCategory;
+        }
 
-            uid = jObject[ItemArgs.uid].Value<int>();
-            name = jObject[ItemArgs.name].Value<string>();
-            nameId = jObject[ItemArgs.nameId].Value<int>();
-            category = Common.StringToEnum(jObject[ItemArgs.category].Value<string>(), category);
-            capacity = jObject[ItemArgs.capacity].Value<int>();
-            maxCapacity = jObject[ItemArgs.maxCapacity].Value<int>();
-            parsed = jObject;
+        private ItemCategory GetCategory(JObject jObject)
+        {
+            return Common.StringToEnum<ItemCategory>(jObject[ItemArgs.category].Value<string>());
         }
     }
 
@@ -78,7 +97,14 @@ namespace TalesPop.Items
     {
         public Stackable(string json) : base(json)
         {
-            //jObject.ToObject<Stackable>();
+            // something extra
+            // enable use 'parsed'
+        }
+
+        public Stackable(JObject jObject, ItemCategory itemCategory) : base(jObject, itemCategory)
+        {
+            // something extra
+            // enable use 'parsed'
         }
 
         public override void Operate()
@@ -94,7 +120,14 @@ namespace TalesPop.Items
     {
         public Solid(string json) : base(json)
         {
-            //jObject.ToObject<Solid>();
+            // something extra
+            // enable use 'parsed'
+        }
+
+        public Solid(JObject jObject, ItemCategory itemCategory) : base(jObject, itemCategory)
+        {
+            // something extra
+            // enable use 'parsed'
         }
 
         public override void Operate()
@@ -108,11 +141,20 @@ namespace TalesPop.Items
 
     sealed public class Bag: Item
     {
-        private Dictionary<int, Item> bag = new Dictionary<int, Item>();
+        private readonly Dictionary<int, Item> bag;
 
         public Bag(string json) : base(json)
         {
-            //jObject.ToObject<Bag>();
+            bag = new Dictionary<int, Item>();
+            // something extra
+            // enable use 'parsed'
+        }
+
+        public Bag(JObject jObject, ItemCategory itemCategory) : base(jObject, itemCategory)
+        {
+            bag = new Dictionary<int, Item>();
+            // something extra
+            // enable use 'parsed'
         }
 
         public override void Operate()
@@ -144,7 +186,14 @@ namespace TalesPop.Items
     {
         public Potion(string json): base(json)
         {
-            //jObject.ToObject<Stackable>();
+            // something extra
+            // enable use 'parsed'
+        }
+
+        public Potion(JObject jObject, ItemCategory itemCategory) : base(jObject, itemCategory)
+        {
+            // something extra
+            // enable use 'parsed'
         }
 
         public override void Operate()
@@ -165,7 +214,14 @@ namespace TalesPop.Items
     {
         public Weapon(string json): base(json)
         {
-            //jObject.ToObject<Weapon>();
+            // something extra
+            // enable use 'parsed'
+        }
+
+        public Weapon(JObject jObject, ItemCategory itemCategory) : base(jObject, itemCategory)
+        {
+            // something extra
+            // enable use 'parsed'
         }
 
         public override void Operate()
@@ -186,7 +242,14 @@ namespace TalesPop.Items
     {
         public Armor(string json): base(json)
         {
-            //jObject.ToObject<Armor>();
+            // something extra
+            // enable use 'parsed'
+        }
+
+        public Armor(JObject jObject, ItemCategory itemCategory) : base(jObject, itemCategory)
+        {
+            // something extra
+            // enable use 'parsed'
         }
 
         public override void Operate()
