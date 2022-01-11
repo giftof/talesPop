@@ -3,7 +3,6 @@ using TalesPop.Items;
 
 
 
-
 public class Test : MonoBehaviour
 {
     void Start()
@@ -12,7 +11,7 @@ public class Test : MonoBehaviour
             "\"uid\": 0," +
             "\"name\": \"some name\", " +
             "\"nameId\": 1, " +
-            "\"category\": \"Bab\", " +
+            "\"category\": \"Armor\", " +
             "\"capacity\": 10, " +
             "\"maxCapacity\": 100" +
             "}";
@@ -23,5 +22,14 @@ public class Test : MonoBehaviour
         Debug.Log(item.name);
         Debug.Log(item.category);
         Debug.Log((int)item.category);
+
+        ItemManager itemManager = new ItemManager();
+
+        Debug.LogWarning("---------------------");
+        Item m = itemManager.CreateItem(json);
+        Debug.Log(m.uid);
+        Debug.Log(m.name);
+        Debug.Log(m.category);
+        Debug.Log((int)m.category);
     }
 }

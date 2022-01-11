@@ -8,28 +8,45 @@ using Newtonsoft.Json.Linq;
 
 namespace TalesPop.Items
 {
+    using static Common;
+
     public class ItemManager
     {
         private Dictionary<int, Item> container;
-        private int size;
-        //private JObject jObject;
 
-        public ItemManager(int size)
+        public ItemManager()
         {
-            this.size = size;
             container = new Dictionary<int, Item>();
         }
 
         public Item CreateItem(string json)
         {
             JObject jObject = JsonParse(json);
-            Type type = GetItemType(jObject, GetCategory(jObject));
+            ItemCategory itemCategory = GetCategory(jObject);
+            Item item = null;
 
-            return Activator.CreateInstance<>;
+            if (GetTypeFromEnumName($"{TP_ITEMS}.{itemCategory}", out Type type))
+                item = (Item)Activator.CreateInstance(type, jObject, itemCategory);
+
+            return Validate(item);
         }
 
+        /*
+         * Privates
+         */
 
+        private Item Validate(Item item)
+        {
+            if (item == null)
+                return null;
 
+            if (!container.ContainsKey(item.uid))
+            {
+                container.Add(item.uid, item);
+                return item;
+            }
+            return null;
+        }
 
         private JObject JsonParse(string json)
         {
@@ -38,24 +55,7 @@ namespace TalesPop.Items
 
         private ItemCategory GetCategory(JObject jObject)
         {
-            return Common.StringToEnum<ItemCategory>(jObject[ItemArgs.category].Value<string>());
-        }
-
-        private Type GetItemType(JObject jObject, ItemCategory itemCategory)
-        {
-            switch (itemCategory)
-            {
-                case ItemCategory.Bag:
-                    return typeof(Bag);
-                case ItemCategory.Potion:
-                    return typeof(Potion);
-                case ItemCategory.Armor:
-                    return typeof(Armor);
-                case ItemCategory.Weapon:
-                    return typeof(Weapon);
-                default:
-                    return null;
-            }
+            return StringToEnum<ItemCategory>(jObject[ItemArgs.category].Value<string>());
         }
     }
 }

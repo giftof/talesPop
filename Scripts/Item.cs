@@ -10,6 +10,9 @@ using Newtonsoft.Json.Linq;
 
 namespace TalesPop.Items
 {
+    /*
+     * enum value names MUST SAME with class(type) name
+     */
     public enum ItemCategory
     {
         Bag,
