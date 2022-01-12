@@ -26,7 +26,8 @@ namespace TalesPop.Items
             Item item = null;
 
             if (GetTypeFromEnumName($"{TP_ITEMS}.{itemCategory}", out Type type))
-                item = (Item)Activator.CreateInstance(type, jObject, itemCategory);
+                // item = (Item)Activator.CreateInstance(type, jObject, itemCategory);
+                item = (Item)Activator.CreateInstance(type, jObject);
 
             return Validate(item);
         }
@@ -34,7 +35,6 @@ namespace TalesPop.Items
         /*
          * Privates
          */
-
         private Item Validate(Item item)
         {
             if (item == null)

@@ -16,12 +16,13 @@ public class Test : MonoBehaviour
             "\"maxCapacity\": 100" +
             "}";
         Debug.Log($"json = {json}");
-        Item item = new Stackable(json);
 
-        Debug.Log(item.uid);
-        Debug.Log(item.name);
-        Debug.Log(item.category);
-        Debug.Log((int)item.category);
+        // Item item = new Armor(json);
+
+        // Debug.Log(item.uid);
+        // Debug.Log(item.name);
+        // Debug.Log(item.category);
+        // Debug.Log((int)item.category);
 
         ItemManager itemManager = new ItemManager();
 

@@ -19,11 +19,10 @@ namespace TalesPop.Items
         Potion,
         Weapon,
         Armor,
+        Material,
     }
 
-
-
-    public static class ItemArgs
+    internal static class ItemArgs
     {
         public const string uid         = "uid";
         public const string name        = "name";
@@ -35,14 +34,100 @@ namespace TalesPop.Items
 
 
 
-    public interface IItem
+    internal interface IItemInteraction
     {
-        public abstract void Operate();
+        public void Perform();
+    }
+
+    internal interface IItemCollide
+    {
+        public void Perform<T>(T destination, Item source);
+    }
+
+    /*
+     * Stackable item
+     * only same nameId and have space
+     */
+    internal class Stack: IItemCollide
+    {
+        public void Perform<T>(T destination, Item source)
+        {
+            Debug.Log("[IMPL: IItemCollide] Perform by Stack");
+        }
+    }
+
+    /*
+     * MagicItem charge spell count
+     * only same spellid
+     */
+    internal class Charge: IItemCollide
+    {
+        public void Perform<T>(T destination, Item source)
+        {
+            Debug.Log("[IMPL: IItemCollide] Perform by Charge");
+        }
+    }
+
+    /*
+     * Bag only
+     */
+    internal class Add: IItemCollide
+    {
+        public void Perform<T>(T destination, Item source)
+        {
+            Debug.Log("[IMPL: IItemCollide] Perform by Add");
+        }
+    }
+
+    /*
+     * material blend => combine two material item
+     */
+    internal class Blend: IItemCollide
+    {
+        public void Perform<T>(T destination, Item source)
+        {
+            Debug.Log("[IMPL: IItemCollide] Perform by Blend");
+        }
+    }
+
+    /*
+     * Swap is not default export to exception case
+     */
+    internal class Swap: IItemCollide
+    {
+        public void Perform<T>(T destination, Item source)
+        {
+            Debug.Log("[IMPL: IItemCollide] Perform by Swap");
+        }
+    }
+
+    internal class Use: IItemInteraction
+    {
+        public void Perform()
+        {
+            Debug.Log("[IMPL: IItemInteraction] Perform by Use");
+        }
+    }
+
+    internal class ToggleBag: IItemInteraction
+    {
+        public void Perform()
+        {
+            Debug.Log("[IMPL: IItemInteraction] Perform by ToggleBag");
+        }
+    }
+
+    internal class Equip: IItemInteraction
+    {
+        public void Perform()
+        {
+            Debug.Log("[IMPL: IItemInteraction] Perform by Equip");
+        }
     }
 
 
-
-    public abstract class Item : IItem
+    
+    public abstract class Item //: IItem
     {
         [JsonProperty]
         public int uid;
@@ -55,119 +140,142 @@ namespace TalesPop.Items
         [JsonProperty]
         public int capacity;
         [JsonProperty]
-        public int maxCapacity;
+        public int groupId;
+        [JsonProperty]
+        public int materialId;
 
         [JsonIgnore]
         protected JObject parsed;
 
         public Item(string json)
         {
+            Debug.Log(">>> json");
             this.parsed = JObject.Parse(json);
-            SetData(GetCategory(parsed));
+            SetProperties();
         }
 
-        public Item(JObject jObject, ItemCategory itemCategory)
+        public Item(JObject jObject)
         {
+            Debug.Log(">>> jObject");
             this.parsed = jObject;
-            SetData(itemCategory);
+            SetProperties();
         }
 
-        public abstract void Operate();
+        /*
+         * Behaviours
+         */
+        [JsonIgnore]
+        internal IItemInteraction interact;
+        [JsonIgnore]
+        internal IItemCollide collide;
 
-        /********************************/
-        /* Privates						*/
-        /********************************/
+        public void Perform()
+        {
+            interact.Perform();
+        }
 
-        protected void SetData(ItemCategory itemCategory)
+        public void Collide(Item source)
+        {
+            collide.Perform(this, source);
+        }
+
+        public int Increment(int amount)
+        {
+            int increment = 0;
+
+            return increment;
+        }
+
+        public int Decrement(int amount)
+        {
+            int decrement = 0;
+
+            return decrement;
+        }
+
+        // public int Space 
+        // {
+        //     get { return maxCapacity - capacity; }
+        // }
+        /*
+         * Privates
+         */
+        private void SetProperties()
         {
             uid = parsed[ItemArgs.uid].Value<int>();
             name = parsed[ItemArgs.name].Value<string>();
             nameId = parsed[ItemArgs.nameId].Value<int>();
             capacity = parsed[ItemArgs.capacity].Value<int>();
-            maxCapacity = parsed[ItemArgs.maxCapacity].Value<int>();
-            category = itemCategory;
+            // maxCapacity = parsed[ItemArgs.maxCapacity].Value<int>();
+            
         }
 
-        private ItemCategory GetCategory(JObject jObject)
+        // private ItemCategory GetCategory(JObject jObject)
+        // {
+        //     return StringToEnum<ItemCategory>(jObject[ItemArgs.category].Value<string>());
+        // }
+    }
+
+
+
+    internal abstract class Stackable : Item
+    {
+        public Stackable(string json): base(json)
         {
-            return Common.StringToEnum<ItemCategory>(jObject[ItemArgs.category].Value<string>());
+            // something extra
+            // enable use 'parsed'
+        }
+
+        public Stackable(JObject jObject): base(jObject)
+        {
+            // something extra
+            // enable use 'parsed'
         }
     }
 
 
 
-    public class Stackable : Item
+    internal abstract class Solid : Item
     {
-        public Stackable(string json) : base(json)
+        public Solid(string json): base(json)
         {
             // something extra
             // enable use 'parsed'
         }
 
-        public Stackable(JObject jObject, ItemCategory itemCategory) : base(jObject, itemCategory)
+        public Solid(JObject jObject): base(jObject)
         {
             // something extra
             // enable use 'parsed'
-        }
-
-        public override void Operate()
-        {
-            // operate common stackable
-            throw new System.NotImplementedException();
         }
     }
 
 
 
-    public class Solid : Item
+    sealed internal class Bag: Item
     {
-        public Solid(string json) : base(json)
+        private Dictionary<int, Item> bag;
+
+        private void Initialize()
         {
-            // something extra
-            // enable use 'parsed'
-        }
-
-        public Solid(JObject jObject, ItemCategory itemCategory) : base(jObject, itemCategory)
-        {
-            // something extra
-            // enable use 'parsed'
-        }
-
-        public override void Operate()
-        {
-            // operate common solid
-            throw new System.NotImplementedException();
-        }
-    }
-
-
-
-    sealed public class Bag: Item
-    {
-        private readonly Dictionary<int, Item> bag;
-
-        public Bag(string json) : base(json)
-        {
+            category = ItemCategory.Bag;
             bag = new Dictionary<int, Item>();
+            interact = new ToggleBag();
+            collide = new Add();
+        }
+
+        public Bag(string json): base(json)
+        {
+            Initialize();
             // something extra
             // enable use 'parsed'
         }
 
-        public Bag(JObject jObject, ItemCategory itemCategory) : base(jObject, itemCategory)
+        public Bag(JObject jObject): base(jObject)
         {
-            bag = new Dictionary<int, Item>();
+            Initialize();
             // something extra
             // enable use 'parsed'
-        }
-
-        public override void Operate()
-        {
-            OpenBag();
-        }
-
-        private void OpenBag()
-        {
-
         }
 
         public void Add(Item item)
@@ -181,89 +289,109 @@ namespace TalesPop.Items
             if (bag.ContainsKey(item.uid))
                 bag.Remove(item.uid);
         }
+
+        /*
+         * Privates
+         */
     }
 
 
 
-    sealed public class Potion : Stackable
+    sealed internal class Potion : Stackable
     {
+        private void Initialize()
+        {
+            category = ItemCategory.Potion;
+            interact = new Use();
+            collide = new Stack();
+        }
+        
         public Potion(string json): base(json)
         {
+            Initialize();
             // something extra
             // enable use 'parsed'
         }
 
-        public Potion(JObject jObject, ItemCategory itemCategory) : base(jObject, itemCategory)
+        public Potion(JObject jObject): base(jObject)
         {
+            Initialize();
             // something extra
             // enable use 'parsed'
-        }
-
-        public override void Operate()
-        {
-            base.Operate();
-            UsePotion();
-        }
-
-        private void UsePotion()
-        {
-
         }
     }
 
 
 
-    sealed public class Weapon : Solid
+    sealed internal class Weapon : Solid
     {
+        private void Initialize()
+        {
+            category = ItemCategory.Weapon;
+            interact = new Equip();
+            collide = new Charge();
+        }
+
         public Weapon(string json): base(json)
         {
+            Initialize();
             // something extra
             // enable use 'parsed'
         }
 
-        public Weapon(JObject jObject, ItemCategory itemCategory) : base(jObject, itemCategory)
+        public Weapon(JObject jObject): base(jObject)
         {
+            Initialize();
             // something extra
             // enable use 'parsed'
-        }
-
-        public override void Operate()
-        {
-            base.Operate();
-            EquipToggle();
-        }
-
-        private void EquipToggle()
-        {
-
         }
     }
 
 
 
-    sealed public class Armor: Solid
+    sealed internal class Armor: Solid
     {
+        private void Initialize()
+        {
+            category = ItemCategory.Armor;
+            interact = new Equip();
+            collide = new Charge();
+        }
+
         public Armor(string json): base(json)
         {
+            Initialize();
             // something extra
             // enable use 'parsed'
         }
 
-        public Armor(JObject jObject, ItemCategory itemCategory) : base(jObject, itemCategory)
+        public Armor(JObject jObject): base(jObject)
         {
+            Initialize();
             // something extra
             // enable use 'parsed'
         }
+    }
 
-        public override void Operate()
+
+
+    sealed internal class Material: Stackable
+    {
+        private void Initialize()
         {
-            base.Operate();
-            EquipToggle();
+            category = ItemCategory.Material;
+            interact = new Use();
+            collide = new Blend();
         }
 
-        private void EquipToggle()
+        public Material(string json): base(json)
         {
+            Initialize();
+        }
 
+        public Material(JObject jObject): base(jObject)
+        {
+            Initialize();
         }
     }
 }
