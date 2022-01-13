@@ -1,7 +1,6 @@
 using System;
-using System.Collections;
+using System.Linq;
 using System.Collections.Generic;
-using UnityEngine;
 using Newtonsoft.Json.Linq;
 
 
@@ -12,22 +11,51 @@ namespace TalesPop.Items
 
     public class ItemManager
     {
-        private Dictionary<int, Item> container;
+        private readonly Dictionary<int, Bag> container;
+        private Bag currentProcess;
 
         public ItemManager()
         {
-            container = new Dictionary<int, Item>();
+            container = new Dictionary<int, Bag>
+            {
+                { NULL_ID, null }
+            };
         }
 
-        public Item CreateItem(string json)
+        public Bag CreateBag(string json)
         {
-            JObject jObject = JsonParse(json);
-            ItemCategory itemCategory = GetCategory(jObject);
+            JObject jObject = JObject.Parse(json);
+            string itemType = jObject[ItemArgs.itemType]?.Value<string>() ?? EMPTY_STRING;
+            string bag = ItemType.Bag.ToString();
+
+            if (!itemType.Equals(bag))
+                return null;
+
+            currentProcess = new Bag(jObject);
+            JArray itemJsonArray = (JArray)jObject[ItemArgs.contents];
+            IEnumerable<JToken> itemList = itemJsonArray.Select(e => e);
+
+            foreach (JToken element in itemList)
+            {
+                if (CreateItem(element) == null)
+                {
+                    return null;
+                }
+            }
+
+            return Validate();
+        }
+
+        private Item CreateItem(JToken token)
+        {
+            JObject jObject = (JObject)token;
+            ItemType itemCategory = StringToEnum<ItemType>(jObject[ItemArgs.itemType].Value<string>());
             Item item = null;
 
             if (GetTypeFromEnumName($"{TP_ITEMS}.{itemCategory}", out Type type))
-                // item = (Item)Activator.CreateInstance(type, jObject, itemCategory);
+            {
                 item = (Item)Activator.CreateInstance(type, jObject);
+            }
 
             return Validate(item);
         }
@@ -37,25 +65,25 @@ namespace TalesPop.Items
          */
         private Item Validate(Item item)
         {
-            if (item == null)
+            if (item == null || currentProcess == null)
                 return null;
 
-            if (!container.ContainsKey(item.uid))
+            if (!currentProcess.bag.ContainsKey(item.uid))
             {
-                container.Add(item.uid, item);
+                currentProcess.bag.Add(item.uid, item);
                 return item;
             }
             return null;
         }
 
-        private JObject JsonParse(string json)
+        private Bag Validate()
         {
-            return JObject.Parse(json);
-        }
-
-        private ItemCategory GetCategory(JObject jObject)
-        {
-            return StringToEnum<ItemCategory>(jObject[ItemArgs.category].Value<string>());
+            if (!container.ContainsKey(currentProcess.uid))
+            {
+                container.Add(currentProcess.uid, currentProcess);
+                return currentProcess;
+            }
+            return null;
         }
     }
 }

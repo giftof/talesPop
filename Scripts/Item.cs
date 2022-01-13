@@ -1,6 +1,7 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.Events;
 using System;
 using System.Linq;
 using Newtonsoft.Json;
@@ -10,16 +11,23 @@ using Newtonsoft.Json.Linq;
 
 namespace TalesPop.Items
 {
+    public delegate bool EnableSwap(Item item1, Item item2);
+
     /*
-     * enum value names MUST SAME with class(type) name
+     * enum names MUST SAME with class(type) name
+     * enum value MUST MATCH with slotType value
      */
-    public enum ItemCategory
+    public enum ItemType
     {
-        Bag,
-        Potion,
-        Weapon,
-        Armor,
-        Material,
+        Weapon      = 0x0001,
+        Shield      = 0x0002,
+        TwoHand     = 0x0003,
+        Armor       = 0x0004,
+        Helmet      = 0x0008,
+        Amulet      = 0x0010,
+        Material    = 0x0100,
+        Potion      = 0x0200,
+        Bag         = 0x1FFF,
     }
 
     internal static class ItemArgs
@@ -27,81 +35,172 @@ namespace TalesPop.Items
         public const string uid         = "uid";
         public const string name        = "name";
         public const string nameId      = "nameId";
-        public const string category    = "category";
+        public const string itemType    = "itemType";
         public const string capacity    = "capacity";
-        public const string maxCapacity = "maxCapacity";
+
+        public const string amount      = "amount";
+        public const string charge      = "charge";
+        public const string contents    = "contents";
     }
 
 
 
-    internal interface IItemInteraction
+    internal interface IInteraction
     {
         public void Perform();
     }
 
-    internal interface IItemCollide
-    {
-        public void Perform<T>(T destination, Item source);
-    }
+    //internal interface ISwap<T>
+    //{
+    //    public EnableSwap EnableSwap { get; set; }
+
+    //    public void Perform(ref T a, ref Item b);
+    //}
+
+    //internal interface ICollide<T>
+    //{
+    //    public void Perform(T destination, Item source);
+    //}
 
     /*
      * Stackable item
      * only same nameId and have space
      */
-    internal class Stack: IItemCollide
-    {
-        public void Perform<T>(T destination, Item source)
-        {
-            Debug.Log("[IMPL: IItemCollide] Perform by Stack");
-        }
-    }
+    //internal class Swap : ISwap<Item>
+    //{
+    //    public EnableSwap EnableSwap { get; set; }
 
-    /*
-     * MagicItem charge spell count
-     * only same spellid
-     */
-    internal class Charge: IItemCollide
-    {
-        public void Perform<T>(T destination, Item source)
-        {
-            Debug.Log("[IMPL: IItemCollide] Perform by Charge");
-        }
-    }
+    //    public void Perform(ref Item a, ref Item b)
+    //    {
+    //        if (!EnableSwap(a, b))
+    //            return;
 
-    /*
-     * Bag only
-     */
-    internal class Add: IItemCollide
-    {
-        public void Perform<T>(T destination, Item source)
-        {
-            Debug.Log("[IMPL: IItemCollide] Perform by Add");
-        }
-    }
+    //        int groupId = a.groupId;
+    //        int slotId = a.slotId;
 
-    /*
-     * material blend => combine two material item
-     */
-    internal class Blend: IItemCollide
-    {
-        public void Perform<T>(T destination, Item source)
-        {
-            Debug.Log("[IMPL: IItemCollide] Perform by Blend");
-        }
-    }
+    //        a.groupId = b.groupId;
+    //        a.slotId = b.slotId;
+
+    //        b.groupId = groupId;
+    //        b.slotId = slotId;
+    //    }
+    //}
+
+    //internal class Stack: ICollide<Item>
+    //{
+    //    ISwap<Item> swap = new Swap();
+
+    //    public void SetSwapEnable(EnableSwap enableSwap)
+    //    {
+    //        swap.EnableSwap = enableSwap;
+    //    }
+
+    //    public void Perform(Item destination, Item source)
+    //    {
+    //        Debug.Log("[IMPL: ICollide] Perform by Stack");
+    //        if (destination.nameId.Equals(source?.nameId))
+    //        {
+    //            destination.Increment(source.Decrement(destination.Space));
+    //        }
+    //        else
+    //        {
+                
+    //            if (!swap.EnableSwap(destination, source))
+    //                return;
+
+    //            swap.Perform(ref destination, ref source);
+    //        }
+
+    //        //destination.relationObserver?.Invoke(destination, source);
+    //    }
+    //}
+
+    ///*
+    // * MagicItem charge spell count
+    // * only same spellid
+    // */
+    //internal class Charge: ICollide<Item>
+    //{
+    //    public void Perform<T>(T destination, Item source) where T : Item
+    //    {
+    //        Debug.Log("[IMPL: ICollide] Perform by Charge");
+    //    }
+
+    //    public void Perform(Item destination, Item source)
+    //    {
+    //        throw new NotImplementedException();
+    //    }
+
+    //    public void Swap(ref Item a, ref Item b)
+    //    {
+    //        throw new NotImplementedException();
+    //    }
+    //}
+
+    ///*
+    // * Bag only
+    // */
+    //internal class Add: ICollide<Item>
+    //{
+    //    public void Perform<T>(T destination, Item source) where T : Item
+    //    {
+    //        Debug.Log("[IMPL: ICollide] Perform by Add");
+    //    }
+
+    //    public void Perform(Item destination, Item source)
+    //    {
+    //        throw new NotImplementedException();
+    //    }
+
+    //    public void Swap(ref Item a, ref Item b)
+    //    {
+    //        throw new NotImplementedException();
+    //    }
+    //}
+
+    ///*
+    // * material blend => combine two material item
+    // */
+    //internal class Blend: ICollide<Item>
+    //{
+    //    public void Perform<T>(T destination, Item source) where T : Item
+    //    {
+    //        Debug.Log("[IMPL: ICollide] Perform by Blend");
+    //    }
+
+    //    public void Perform(Item destination, Item source)
+    //    {
+    //        throw new NotImplementedException();
+    //    }
+
+    //    public void Swap(ref Item a, ref Item b)
+    //    {
+    //        throw new NotImplementedException();
+    //    }
+    //}
 
     /*
      * Swap is not default export to exception case
      */
-    internal class Swap: IItemCollide
-    {
-        public void Perform<T>(T destination, Item source)
-        {
-            Debug.Log("[IMPL: IItemCollide] Perform by Swap");
-        }
-    }
+    //internal class Swap: ICollide<Item>
+    //{
+    //    public void Perform<T>(T destination, Item source) where T : Item
+    //    {
+    //        Debug.Log("[IMPL: ICollide] Perform by Swap");
+    //    }
 
-    internal class Use: IItemInteraction
+    //    public void Perform(Item destination, Item source)
+    //    {
+    //        throw new NotImplementedException();
+    //    }
+
+    //    void ICollide<Item>.Swap(ref Item a, ref Item b)
+    //    {
+    //        throw new NotImplementedException();
+    //    }
+    //}
+
+    internal class Use: IInteraction
     {
         public void Perform()
         {
@@ -109,7 +208,7 @@ namespace TalesPop.Items
         }
     }
 
-    internal class ToggleBag: IItemInteraction
+    internal class ToggleBag: IInteraction
     {
         public void Perform()
         {
@@ -117,7 +216,7 @@ namespace TalesPop.Items
         }
     }
 
-    internal class Equip: IItemInteraction
+    internal class Equip: IInteraction
     {
         public void Perform()
         {
@@ -136,28 +235,28 @@ namespace TalesPop.Items
         [JsonProperty]
         public int nameId;
         [JsonProperty]
-        public ItemCategory category;
+        public ItemType itemType;
         [JsonProperty]
         public int capacity;
         [JsonProperty]
         public int groupId;
         [JsonProperty]
+        public int slotId;
+        [JsonProperty]
         public int materialId;
 
         [JsonIgnore]
-        protected JObject parsed;
+        protected JObject jObject;
 
         public Item(string json)
         {
-            Debug.Log(">>> json");
-            this.parsed = JObject.Parse(json);
+            jObject = JObject.Parse(json);
             SetProperties();
         }
 
         public Item(JObject jObject)
         {
-            Debug.Log(">>> jObject");
-            this.parsed = jObject;
+            this.jObject = jObject;
             SetProperties();
         }
 
@@ -165,49 +264,63 @@ namespace TalesPop.Items
          * Behaviours
          */
         [JsonIgnore]
-        internal IItemInteraction interact;
-        [JsonIgnore]
-        internal IItemCollide collide;
+        internal IInteraction interact;
+        //[JsonIgnore]
+        //internal ICollide<Item> collide;
+        //[JsonIgnore]
+        //internal UnityAction propertyObserver = null;
+        //[JsonIgnore]
+        //internal UnityAction<ItemCategory, ItemCategory> relationObserver = null;
+
+        //public void AddPropertyObserver(UnityAction unityAction)
+        //{
+        //    propertyObserver += unityAction;
+        //}
+
+        //public void AddRelationObserver(UnityAction<ItemCategory, ItemCategory> unityAction)
+        //{
+        //    relationObserver += unityAction;
+        //}
 
         public void Perform()
         {
             interact.Perform();
         }
 
-        public void Collide(Item source)
-        {
-            collide.Perform(this, source);
-        }
+        //public void Collide(Item source)
+        //{
+        //    collide.Perform(this, source);
+        //}
 
         public int Increment(int amount)
         {
-            int increment = 0;
+            int increment = Math.Min(amount, Space);
 
+            Occupied += increment;
             return increment;
         }
 
         public int Decrement(int amount)
         {
-            int decrement = 0;
+            int decrement = Math.Min(amount, Occupied);
 
+            Occupied -= decrement;
             return decrement;
         }
 
-        // public int Space 
-        // {
-        //     get { return maxCapacity - capacity; }
-        // }
+        [JsonIgnore]
+        public abstract int Space { get; }
+        [JsonIgnore]
+        public abstract int Occupied { get; internal set; }
         /*
          * Privates
          */
         private void SetProperties()
         {
-            uid = parsed[ItemArgs.uid].Value<int>();
-            name = parsed[ItemArgs.name].Value<string>();
-            nameId = parsed[ItemArgs.nameId].Value<int>();
-            capacity = parsed[ItemArgs.capacity].Value<int>();
-            // maxCapacity = parsed[ItemArgs.maxCapacity].Value<int>();
-            
+            uid      = jObject[ItemArgs.uid]     .Value<int>   ();
+            name     = jObject[ItemArgs.name]    .Value<string>();
+            nameId   = jObject[ItemArgs.nameId]  .Value<int>   ();
+            capacity = jObject[ItemArgs.capacity].Value<int>   ();
         }
 
         // private ItemCategory GetCategory(JObject jObject)
@@ -220,16 +333,33 @@ namespace TalesPop.Items
 
     internal abstract class Stackable : Item
     {
+        [JsonProperty]
+        public int amount;
+
         public Stackable(string json): base(json)
         {
             // something extra
             // enable use 'parsed'
+            amount = jObject[ItemArgs.amount].Value<int>();
         }
 
         public Stackable(JObject jObject): base(jObject)
         {
             // something extra
             // enable use 'parsed'
+        }
+
+        /*
+         * Abstract
+         */
+        public override int Space
+        {
+            get { return capacity - amount; }
+        }
+        public override int Occupied
+        {
+            get { return amount; }
+            internal set { amount = value; }
         }
     }
 
@@ -248,51 +378,19 @@ namespace TalesPop.Items
             // something extra
             // enable use 'parsed'
         }
-    }
-
-
-
-    sealed internal class Bag: Item
-    {
-        private Dictionary<int, Item> bag;
-
-        private void Initialize()
-        {
-            category = ItemCategory.Bag;
-            bag = new Dictionary<int, Item>();
-            interact = new ToggleBag();
-            collide = new Add();
-        }
-
-        public Bag(string json): base(json)
-        {
-            Initialize();
-            // something extra
-            // enable use 'parsed'
-        }
-
-        public Bag(JObject jObject): base(jObject)
-        {
-            Initialize();
-            // something extra
-            // enable use 'parsed'
-        }
-
-        public void Add(Item item)
-        {
-            if (!bag.ContainsKey(item.uid))
-                bag.Add(item.uid, item);
-        }
-
-        public void Remove(Item item)
-        {
-            if (bag.ContainsKey(item.uid))
-                bag.Remove(item.uid);
-        }
 
         /*
-         * Privates
+         * Abstract
          */
+        public override int Space // fix [return spell remain count]
+        {
+            get { return 0; }
+        }
+        public override int Occupied
+        {
+            get { return 0; }
+            internal set { }
+        }
     }
 
 
@@ -301,9 +399,9 @@ namespace TalesPop.Items
     {
         private void Initialize()
         {
-            category = ItemCategory.Potion;
+            itemType = ItemType.Potion;
             interact = new Use();
-            collide = new Stack();
+            //collide = new Stack();
         }
         
         public Potion(string json): base(json)
@@ -325,11 +423,12 @@ namespace TalesPop.Items
 
     sealed internal class Weapon : Solid
     {
+
         private void Initialize()
         {
-            category = ItemCategory.Weapon;
+            itemType = ItemType.Weapon;
             interact = new Equip();
-            collide = new Charge();
+            //collide = new Charge();
         }
 
         public Weapon(string json): base(json)
@@ -353,9 +452,9 @@ namespace TalesPop.Items
     {
         private void Initialize()
         {
-            category = ItemCategory.Armor;
+            itemType = ItemType.Armor;
             interact = new Equip();
-            collide = new Charge();
+            //collide = new Charge();
         }
 
         public Armor(string json): base(json)
@@ -379,9 +478,9 @@ namespace TalesPop.Items
     {
         private void Initialize()
         {
-            category = ItemCategory.Material;
+            itemType = ItemType.Material;
             interact = new Use();
-            collide = new Blend();
+            //collide = new Blend();
         }
 
         public Material(string json): base(json)
