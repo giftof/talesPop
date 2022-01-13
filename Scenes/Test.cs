@@ -33,13 +33,32 @@ public class Test : MonoBehaviour
             // "\"amount\": 6" +
             "}";
 
-        string bagJson = "{" +
+        string bagJson1 = "{" +
             "\"uid\": 1," +
-            "\"name\": \"some named bag\", " +
+            "\"name\": \"some named bag1\", " +
             "\"nameId\": 1, " +
             "\"itemType\": \"Bag\", " +
             "\"capacity\": 10," +
+            "\"inventoryType\": \"UniqueEquip\", " +
             $"\"contents\": [{armorJson}, {potionJson1}, {potionJson2}]" +
+            "}";
+
+        string armorJson2 = "{" +
+            "\"uid\": 0," +
+            "\"name\": \"some named armor2\", " +
+            "\"nameId\": 0, " +
+            "\"itemType\": \"Armor\", " +
+            "\"capacity\": 10" +
+            "}";
+
+        string bagJson2 = "{" +
+            "\"uid\": 1," +
+            "\"name\": \"some named bag2\", " +
+            "\"nameId\": 1, " +
+            "\"itemType\": \"Bag\", " +
+            "\"capacity\": 10," +
+            "\"inventoryType\": \"UniqueEquip\", " +
+            $"\"contents\": [{armorJson}, {potionJson1}, {potionJson2}, {armorJson2}]" +
             "}";
 
         //Assert.That(() => {
@@ -49,36 +68,10 @@ public class Test : MonoBehaviour
 
 
         ItemManager itemManager = new ItemManager();
-        Item bag = itemManager.CreateBag(bagJson);
+        Bag bag1 = itemManager.CreateBag(bagJson1);
+        Bag bag2 = itemManager.CreateBag(bagJson2);
 
-
-        //Item armor = itemManager.CreateItem(armorJson);
-        //Debug.Log(armor.uid);
-        //Debug.Log(armor.name);
-        //Debug.Log(armor.itemType);
-        //Debug.Log((int)armor.itemType);
-        //armor.Perform();
-
-        //Item bag = itemManager.CreateItem(bagJson);
-        //Debug.Log(bag.uid);
-        //Debug.Log(bag.name);
-        //Debug.Log(bag.itemType);
-        //Debug.Log((int)bag.itemType);
-        //bag.Perform();
-
-        //Item potion1 = itemManager.CreateItem(potionJson1);
-        //Debug.Log(potion1.uid);
-        //Debug.Log(potion1.name);
-        //Debug.Log(potion1.itemType);
-        //Debug.Log((int)potion1.itemType);
-        //potion1.Perform();
-
-        //Item potion2 = itemManager.CreateItem(potionJson2);
-        //Debug.Log(potion2.uid);
-        //Debug.Log(potion2.name);
-        //Debug.Log(potion2.itemType);
-        //Debug.Log((int)potion2.itemType);
-        //potion2.Perform();
-
+        Debug.LogWarning($"bag1 type = {bag1?.inventoryType}");
+        Debug.LogWarning($"bag2 type = {bag2?.inventoryType}");
     }
 }

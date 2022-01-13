@@ -2,6 +2,9 @@ using UnityEngine;
 using System;
 using System.Linq;
 using System.Reflection;
+using TalesPop.Items;
+
+
 
 
 public static class Common
@@ -9,6 +12,8 @@ public static class Common
     public const string TP_ITEMS = "TalesPop.Items";
     public const int NULL_ID = -1;
     public const string EMPTY_STRING = "";
+    public const ItemType ITEM_EQUIP_CAP = ItemType.Amulet;
+    public const ItemType ITEM_LAST_ENUM = ItemType.Bag;
 
     public static void ForceQuit()
     {

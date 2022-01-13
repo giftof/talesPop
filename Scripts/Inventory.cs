@@ -1,3 +1,4 @@
+using System.Linq;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
@@ -25,16 +26,23 @@ namespace TalesPop.Items
         Some4       = 0x0100,
     }
 
+    public enum InventoryType
+    {
+        Any         = 0x01,
+        UniqueEquip = 0x02,
+    }
 
 
     sealed public class Bag : Item
     {
         [JsonIgnore]
-        public Dictionary<int, Item> bag;
+        public Dictionary<int, Item> container;
         [JsonIgnore]
         public Item parent = null;
         [JsonProperty]
         public string[] contents;
+        [JsonProperty]
+        public InventoryType inventoryType;
 
 
 
@@ -42,11 +50,13 @@ namespace TalesPop.Items
         {
             itemType = ItemType.Bag;
             interact = new ToggleBag();
-            bag = new Dictionary<int, Item>
+            inventoryType = StringToEnum<InventoryType>(jObject[ItemArgs.inventoryType].Value<string>());
+            container = new Dictionary<int, Item>
             {
                 { NULL_ID, null }
             };
             ++capacity;
+
             //collide = new Add();
         }
 
@@ -64,16 +74,37 @@ namespace TalesPop.Items
             // enable use 'parsed'
         }
 
+        /*
+         * Brhaviours
+         */
         public void Add(Item item)
         {
-            if (!bag.ContainsKey(item.uid) && 0 < Space)
-                bag.Add(item.uid, item);
+            if (!container.ContainsKey(item.uid) && 0 < Space)
+                container.Add(item.uid, item);
         }
 
         public void Remove(Item item)
         {
-            if (bag.ContainsKey(item.uid))
-                bag.Remove(item.uid);
+            if (container.ContainsKey(item.uid))
+                container.Remove(item.uid);
+        }
+
+        public Item Validate(Item item)
+        {
+            if (item == null)
+                return null;
+
+            if (inventoryType.Equals(InventoryType.UniqueEquip)
+                && container.FirstOrDefault(e => IsDuplicatedSlot(e.Value, item)).Value != null)
+                return null;
+
+            if (container.ContainsKey(item.uid))
+                return null;
+
+            if (Space <= 0)
+                return null;
+
+            return item;
         }
 
         /*
@@ -81,12 +112,12 @@ namespace TalesPop.Items
          */
         public override int Space
         {
-            get { return capacity - bag.Count; }
+            get { return capacity - container.Count; }
         }
 
         public override int Occupied
         {
-            get { return bag.Count; }
+            get { return container.Count; }
             internal set { }
         }
 
@@ -99,8 +130,15 @@ namespace TalesPop.Items
         {
             return 0;
         }
+
         /*
          * Privates
          */
+        private bool IsDuplicatedSlot(Item currentItem, Item newItem)
+        {
+            if (ITEM_EQUIP_CAP < (currentItem?.itemType ?? ITEM_LAST_ENUM))
+                return false;
+            return 0 < ((currentItem?.itemType ?? 0) & newItem.itemType);
+        }
     }
 }

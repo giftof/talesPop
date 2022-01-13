@@ -25,6 +25,7 @@ namespace TalesPop.Items
         Armor       = 0x0004,
         Helmet      = 0x0008,
         Amulet      = 0x0010,
+
         Material    = 0x0100,
         Potion      = 0x0200,
         Bag         = 0x1FFF,
@@ -32,15 +33,16 @@ namespace TalesPop.Items
 
     internal static class ItemArgs
     {
-        public const string uid         = "uid";
-        public const string name        = "name";
-        public const string nameId      = "nameId";
-        public const string itemType    = "itemType";
-        public const string capacity    = "capacity";
+        public const string uid             = "uid";
+        public const string name            = "name";
+        public const string nameId          = "nameId";
+        public const string itemType        = "itemType";
+        public const string capacity        = "capacity";
 
-        public const string amount      = "amount";
-        public const string charge      = "charge";
-        public const string contents    = "contents";
+        public const string amount          = "amount";
+        public const string charge          = "charge";
+        public const string contents        = "contents";
+        public const string inventoryType   = "inventoryType";
     }
 
 

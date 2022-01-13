@@ -2,6 +2,7 @@ using System;
 using System.Linq;
 using System.Collections.Generic;
 using Newtonsoft.Json.Linq;
+using UnityEngine;
 
 
 
@@ -68,12 +69,12 @@ namespace TalesPop.Items
             if (item == null || currentProcess == null)
                 return null;
 
-            if (!currentProcess.bag.ContainsKey(item.uid))
-            {
-                currentProcess.bag.Add(item.uid, item);
-                return item;
-            }
-            return null;
+            if (currentProcess.Validate(item) == null)
+                return null;
+
+            currentProcess.container.Add(item.uid, item);
+
+            return item;
         }
 
         private Bag Validate()
@@ -83,6 +84,7 @@ namespace TalesPop.Items
                 container.Add(currentProcess.uid, currentProcess);
                 return currentProcess;
             }
+
             return null;
         }
     }
