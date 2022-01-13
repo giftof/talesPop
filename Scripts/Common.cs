@@ -43,47 +43,55 @@ public static class Common
 
     public static bool GetTypeFromEnumName(string typeName, out Type type)
     {
-        type = Type.GetType(typeName) ?? FindFromAssembly(lastAssemblyName, typeName);
+        type = Type.GetType(typeName);
+        return type != null;
+        // if (type != null)
+        // {
+        //     return true;
+        // }
+            
 
-        if (type != null)
-            return true;
+        // type = FindFromAssembly(lastAssemblyName, typeName);
 
-        Assembly currentAssembly = Assembly.GetExecutingAssembly();
-        AssemblyName[] referencedAssemblieArray = currentAssembly.GetReferencedAssemblies();
+        // if (type != null)
+        //     return true;
 
-        foreach (AssemblyName assemblyName in referencedAssemblieArray)
-        {
-            if (assemblyName.Equals(lastAssemblyName))
-                continue;
+        // Assembly currentAssembly = Assembly.GetExecutingAssembly();
+        // AssemblyName[] referencedAssemblieArray = currentAssembly.GetReferencedAssemblies();
 
-            type = FindFromAssembly(assemblyName, typeName);
+        // foreach (AssemblyName assemblyName in referencedAssemblieArray)
+        // {
+        //     if (assemblyName.Equals(lastAssemblyName))
+        //         continue;
 
-            if (type != null)
-            {
-                lastAssemblyName = assemblyName;
-                return true;
-            }
-        }
+        //     type = FindFromAssembly(assemblyName, typeName);
 
-        return false;
+        //     if (type != null)
+        //     {
+        //         lastAssemblyName = assemblyName;
+        //         return true;
+        //     }
+        // }
+
+        // return false;
     }
 
-    private static Type FindFromAssembly(AssemblyName assemblyName, string typeName)
-    {
-        Assembly assembly = Assembly.Load(lastAssemblyName);
-        Type type = null;
+    // private static Type FindFromAssembly(AssemblyName assemblyName, string typeName)
+    // {
+    //     Assembly assembly = Assembly.Load(lastAssemblyName);
+    //     Type type = null;
 
-        if (assembly != null)
-        {
-            type = assembly.GetType(typeName);
-            if (type != null)
-            {
-                lastAssemblyName = assemblyName;
-            }
-        }
+    //     if (assembly != null)
+    //     {
+    //         type = assembly.GetType(typeName);
+    //         if (type != null)
+    //         {
+    //             lastAssemblyName = assemblyName;
+    //         }
+    //     }
 
-        return type;
-    }
+    //     return type;
+    // }
 
     public static void Swap<T>(ref T a, ref T b)
     {
@@ -91,6 +99,4 @@ public static class Common
         a = b;
         b = temp;
     }
-
 }
-

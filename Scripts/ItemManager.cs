@@ -13,7 +13,6 @@ namespace TalesPop.Items
     public class ItemManager
     {
         private readonly Dictionary<int, Bag> container;
-        // private Bag currentProcess;
         private Stack<Bag> processQueue;
 
         public ItemManager()
@@ -28,31 +27,29 @@ namespace TalesPop.Items
         public Bag CreateBag(string json)
         {
             return CreateBag(JObject.Parse(json));
-            // JObject jObject = JObject.Parse(json);
-            // string itemType = jObject[ItemArgs.itemType]?.Value<string>() ?? EMPTY_STRING;
-            // string bag = ItemType.Bag.ToString();
-
-            // if (!itemType.Equals(bag))
-            //     return null;
-
-            // currentProcess = new Bag(jObject);
-            // JArray itemJsonArray = (JArray)jObject[ItemArgs.contents];
-            // IEnumerable<JToken> itemList = itemJsonArray.Select(e => e);
-
-            // foreach (JToken element in itemList)
-            // {
-            //     if (CreateItem(element) == null)
-            //     {
-            //         return null;
-            //     }
-            // }
-
-            // return Validate();
         }
 
+        /*
+         * Behaviours
+         */
+        public Item Search(int uid)
+        {
+            Item result = null;
+            container.FirstOrDefault(e1 => HaveItem(uid, e1.Value, ref result));
+            return result;
+        }
+
+        private bool HaveItem(int uid, Bag bag, ref Item match)
+        {
+            match = bag?.container.FirstOrDefault(e => e.Value?.uid.Equals(uid) ?? false).Value;
+            return match != null;
+        }
+
+        /*
+         * Privates
+         */
         private Bag CreateBag(JObject jObject)
         {
-            Debug.Log("CREATE BAG");
             string itemType = jObject[ItemArgs.itemType]?.Value<string>() ?? EMPTY_STRING;
             string bag = ItemType.Bag.ToString();
 
@@ -60,7 +57,6 @@ namespace TalesPop.Items
                 return null;
 
             processQueue.Push(new Bag(jObject));
-            // currentProcess = new Bag(jObject);
             JArray itemJsonArray = (JArray)jObject[ItemArgs.contents];
             IEnumerable<JToken> itemList = itemJsonArray.Select(e => e);
 
@@ -85,17 +81,17 @@ namespace TalesPop.Items
             {
                 item = CreateBag(jObject);
             }
-            else if (GetTypeFromEnumName($"{TP_ITEMS}.{itemCategory}", out Type type))
+            else
             {
-                item = (Item)Activator.CreateInstance(type, jObject);
+                if (GetTypeFromEnumName($"{TP_ITEMS}.{itemCategory}", out Type type))
+                {
+                    item = (Item)Activator.CreateInstance(type, jObject);
+                }
             }
 
             return Validate(item);
         }
 
-        /*
-         * Privates
-         */
         private Item Validate(Item item)
         {
             Bag currentProcess = this.processQueue.Peek();

@@ -59,10 +59,10 @@ namespace TalesPop.Items
     //    public void Perform(ref T a, ref Item b);
     //}
 
-    //internal interface ICollide<T>
-    //{
-    //    public void Perform(T destination, Item source);
-    //}
+    internal interface ICollide<T>
+    {
+       public void Perform(T destination, Item source);
+    }
 
     /*
      * Stackable item
@@ -88,8 +88,8 @@ namespace TalesPop.Items
     //    }
     //}
 
-    //internal class Stack: ICollide<Item>
-    //{
+    internal class Stack: ICollide<Item>
+    {
     //    ISwap<Item> swap = new Swap();
 
     //    public void SetSwapEnable(EnableSwap enableSwap)
@@ -97,25 +97,25 @@ namespace TalesPop.Items
     //        swap.EnableSwap = enableSwap;
     //    }
 
-    //    public void Perform(Item destination, Item source)
-    //    {
-    //        Debug.Log("[IMPL: ICollide] Perform by Stack");
-    //        if (destination.nameId.Equals(source?.nameId))
-    //        {
-    //            destination.Increment(source.Decrement(destination.Space));
-    //        }
-    //        else
-    //        {
+       public void Perform(Item destination, Item source)
+       {
+           Debug.Log("[IMPL: ICollide] Perform by Stack");
+        //    if (destination.nameId.Equals(source?.nameId))
+        //    {
+        //        destination.Increment(source.Decrement(destination.Space));
+        //    }
+        //    else
+        //    {
                 
-    //            if (!swap.EnableSwap(destination, source))
-    //                return;
+        //        if (!swap.EnableSwap(destination, source))
+        //            return;
 
-    //            swap.Perform(ref destination, ref source);
-    //        }
+        //        swap.Perform(ref destination, ref source);
+        //    }
 
-    //        //destination.relationObserver?.Invoke(destination, source);
-    //    }
-    //}
+           //destination.relationObserver?.Invoke(destination, source);
+       }
+    }
 
     ///*
     // * MagicItem charge spell count
@@ -267,8 +267,8 @@ namespace TalesPop.Items
          */
         [JsonIgnore]
         internal IInteraction interact;
-        //[JsonIgnore]
-        //internal ICollide<Item> collide;
+        [JsonIgnore]
+        internal ICollide<Item> collide;
         //[JsonIgnore]
         //internal UnityAction propertyObserver = null;
         //[JsonIgnore]
@@ -286,13 +286,13 @@ namespace TalesPop.Items
 
         public void Perform()
         {
-            interact.Perform();
+            interact?.Perform();
         }
 
-        //public void Collide(Item source)
-        //{
-        //    collide.Perform(this, source);
-        //}
+        public void Collide(Item source)
+        {
+           collide?.Perform(this, source);
+        }
 
         public int Increment(int amount)
         {
@@ -314,6 +314,7 @@ namespace TalesPop.Items
         public abstract int Space { get; }
         [JsonIgnore]
         public abstract int Occupied { get; internal set; }
+        
         /*
          * Privates
          */
@@ -338,17 +339,18 @@ namespace TalesPop.Items
         [JsonProperty]
         public int amount;
 
-        public Stackable(string json): base(json)
-        {
-            // something extra
-            // enable use 'parsed'
-            amount = jObject[ItemArgs.amount].Value<int>();
-        }
+        // public Stackable(string json): base(json)
+        // {
+        //     // something extra
+        //     // enable use 'parsed'
+        //     amount = jObject[ItemArgs.amount].Value<int>();
+        // }
 
         public Stackable(JObject jObject): base(jObject)
         {
             // something extra
             // enable use 'parsed'
+            amount = jObject[ItemArgs.amount].Value<int>();
         }
 
         /*
@@ -369,11 +371,11 @@ namespace TalesPop.Items
 
     internal abstract class Solid : Item
     {
-        public Solid(string json): base(json)
-        {
-            // something extra
-            // enable use 'parsed'
-        }
+        // public Solid(string json): base(json)
+        // {
+        //     // something extra
+        //     // enable use 'parsed'
+        // }
 
         public Solid(JObject jObject): base(jObject)
         {
@@ -403,15 +405,15 @@ namespace TalesPop.Items
         {
             itemType = ItemType.Potion;
             interact = new Use();
-            //collide = new Stack();
+            collide = new Stack();
         }
         
-        public Potion(string json): base(json)
-        {
-            Initialize();
-            // something extra
-            // enable use 'parsed'
-        }
+        // public Potion(string json): base(json)
+        // {
+        //     Initialize();
+        //     // something extra
+        //     // enable use 'parsed'
+        // }
 
         public Potion(JObject jObject): base(jObject)
         {
@@ -433,12 +435,12 @@ namespace TalesPop.Items
             //collide = new Charge();
         }
 
-        public Weapon(string json): base(json)
-        {
-            Initialize();
-            // something extra
-            // enable use 'parsed'
-        }
+        // public Weapon(string json): base(json)
+        // {
+        //     Initialize();
+        //     // something extra
+        //     // enable use 'parsed'
+        // }
 
         public Weapon(JObject jObject): base(jObject)
         {
@@ -459,12 +461,12 @@ namespace TalesPop.Items
             //collide = new Charge();
         }
 
-        public Armor(string json): base(json)
-        {
-            Initialize();
-            // something extra
-            // enable use 'parsed'
-        }
+        // public Armor(string json): base(json)
+        // {
+        //     Initialize();
+        //     // something extra
+        //     // enable use 'parsed'
+        // }
 
         public Armor(JObject jObject): base(jObject)
         {
@@ -485,10 +487,10 @@ namespace TalesPop.Items
             //collide = new Blend();
         }
 
-        public Material(string json): base(json)
-        {
-            Initialize();
-        }
+        // public Material(string json): base(json)
+        // {
+        //     Initialize();
+        // }
 
         public Material(JObject jObject): base(jObject)
         {

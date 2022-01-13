@@ -30,8 +30,8 @@ public class ItemsTestScript
             "\"name\": \"some named potion1\", " +
             "\"nameId\": 2, " +
             "\"itemType\": \"Potion\", " +
-            "\"capacity\": 10" +
-            // "\"amount\": 6" +
+            "\"capacity\": 10, " +
+            "\"amount\": 6" +
             "}";
 
         string potionJson2 = "{" +
@@ -39,8 +39,8 @@ public class ItemsTestScript
             "\"name\": \"some named potion2\", " +
             "\"nameId\": 3, " +
             "\"itemType\": \"Potion\", " +
-            "\"capacity\": 10" +
-            // "\"amount\": 6" +
+            "\"capacity\": 10, " +
+            "\"amount\": 6" +
             "}";
 
         string bagJson1 = "{" +
@@ -99,7 +99,6 @@ public class ItemsTestScript
             "\"capacity\": 10," +
             "\"inventoryType\": \"Any\", " +
             $"\"contents\": [{bagJson1}, {bagJson2}, {bagJson3}, {bagJson4}]" +
-            // $"\"contents\": [{bagJson1}, {bagJson2}]" +
             "}";
 
         //Assert.That(() => {
@@ -122,29 +121,45 @@ public class ItemsTestScript
         Bag bag5 = itemManager.CreateBag(bagJson5);
         Debug.LogWarning($"bag5 type = {bag5?.inventoryType}, contentCNT = {bag5?.container.Count}");
 
-        foreach (KeyValuePair<int, Item> element in bag5.container)
-        {
-            Debug.Log($"name = {element.Value?.name}");
+        DisplayBagContents(bag5);
 
-            if (element.Value != null && element.Value.itemType.Equals(ItemType.Bag))
-            {
-                Debug.Log($"Found BAG! = {element.Value?.name}");
-                Bag bag = (Bag)element.Value;
-                foreach (KeyValuePair<int, Item> e in bag.container)
-                {
-                    if (e.Value != null)
-                    {
-                        Debug.LogWarning($"name = {e.Value.name}");
-                        e.Value.Perform();
-                    }
-                }
-            }
-        }
+        Bag bag1 = itemManager.CreateBag(bagJson1);
+        Bag bag2 = itemManager.CreateBag(bagJson2);
+        
+        Item p1 = itemManager.Search(2);
+        Item p2 = itemManager.Search(3);
 
+        Debug.Log(p1?.name);
+        Debug.Log(p2?.name);
+
+        p1.Collide(p2);
 
         Debug.LogWarning("--- TEST END ---");    
     }
 
+    private void DisplayBagContents(Bag bag) 
+    {
+        if (bag == null)
+            return;
+
+        foreach (KeyValuePair<int, Item> element in bag.container)
+        {
+            if (element.Value == null)
+                continue;
+
+            Debug.Log($"name = {element.Value.name}");
+
+            if (element.Value.itemType.Equals(ItemType.Bag))
+            {
+                Debug.LogWarning($"Found BAG! = {element.Value.name}");
+                DisplayBagContents((Bag)element.Value);
+            }
+            else
+            {
+                element.Value.Perform();
+            }
+        }
+    }
 
     // A UnityTest behaves like a coroutine in Play Mode. In Edit Mode you can use
     // `yield return null;` to skip a frame.
