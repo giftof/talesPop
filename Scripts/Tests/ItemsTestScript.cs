@@ -54,7 +54,7 @@ public class ItemsTestScript
             "}";
 
         string armorJson2 = "{" +
-            "\"uid\": 0," +
+            "\"uid\": 4," +
             "\"name\": \"some named armor2\", " +
             "\"nameId\": 0, " +
             "\"itemType\": \"Armor\", " +
@@ -62,13 +62,44 @@ public class ItemsTestScript
             "}";
 
         string bagJson2 = "{" +
-            "\"uid\": 1," +
+            "\"uid\": 5," +
             "\"name\": \"some named bag2\", " +
             "\"nameId\": 1, " +
             "\"itemType\": \"Bag\", " +
             "\"capacity\": 10," +
-            "\"inventoryType\": \"UniqueEquip\", " +
+            "\"inventoryType\": \"Any\", " +
             $"\"contents\": [{armorJson}, {potionJson1}, {potionJson2}, {armorJson2}]" +
+            "}";
+
+        string bagJson3 = "{" +
+            "\"uid\": 6," +
+            "\"name\": \"some named bag3\", " +
+            "\"nameId\": 1, " +
+            "\"itemType\": \"Bag\", " +
+            "\"capacity\": 10," +
+            "\"inventoryType\": \"Any\", " +
+            $"\"contents\": [{armorJson}, {potionJson1}, {potionJson2}, {armorJson2}]" +
+            "}";
+        
+        string bagJson4 = "{" +
+            "\"uid\": 7," +
+            "\"name\": \"some named bag4\", " +
+            "\"nameId\": 1, " +
+            "\"itemType\": \"Bag\", " +
+            "\"capacity\": 10," +
+            "\"inventoryType\": \"UniqueEquip\", " +
+            $"\"contents\": []" +
+            "}";
+
+        string bagJson5 = "{" +
+            "\"uid\": 8," +
+            "\"name\": \"some named bag5\", " +
+            "\"nameId\": 1, " +
+            "\"itemType\": \"Bag\", " +
+            "\"capacity\": 10," +
+            "\"inventoryType\": \"Any\", " +
+            $"\"contents\": [{bagJson1}, {bagJson2}, {bagJson3}, {bagJson4}]" +
+            // $"\"contents\": [{bagJson1}, {bagJson2}]" +
             "}";
 
         //Assert.That(() => {
@@ -78,14 +109,42 @@ public class ItemsTestScript
 
 
         ItemManager itemManager = new ItemManager();
-        Bag bag1 = itemManager.CreateBag(bagJson1);
-        Bag bag2 = itemManager.CreateBag(bagJson2);
+        // Bag bag1 = itemManager.CreateBag(bagJson1);
+        // Bag bag2 = itemManager.CreateBag(bagJson2);
+        // Bag bag3 = itemManager.CreateBag(bagJson3);
+        // Bag bag4 = itemManager.CreateBag(bagJson4);
 
-        Debug.LogWarning($"bag1 type = {bag1?.inventoryType}");
-        Debug.LogWarning($"bag2 type = {bag2?.inventoryType}");
+        // Debug.LogWarning($"bag1 type = {bag1?.inventoryType}");
+        // Debug.LogWarning($"bag2 type = {bag2?.inventoryType}");
+        // Debug.LogWarning($"bag3 type = {bag3?.inventoryType}");
+        // Debug.LogWarning($"bag4 type = {bag4?.inventoryType}");
 
-        Debug.LogWarning("--- TEST END ---");
+        Bag bag5 = itemManager.CreateBag(bagJson5);
+        Debug.LogWarning($"bag5 type = {bag5?.inventoryType}, contentCNT = {bag5?.container.Count}");
+
+        foreach (KeyValuePair<int, Item> element in bag5.container)
+        {
+            Debug.Log($"name = {element.Value?.name}");
+
+            if (element.Value != null && element.Value.itemType.Equals(ItemType.Bag))
+            {
+                Debug.Log($"Found BAG! = {element.Value?.name}");
+                Bag bag = (Bag)element.Value;
+                foreach (KeyValuePair<int, Item> e in bag.container)
+                {
+                    if (e.Value != null)
+                    {
+                        Debug.LogWarning($"name = {e.Value.name}");
+                        e.Value.Perform();
+                    }
+                }
+            }
+        }
+
+
+        Debug.LogWarning("--- TEST END ---");    
     }
+
 
     // A UnityTest behaves like a coroutine in Play Mode. In Edit Mode you can use
     // `yield return null;` to skip a frame.
