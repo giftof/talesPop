@@ -1,10 +1,9 @@
 {
-    "name": "ItemTests",
+    "name": "TEST_ITEMS",
     "rootNamespace": "",
     "references": [
         "UnityEngine.TestRunner",
-        "UnityEditor.TestRunner",
-        "ScriptsFolderAssemblies"
+        "UnityEditor.TestRunner"
     ],
     "includePlatforms": [
         "Editor"

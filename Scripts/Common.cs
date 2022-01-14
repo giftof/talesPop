@@ -2,14 +2,30 @@ using UnityEngine;
 using System;
 using System.Linq;
 using System.Reflection;
-using TalesPop.Items;
-
 
 
 
 public static class Common
 {
-    public const string TP_ITEMS = "TalesPop.Items";
+    /*
+     * enum names MUST SAME with class(type) name
+     * enum value MUST MATCH with slotType value
+     */
+    public enum ItemType
+    {
+        Weapon = 0x0001,
+        Shield = 0x0002,
+        TwoHand = 0x0003,
+        Armor = 0x0004,
+        Helmet = 0x0008,
+        Amulet = 0x0010,
+
+        Material = 0x0100,
+        Potion = 0x0200,
+        Bag = 0x1FFF,
+    }
+
+    public const string TALESPOP_ITEMS = "TalesPop.Items";
     public const int NULL_ID = -1;
     public const string EMPTY_STRING = "";
     public const ItemType ITEM_EQUIP_CAP = ItemType.Amulet;
@@ -44,59 +60,72 @@ public static class Common
     public static bool GetTypeFromEnumName(string typeName, out Type type)
     {
         type = Type.GetType(typeName);
-        return type != null;
-        // if (type != null)
-        // {
-        //     return true;
-        // }
-            
+        //return type != null;
+        if (type != null)
+        {
+            return true;
+        }
 
-        // type = FindFromAssembly(lastAssemblyName, typeName);
+        type = FindFromAssembly(lastAssemblyName, typeName);
 
-        // if (type != null)
-        //     return true;
+        if (type != null)
+        {
+            return true;
+        }
 
-        // Assembly currentAssembly = Assembly.GetExecutingAssembly();
-        // AssemblyName[] referencedAssemblieArray = currentAssembly.GetReferencedAssemblies();
+        Assembly currentAssembly = Assembly.GetExecutingAssembly();
+        AssemblyName[] referencedAssemblieArray = currentAssembly.GetReferencedAssemblies();
 
-        // foreach (AssemblyName assemblyName in referencedAssemblieArray)
-        // {
-        //     if (assemblyName.Equals(lastAssemblyName))
-        //         continue;
+        Debug.Log($"assemblyNameArraySize = {referencedAssemblieArray.Length}");
 
-        //     type = FindFromAssembly(assemblyName, typeName);
+        foreach (AssemblyName assemblyName in referencedAssemblieArray)
+        {
+            //if (assemblyName.Equals(lastAssemblyName))
+            //    continue;
 
-        //     if (type != null)
-        //     {
-        //         lastAssemblyName = assemblyName;
-        //         return true;
-        //     }
-        // }
+            type = FindFromAssembly(assemblyName, typeName);
 
-        // return false;
+            if (type != null)
+            {
+                lastAssemblyName = assemblyName;
+                return true;
+            }
+        }
+
+        return false;
     }
 
-    // private static Type FindFromAssembly(AssemblyName assemblyName, string typeName)
-    // {
-    //     Assembly assembly = Assembly.Load(lastAssemblyName);
-    //     Type type = null;
+    private static Type FindFromAssembly(AssemblyName assemblyName, string typeName)
+    {
+        if (assemblyName == null)
+            return null;
 
-    //     if (assembly != null)
-    //     {
-    //         type = assembly.GetType(typeName);
-    //         if (type != null)
-    //         {
-    //             lastAssemblyName = assemblyName;
-    //         }
-    //     }
+        Debug.Log($"assemblyName = {assemblyName}");
 
-    //     return type;
-    // }
+        Assembly assembly = Assembly.Load(assemblyName);
+        Type type = null;
+
+        if (assembly != null)
+        {
+            type = assembly.GetType(typeName);
+            if (type != null)
+            {
+                lastAssemblyName = assemblyName;
+            }
+        }
+
+        return type;
+    }
 
     public static void Swap<T>(ref T a, ref T b)
     {
         T temp = a;
         a = b;
         b = temp;
+    }
+
+    public static bool IsSame<T>(T a, T b)
+    {
+        return a?.Equals(b) ?? false;
     }
 }

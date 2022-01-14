@@ -13,22 +13,22 @@ namespace TalesPop.Items
 
     public enum SlotType
     {
-        Any         = 0x1FFF,
-        RightHand   = 0x0001,
-        LeftHand    = 0x0002,
-        Chest       = 0x0004,
-        Head        = 0x0008,
-        Neck        = 0x0010,
+        Any = 0x1FFF,
+        RightHand = 0x0001,
+        LeftHand = 0x0002,
+        Chest = 0x0004,
+        Head = 0x0008,
+        Neck = 0x0010,
 
-        Some1       = 0x0020,
-        Some2       = 0x0040,
-        Some3       = 0x0080,
-        Some4       = 0x0100,
+        Some1 = 0x0020,
+        Some2 = 0x0040,
+        Some3 = 0x0080,
+        Some4 = 0x0100,
     }
 
     public enum InventoryType
     {
-        Any         = 0x01,
+        Any = 0x01,
         UniqueEquip = 0x02,
     }
 
@@ -65,6 +65,7 @@ namespace TalesPop.Items
             Initialize();
             // something extra
             // enable use 'parsed'
+            interact = new ToggleBag();
         }
 
         public Bag(JObject jObject) : base(jObject)
@@ -72,6 +73,7 @@ namespace TalesPop.Items
             Initialize();
             // something extra
             // enable use 'parsed'
+            interact = new ToggleBag();
         }
 
         /*
@@ -89,22 +91,24 @@ namespace TalesPop.Items
                 container.Remove(item.uid);
         }
 
-        public Item Validate(Item item)
+        public bool Validate(Item item)
         {
             if (item == null)
-                return null;
+                return false;
+
+            if (Space <= 0 || container.ContainsKey(item.uid))
+                return false;
 
             if (inventoryType.Equals(InventoryType.UniqueEquip)
                 && container.FirstOrDefault(e => IsDuplicatedSlot(e.Value, item)).Value != null)
-                return null;
+                return false;
 
-            if (container.ContainsKey(item.uid))
-                return null;
+            return true;
+        }
 
-            if (Space <= 0)
-                return null;
-
-            return item;
+        public Item SearchByUID(int uid)
+        {
+            return container.FirstOrDefault(e => e.Key.Equals(uid)).Value;
         }
 
         /*

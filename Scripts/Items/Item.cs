@@ -11,25 +11,9 @@ using Newtonsoft.Json.Linq;
 
 namespace TalesPop.Items
 {
+    using static Common;
+
     public delegate bool EnableSwap(Item item1, Item item2);
-
-    /*
-     * enum names MUST SAME with class(type) name
-     * enum value MUST MATCH with slotType value
-     */
-    public enum ItemType
-    {
-        Weapon      = 0x0001,
-        Shield      = 0x0002,
-        TwoHand     = 0x0003,
-        Armor       = 0x0004,
-        Helmet      = 0x0008,
-        Amulet      = 0x0010,
-
-        Material    = 0x0100,
-        Potion      = 0x0200,
-        Bag         = 0x1FFF,
-    }
 
     internal static class ItemArgs
     {
@@ -47,10 +31,6 @@ namespace TalesPop.Items
 
 
 
-    internal interface IInteraction
-    {
-        public void Perform();
-    }
 
     //internal interface ISwap<T>
     //{
@@ -202,29 +182,6 @@ namespace TalesPop.Items
     //    }
     //}
 
-    internal class Use: IInteraction
-    {
-        public void Perform()
-        {
-            Debug.Log("[IMPL: IItemInteraction] Perform by Use");
-        }
-    }
-
-    internal class ToggleBag: IInteraction
-    {
-        public void Perform()
-        {
-            Debug.Log("[IMPL: IItemInteraction] Perform by ToggleBag");
-        }
-    }
-
-    internal class Equip: IInteraction
-    {
-        public void Perform()
-        {
-            Debug.Log("[IMPL: IItemInteraction] Perform by Equip");
-        }
-    }
 
 
     
@@ -284,7 +241,7 @@ namespace TalesPop.Items
         //    relationObserver += unityAction;
         //}
 
-        public void Perform()
+        public void Interact()
         {
             interact?.Perform();
         }
@@ -314,7 +271,24 @@ namespace TalesPop.Items
         public abstract int Space { get; }
         [JsonIgnore]
         public abstract int Occupied { get; internal set; }
-        
+
+        public static Item Factory(ItemType itemType, JObject jObject)
+        {
+            return itemType switch
+            {
+                ItemType.Amulet => new Amulet(jObject),
+                ItemType.Armor => new Armor(jObject),
+                ItemType.Bag => new Bag(jObject),
+                ItemType.Helmet => new Helmet(jObject),
+                ItemType.Material => new Material(jObject),
+                ItemType.Potion => new Potion(jObject),
+                ItemType.Shield => new Shield(jObject),
+                ItemType.TwoHand => new TwoHand(jObject),
+                ItemType.Weapon => new Weapon(jObject),
+                _ => null,
+            };
+        }
+
         /*
          * Privates
          */
@@ -334,167 +308,4 @@ namespace TalesPop.Items
 
 
 
-    internal abstract class Stackable : Item
-    {
-        [JsonProperty]
-        public int amount;
-
-        // public Stackable(string json): base(json)
-        // {
-        //     // something extra
-        //     // enable use 'parsed'
-        //     amount = jObject[ItemArgs.amount].Value<int>();
-        // }
-
-        public Stackable(JObject jObject): base(jObject)
-        {
-            // something extra
-            // enable use 'parsed'
-            amount = jObject[ItemArgs.amount].Value<int>();
-        }
-
-        /*
-         * Abstract
-         */
-        public override int Space
-        {
-            get { return capacity - amount; }
-        }
-        public override int Occupied
-        {
-            get { return amount; }
-            internal set { amount = value; }
-        }
-    }
-
-
-
-    internal abstract class Solid : Item
-    {
-        // public Solid(string json): base(json)
-        // {
-        //     // something extra
-        //     // enable use 'parsed'
-        // }
-
-        public Solid(JObject jObject): base(jObject)
-        {
-            // something extra
-            // enable use 'parsed'
-        }
-
-        /*
-         * Abstract
-         */
-        public override int Space // fix [return spell remain count]
-        {
-            get { return 0; }
-        }
-        public override int Occupied
-        {
-            get { return 0; }
-            internal set { }
-        }
-    }
-
-
-
-    sealed internal class Potion : Stackable
-    {
-        private void Initialize()
-        {
-            itemType = ItemType.Potion;
-            interact = new Use();
-            collide = new Stack();
-        }
-        
-        // public Potion(string json): base(json)
-        // {
-        //     Initialize();
-        //     // something extra
-        //     // enable use 'parsed'
-        // }
-
-        public Potion(JObject jObject): base(jObject)
-        {
-            Initialize();
-            // something extra
-            // enable use 'parsed'
-        }
-    }
-
-
-
-    sealed internal class Weapon : Solid
-    {
-
-        private void Initialize()
-        {
-            itemType = ItemType.Weapon;
-            interact = new Equip();
-            //collide = new Charge();
-        }
-
-        // public Weapon(string json): base(json)
-        // {
-        //     Initialize();
-        //     // something extra
-        //     // enable use 'parsed'
-        // }
-
-        public Weapon(JObject jObject): base(jObject)
-        {
-            Initialize();
-            // something extra
-            // enable use 'parsed'
-        }
-    }
-
-
-
-    sealed internal class Armor: Solid
-    {
-        private void Initialize()
-        {
-            itemType = ItemType.Armor;
-            interact = new Equip();
-            //collide = new Charge();
-        }
-
-        // public Armor(string json): base(json)
-        // {
-        //     Initialize();
-        //     // something extra
-        //     // enable use 'parsed'
-        // }
-
-        public Armor(JObject jObject): base(jObject)
-        {
-            Initialize();
-            // something extra
-            // enable use 'parsed'
-        }
-    }
-
-
-
-    sealed internal class Material: Stackable
-    {
-        private void Initialize()
-        {
-            itemType = ItemType.Material;
-            interact = new Use();
-            //collide = new Blend();
-        }
-
-        // public Material(string json): base(json)
-        // {
-        //     Initialize();
-        // }
-
-        public Material(JObject jObject): base(jObject)
-        {
-            Initialize();
-        }
-    }
 }
