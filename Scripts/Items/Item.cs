@@ -26,6 +26,7 @@ namespace TalesPop.Items
         public const string amount          = "amount";
         public const string charge          = "charge";
         public const string contents        = "contents";
+        public const string spellUIDArray   = "spellUIDArray";
         public const string inventoryType   = "inventoryType";
     }
 
@@ -251,7 +252,7 @@ namespace TalesPop.Items
            collide?.Perform(this, source);
         }
 
-        public int Increment(int amount)
+        public virtual int Increment(int amount)
         {
             int increment = Math.Min(amount, Space);
 
@@ -259,7 +260,7 @@ namespace TalesPop.Items
             return increment;
         }
 
-        public int Decrement(int amount)
+        public virtual int Decrement(int amount)
         {
             int decrement = Math.Min(amount, Occupied);
 
@@ -271,23 +272,6 @@ namespace TalesPop.Items
         public abstract int Space { get; }
         [JsonIgnore]
         public abstract int Occupied { get; internal set; }
-
-        public static Item Factory(ItemType itemType, JObject jObject)
-        {
-            return itemType switch
-            {
-                ItemType.Amulet => new Amulet(jObject),
-                ItemType.Armor => new Armor(jObject),
-                ItemType.Bag => new Bag(jObject),
-                ItemType.Helmet => new Helmet(jObject),
-                ItemType.Material => new Material(jObject),
-                ItemType.Potion => new Potion(jObject),
-                ItemType.Shield => new Shield(jObject),
-                ItemType.TwoHand => new TwoHand(jObject),
-                ItemType.Weapon => new Weapon(jObject),
-                _ => null,
-            };
-        }
 
         /*
          * Privates

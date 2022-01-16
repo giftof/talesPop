@@ -40,7 +40,7 @@ namespace TalesPop.Items
         [JsonIgnore]
         public Item parent = null;
         [JsonProperty]
-        public string[] contents;
+        public JToken[] contents;
         [JsonProperty]
         public InventoryType inventoryType;
 
@@ -74,6 +74,7 @@ namespace TalesPop.Items
             // something extra
             // enable use 'parsed'
             interact = new ToggleBag();
+            contents = jObject[ItemArgs.contents]?.Values<JToken>().ToArray();
         }
 
         /*
@@ -91,19 +92,19 @@ namespace TalesPop.Items
                 container.Remove(item.uid);
         }
 
-        public bool Validate(Item item)
+        public Item Validate(Item item)
         {
             if (item == null)
-                return false;
+                return null;
 
             if (Space <= 0 || container.ContainsKey(item.uid))
-                return false;
+                return null;
 
             if (inventoryType.Equals(InventoryType.UniqueEquip)
                 && container.FirstOrDefault(e => IsDuplicatedSlot(e.Value, item)).Value != null)
-                return false;
+                return null;
 
-            return true;
+            return item;
         }
 
         public Item SearchByUID(int uid)
@@ -125,12 +126,12 @@ namespace TalesPop.Items
             internal set { }
         }
 
-        public int Decrement()
+        public override int Decrement(int _)
         {
             return 0;
         }
 
-        public int Increment()
+        public override int Increment(int _)
         {
             return 0;
         }

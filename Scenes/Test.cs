@@ -28,7 +28,7 @@ public class Test : MonoBehaviour
     private void TEST_MAKE_BAG()
     {
         Debug.LogWarning("TEST_MAKE_BAG begin");
-        string armorJson1 = "{\"uid\": 0, \"name\": \"some named armor1\", \"nameId\": 0, \"itemType\": \"Armor\", \"capacity\": 10}";
+        string armorJson1 = "{\"uid\": 0, \"name\": \"some named armor1\", \"nameId\": 0, \"itemType\": \"Armor\", \"spellUIDArray\": [231, 123], \"capacity\": 10}";
         string weaponJson = "{\"uid\": 10, \"name\": \"some named weapon\", \"nameId\": 4, \"itemType\": \"Weapon\", \"capacity\": 10}";
         string potionJson1 = "{\"uid\": 2, \"name\": \"some named potion1\", \"nameId\": 2, \"itemType\": \"Potion\", \"capacity\": 10, \"amount\": 6}";
         string potionJson2 = "{\"uid\": 3, \"name\": \"some named potion2\", \"nameId\": 2, \"itemType\": \"Potion\", \"capacity\": 10, \"amount\": 3}";
@@ -54,7 +54,7 @@ public class Test : MonoBehaviour
     private void TEST_INTERACT()
     {
         Debug.LogWarning("TEST_INTERACT begin");
-        string armorJson1 = "{\"uid\": 0, \"name\": \"some named armor1\", \"nameId\": 0, \"itemType\": \"Armor\", \"capacity\": 10}";
+        string armorJson1 = "{\"uid\": 0, \"name\": \"some named armor1\", \"nameId\": 0, \"itemType\": \"Armor\", \"spellUIDArray\": [231, 123], \"capacity\": 10}";
         string weaponJson = "{\"uid\": 10, \"name\": \"some named weapon\", \"nameId\": 4, \"itemType\": \"Weapon\", \"capacity\": 10}";
         string potionJson1 = "{\"uid\": 2, \"name\": \"some named potion1\", \"nameId\": 2, \"itemType\": \"Potion\", \"capacity\": 10, \"amount\": 6}";
         string potionJson2 = "{\"uid\": 3, \"name\": \"some named potion2\", \"nameId\": 2, \"itemType\": \"Potion\", \"capacity\": 10, \"amount\": 3}";
@@ -88,7 +88,7 @@ public class Test : MonoBehaviour
     private void TEST_COLLIDE()
     {
         Debug.LogWarning("TEST_COLLIDE begin");
-        string armorJson1 = "{\"uid\": 0, \"name\": \"some named armor1\", \"nameId\": 0, \"itemType\": \"Armor\", \"capacity\": 10}";
+        string armorJson1 = "{\"uid\": 0, \"name\": \"some named armor1\", \"nameId\": 0, \"itemType\": \"Armor\", \"spellUIDArray\": [231, 123], \"capacity\": 10}";
         string weaponJson = "{\"uid\": 10, \"name\": \"some named weapon\", \"nameId\": 4, \"itemType\": \"Weapon\", \"capacity\": 10}";
         string potionJson1 = "{\"uid\": 2, \"name\": \"some named potion1\", \"nameId\": 2, \"itemType\": \"Potion\", \"capacity\": 10, \"amount\": 6}";
         string potionJson2 = "{\"uid\": 3, \"name\": \"some named potion2\", \"nameId\": 2, \"itemType\": \"Potion\", \"capacity\": 10, \"amount\": 3}";
@@ -119,6 +119,13 @@ public class Test : MonoBehaviour
         p1?.Collide(p2);
         //a.Collide(w);
         //w.Collide(p1);
+
+        Armor a1 = (Armor)a;
+        foreach (int uid in a1.spellUIDArray)
+        {
+            Debug.Log($"uid = {uid}");
+        }
+
         Debug.LogWarning("TEST_COLLIDE end");
         Debug.Log("");
     }

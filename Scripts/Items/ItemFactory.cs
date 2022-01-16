@@ -1,8 +1,9 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
-using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
+
+
 
 
 
@@ -10,272 +11,38 @@ namespace TalesPop.Items
 {
     using static Common;
 
-    internal abstract class Stackable : Item
+    public abstract class Factory
     {
-        [JsonProperty]
-        public int amount;
+        public abstract Item Create(ItemType itemType, JObject jObject);
+    }
 
-        // public Stackable(string json): base(json)
-        // {
-        //     // something extra
-        //     // enable use 'parsed'
-        //     amount = jObject[ItemArgs.amount].Value<int>();
-        // }
-
-        public Stackable(JObject jObject) : base(jObject)
+    internal class Normal : Factory
+    {
+        public override Item Create(ItemType itemType, JObject jObject)
         {
-            // something extra
-            // enable use 'parsed'
-            amount = jObject[ItemArgs.amount].Value<int>();
-        }
-
-        /*
-         * Abstract
-         */
-        public override int Space
-        {
-            get { return capacity - amount; }
-        }
-        public override int Occupied
-        {
-            get { return amount; }
-            internal set { amount = value; }
+            return itemType switch
+            {
+                ItemType.Amulet => new Amulet(jObject),
+                ItemType.Armor => new Armor(jObject),
+                ItemType.Bag => new Bag(jObject),
+                ItemType.Helmet => new Helmet(jObject),
+                ItemType.Material => new Material(jObject),
+                ItemType.Potion => new Potion(jObject),
+                ItemType.Shield => new Shield(jObject),
+                ItemType.TwoHand => new TwoHand(jObject),
+                ItemType.Weapon => new Weapon(jObject),
+                _ => null,
+            };
         }
     }
 
-
-
-    internal abstract class Solid : Item
+    internal class Blessed : Factory
     {
-        // public Solid(string json): base(json)
-        // {
-        //     // something extra
-        //     // enable use 'parsed'
-        // }
-
-        public Solid(JObject jObject) : base(jObject)
-        {
-            // something extra
-            // enable use 'parsed'
-        }
-
-        /*
-         * Abstract
-         */
-        public override int Space // fix [return spell remain count]
-        {
-            get { return 0; }
-        }
-        public override int Occupied
-        {
-            get { return 0; }
-            internal set { }
-        }
+        public override Item Create(ItemType itemType, JObject jObject) => null;
     }
 
-
-
-    sealed internal class Potion : Stackable
+    internal class Cursed : Factory
     {
-        private void Initialize()
-        {
-            itemType = ItemType.Potion;
-            interact = new Use();
-            collide = new Stack();
-        }
-
-        // public Potion(string json): base(json)
-        // {
-        //     Initialize();
-        //     // something extra
-        //     // enable use 'parsed'
-        // }
-
-        public Potion(JObject jObject) : base(jObject)
-        {
-            Initialize();
-            // something extra
-            // enable use 'parsed'
-        }
+        public override Item Create(ItemType itemType, JObject jObject) => null;
     }
-
-
-
-    sealed internal class Weapon : Solid
-    {
-
-        private void Initialize()
-        {
-            itemType = ItemType.Weapon;
-            interact = new Equip();
-            //collide = new Charge();
-        }
-
-        // public Weapon(string json): base(json)
-        // {
-        //     Initialize();
-        //     // something extra
-        //     // enable use 'parsed'
-        // }
-
-        public Weapon(JObject jObject) : base(jObject)
-        {
-            Initialize();
-            // something extra
-            // enable use 'parsed'
-        }
-    }
-
-
-
-    sealed internal class Armor : Solid
-    {
-        private void Initialize()
-        {
-            itemType = ItemType.Armor;
-            interact = new Equip();
-            //collide = new Charge();
-        }
-
-        // public Armor(string json): base(json)
-        // {
-        //     Initialize();
-        //     // something extra
-        //     // enable use 'parsed'
-        // }
-
-        public Armor(JObject jObject) : base(jObject)
-        {
-            Initialize();
-            // something extra
-            // enable use 'parsed'
-        }
-    }
-
-
-
-    sealed internal class Amulet : Solid
-    {
-        private void Initialize()
-        {
-            itemType = ItemType.Armor;
-            interact = new Equip();
-            //collide = new Charge();
-        }
-
-        // public Armor(string json): base(json)
-        // {
-        //     Initialize();
-        //     // something extra
-        //     // enable use 'parsed'
-        // }
-
-        public Amulet(JObject jObject) : base(jObject)
-        {
-            Initialize();
-            // something extra
-            // enable use 'parsed'
-        }
-    }
-
-
-
-    sealed internal class Helmet : Solid
-    {
-        private void Initialize()
-        {
-            itemType = ItemType.Armor;
-            interact = new Equip();
-            //collide = new Charge();
-        }
-
-        // public Armor(string json): base(json)
-        // {
-        //     Initialize();
-        //     // something extra
-        //     // enable use 'parsed'
-        // }
-
-        public Helmet(JObject jObject) : base(jObject)
-        {
-            Initialize();
-            // something extra
-            // enable use 'parsed'
-        }
-    }
-
-
-
-    sealed internal class Shield : Solid
-    {
-        private void Initialize()
-        {
-            itemType = ItemType.Armor;
-            interact = new Equip();
-            //collide = new Charge();
-        }
-
-        // public Armor(string json): base(json)
-        // {
-        //     Initialize();
-        //     // something extra
-        //     // enable use 'parsed'
-        // }
-
-        public Shield(JObject jObject) : base(jObject)
-        {
-            Initialize();
-            // something extra
-            // enable use 'parsed'
-        }
-    }
-
-
-
-    sealed internal class TwoHand : Solid
-    {
-        private void Initialize()
-        {
-            itemType = ItemType.Armor;
-            interact = new Equip();
-            //collide = new Charge();
-        }
-
-        // public Armor(string json): base(json)
-        // {
-        //     Initialize();
-        //     // something extra
-        //     // enable use 'parsed'
-        // }
-
-        public TwoHand(JObject jObject) : base(jObject)
-        {
-            Initialize();
-            // something extra
-            // enable use 'parsed'
-        }
-    }
-
-
-
-    sealed internal class Material : Stackable
-    {
-        private void Initialize()
-        {
-            itemType = ItemType.Material;
-            interact = new Use();
-            //collide = new Blend();
-        }
-
-        // public Material(string json): base(json)
-        // {
-        //     Initialize();
-        // }
-
-        public Material(JObject jObject) : base(jObject)
-        {
-            Initialize();
-        }
-    }
-
 }

@@ -12,16 +12,17 @@ namespace TalesPop.Items
 
     public class ItemManager
     {
-        private readonly Dictionary<int, Bag> container;
-        private Stack<Bag> processQueue;
-
-        public ItemManager()
+        private static readonly Dictionary<int, Bag> container = new Dictionary<int, Bag>
         {
-            processQueue = new Stack<Bag>();
-            container = new Dictionary<int, Bag>
-            {
-                { NULL_ID, null }
-            };
+            { NULL_ID, null }
+        };
+        private readonly Stack<Bag> processBag;
+        private Factory factory;
+
+        public ItemManager(Factory factory = null)
+        {
+            this.factory = factory ?? new Normal();
+            processBag = new Stack<Bag>();
         }
 
         public Bag CreateBag(string json)
@@ -34,15 +35,15 @@ namespace TalesPop.Items
          */
         public Item SearchByUID(int uid)
         {
-            //container.FirstOrDefault((e, result) =>
-            //{
-            //    result = e.Value.SearchByUID(uid);
-            //    return result != null;
-            //}).result;
-
             Item result = null;
             container.FirstOrDefault(e1 => HaveItem(uid, e1.Value, ref result));
             return result;
+        }
+
+        public Factory Factory
+        {
+            get { return factory; }
+            set { factory = value; }
         }
 
         /*
@@ -52,18 +53,16 @@ namespace TalesPop.Items
         {
             if (!IsSame(jObject[ItemArgs.itemType]?.Value<string>(), ItemType.Bag.ToString()))
                 return null;
+            Bag currentBag = new Bag(jObject);
 
-            processQueue.Push(new Bag(jObject));
-            JArray jArray = (JArray)jObject[ItemArgs.contents];
-            IEnumerable<JToken> itemList = jArray.Select(e => e);
-
-            foreach (JToken token in itemList)
+            processBag.Push(currentBag);
+            foreach (JToken element in currentBag.contents)
             {
-                if (CreateItem(token) == null)
+                if (CreateItem(element) == null)
                     return null;
             }
 
-            Bag currentBag = processQueue.Pop();
+            currentBag = processBag.Pop();
 
             if (!container.ContainsKey(currentBag.uid))
                 container.Add(currentBag.uid, currentBag);
@@ -79,12 +78,12 @@ namespace TalesPop.Items
             ItemType itemCategory = StringToEnum<ItemType>(jObject[ItemArgs.itemType].Value<string>());
             Item item = IsSame(ItemType.Bag, itemCategory)
                 ? CreateBag(jObject)
-                : Item.Factory(itemCategory, jObject);
+                : factory.Create(itemCategory, jObject);
 
-            if (!processQueue.Peek()?.Validate(item) ?? false)
+            if (processBag.Peek()?.Validate(item) == null)
                 return null;
 
-            processQueue.Peek().container.Add(item.uid, item);
+            processBag.Peek().container.Add(item.uid, item);
             return item;
         }
 
