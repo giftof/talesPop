@@ -31,12 +31,13 @@ public class Test : MonoBehaviour
         Debug.LogWarning("TEST_MAKE_BAG1 begin");
         string armorJson1 = "{\"uid\": 0, \"name\": \"some named armor1\", \"nameId\": 0, \"itemType\": \"Armor\", \"spellUIDArray\": [231, 123], \"capacity\": 10}";
         string weaponJson = "{\"uid\": 10, \"name\": \"some named weapon\", \"nameId\": 4, \"itemType\": \"Weapon\", \"capacity\": 10}";
+        string twoHandJson = "{\"uid\": 11, \"name\": \"some named twoHand\", \"nameId\": 5, \"itemType\": \"TwoHand\", \"capacity\": 10}";
         string potionJson1 = "{\"uid\": 2, \"name\": \"some named potion1\", \"nameId\": 2, \"itemType\": \"Potion\", \"capacity\": 10, \"amount\": 6}";
         string potionJson2 = "{\"uid\": 3, \"name\": \"some named potion2\", \"nameId\": 2, \"itemType\": \"Potion\", \"capacity\": 10, \"amount\": 3}";
         string potionJson3 = "{\"uid\": 11, \"name\": \"some named potion3\", \"nameId\": 2, \"itemType\": \"Potion\", \"capacity\": 10, \"amount\": 6}";
         string potionJson4 = "{\"uid\": 12, \"name\": \"some named potion4\", \"nameId\": 3, \"itemType\": \"Potion\", \"capacity\": 10, \"amount\": 6}";
         string armorJson2 = "{\"uid\": 4, \"name\": \"some named armor2\", \"nameId\": 0, \"itemType\": \"Armor\", \"capacity\": 10}";
-        string bagJson1 = $"{{\"uid\": 1, \"name\": \"some named bag1\", \"nameId\": 1, \"itemType\": \"Bag\", \"capacity\": 10, \"inventoryType\": \"UniqueEquip\", \"contents\": [{armorJson1}, {weaponJson}]}}";
+        string bagJson1 = $"{{\"uid\": 1, \"name\": \"some named bag1\", \"nameId\": 1, \"itemType\": \"Bag\", \"capacity\": 10, \"inventoryType\": \"UniqueEquip\", \"contents\": [{armorJson1}, {twoHandJson}, {weaponJson}]}}";
         string bagJson2 = $"{{\"uid\": 5, \"name\": \"some named bag2\", \"nameId\": 1, \"itemType\": \"Bag\", \"capacity\": 10, \"inventoryType\": \"Any\", \"contents\": [{potionJson1}, {potionJson2}, {armorJson2}]}}";
         string bagJson3 = $"{{\"uid\": 6, \"name\": \"some named bag3\", \"nameId\": 1, \"itemType\": \"Bag\", \"capacity\": 10, \"inventoryType\": \"Any\", \"contents\": [{potionJson3}, {potionJson4}]}}";
         string bagJson4 = $"{{\"uid\": 7, \"name\": \"some named bag4\", \"nameId\": 1, \"itemType\": \"Bag\", \"capacity\": 10, \"inventoryType\": \"UniqueEquip\", \"contents\": []}}";
@@ -56,6 +57,7 @@ public class Test : MonoBehaviour
         Debug.LogWarning("TEST_MAKE_BAG2 begin");
         string armorJson1 = "{\"uid\": 0, \"name\": \"some named armor1\", \"nameId\": 0, \"itemType\": \"Armor\", \"spellUIDArray\": [231, 123], \"capacity\": 10}";
         string weaponJson = "{\"uid\": 10, \"name\": \"some named weapon\", \"nameId\": 4, \"itemType\": \"Weapon\", \"capacity\": 10}";
+        string twoHandJson = "{\"uid\": 11, \"name\": \"some named twoHand\", \"nameId\": 5, \"itemType\": \"TwoHand\", \"capacity\": 10}";
         string potionJson1 = "{\"uid\": 2, \"name\": \"some named potion1\", \"nameId\": 2, \"itemType\": \"Potion\", \"capacity\": 10, \"amount\": 6}";
         string potionJson2 = "{\"uid\": 3, \"name\": \"some named potion2\", \"nameId\": 2, \"itemType\": \"Potion\", \"capacity\": 10, \"amount\": 3}";
         string potionJson3 = "{\"uid\": 11, \"name\": \"some named potion3\", \"nameId\": 2, \"itemType\": \"Potion\", \"capacity\": 10, \"amount\": 6}";
@@ -82,6 +84,7 @@ public class Test : MonoBehaviour
         Debug.LogWarning("TEST_INTERACT begin");
         string armorJson1 = "{\"uid\": 0, \"name\": \"some named armor1\", \"nameId\": 0, \"itemType\": \"Armor\", \"spellUIDArray\": [231, 123], \"capacity\": 10}";
         string weaponJson = "{\"uid\": 10, \"name\": \"some named weapon\", \"nameId\": 4, \"itemType\": \"Weapon\", \"capacity\": 10}";
+        string twoHandJson = "{\"uid\": 11, \"name\": \"some named twoHand\", \"nameId\": 5, \"itemType\": \"TwoHand\", \"capacity\": 10}";
         string potionJson1 = "{\"uid\": 2, \"name\": \"some named potion1\", \"nameId\": 2, \"itemType\": \"Potion\", \"capacity\": 10, \"amount\": 6}";
         string potionJson2 = "{\"uid\": 3, \"name\": \"some named potion2\", \"nameId\": 2, \"itemType\": \"Potion\", \"capacity\": 10, \"amount\": 3}";
         string potionJson3 = "{\"uid\": 11, \"name\": \"some named potion3\", \"nameId\": 2, \"itemType\": \"Potion\", \"capacity\": 10, \"amount\": 6}";
@@ -116,6 +119,7 @@ public class Test : MonoBehaviour
         Debug.LogWarning("TEST_COLLIDE begin");
         string armorJson1 = "{\"uid\": 0, \"name\": \"some named armor1\", \"nameId\": 0, \"itemType\": \"Armor\", \"spellUIDArray\": [231, 123], \"capacity\": 10}";
         string weaponJson = "{\"uid\": 10, \"name\": \"some named weapon\", \"nameId\": 4, \"itemType\": \"Weapon\", \"capacity\": 10}";
+        string twoHandJson = "{\"uid\": 11, \"name\": \"some named twoHand\", \"nameId\": 5, \"itemType\": \"TwoHand\", \"capacity\": 10}";
         string potionJson1 = "{\"uid\": 2, \"name\": \"some named potion1\", \"nameId\": 2, \"itemType\": \"Potion\", \"capacity\": 10, \"amount\": 6}";
         string potionJson2 = "{\"uid\": 3, \"name\": \"some named potion2\", \"nameId\": 2, \"itemType\": \"Potion\", \"capacity\": 10, \"amount\": 3}";
         string potionJson3 = "{\"uid\": 11, \"name\": \"some named potion3\", \"nameId\": 2, \"itemType\": \"Potion\", \"capacity\": 10, \"amount\": 6}";

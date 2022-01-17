@@ -53,16 +53,6 @@ namespace TalesPop.Items
             set { factory = value; }
         }
 
-
-
-
-
-
-
-
-
-
-
         /*
          * Privates
          */
@@ -83,29 +73,18 @@ namespace TalesPop.Items
                 }
             }
 
-            currentBag = processBag.Pop();
-
-            if (processBag.Count == 0)
-            {
-                if (!container.ContainsKey(currentBag.uid))
-                    container.Add(currentBag.uid, currentBag);
-                else
-                    currentBag = null;
-            }
-
+            currentBag = AddRootBag(processBag.Pop());
             return currentBag;
         }
 
-
-
         private Item CreateItem(JToken token)
         {
-            JObject jObject = (JObject)token;
+            JObject  jObject      = (JObject)token;
             ItemType itemCategory = StringToEnum<ItemType>(jObject[ItemArgs.itemType].Value<string>());
-            Item item = IsSame(ItemType.Bag, itemCategory)
-                ? CreateBag(jObject)
-                : factory.Create(itemCategory, jObject);
-            Bag bag = processBag.Peek();
+            Bag      bag          = processBag.Peek();
+            Item     item         = IsSame(ItemType.Bag, itemCategory)
+                                        ? CreateBag(jObject)
+                                        : factory.Create(itemCategory, jObject);
 
             if (bag?.Validate(item) == null)
                 return null;
@@ -120,18 +99,17 @@ namespace TalesPop.Items
             return item;
         }
 
-
-
-
-
-
-
-
-
-
-
-
-
+        private Bag AddRootBag(Bag bag)
+        {
+            if (processBag.Count == 0)
+            {
+                if (!container.ContainsKey(bag.uid))
+                    container.Add(bag.uid, bag);
+                else
+                    return null;
+            }
+            return bag;
+        }
 
         private void RemoveDelegate(int key, int uid)
         {

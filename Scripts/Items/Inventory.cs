@@ -101,14 +101,24 @@ namespace TalesPop.Items
         public Item Validate(Item item)
         {
             if (item == null)
+            {
+Debug.LogError("item == null");
                 return null;
+            }
 
             if (Space <= 0 || container.ContainsKey(item.uid))
+            {
+Debug.LogError("Space <= 0 || container.ContainsKey(item.uid)");
+Debug.LogError($"Space = {Space}, contains = {container.ContainsKey(item.uid)}");
                 return null;
+            }
 
             if (inventoryType.Equals(InventoryType.UniqueEquip)
                 && container.FirstOrDefault(e => IsDuplicateEquipSlot(e.Value, item)).Value != null)
+            {
+                Debug.LogError($"FIND DUPLICATE! at {item.name}");
                 return null;
+            }
 
             return item;
         }
