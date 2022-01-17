@@ -88,6 +88,15 @@ namespace TalesPop.Items
 
 
 
+
+
+
+
+
+
+
+
+
     sealed internal class Potion : Stackable
     {
         private void Initialize()

@@ -11,6 +11,7 @@ namespace TalesPop.Items
 
     //public delegate bool EnableSwap(Item item1, Item item2);
     public delegate T1 T_DELEGATE_T<T1, T2>(T2 _);
+    public delegate T1 T_DELEGATE_TT<T1, T2, T3>(T2 _, T3 __);
 
     internal static class ItemArgs
     {
@@ -68,7 +69,7 @@ namespace TalesPop.Items
         [JsonIgnore]
         internal IInteraction interact;
         [JsonIgnore]
-        internal ICollide<Item> collide;
+        internal ICollide collide;
         [JsonIgnore]
         internal UnityAction<int, int> remove;
         [JsonIgnore]
@@ -114,13 +115,6 @@ namespace TalesPop.Items
 
             return null;
         }
-
-        // 
-        //public bool IsWrapped(int target)
-        //{
-        //    Item upper = SearchParentContainer();
-
-        //}
 
         [JsonIgnore]
         public abstract int Space { get; }

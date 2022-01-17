@@ -26,6 +26,8 @@ public class Tests
         //    var item = new Stackable(json);
         //});
 
+        new ItemManager().CONTAINER().Clear();
+
         TEST_MAKE_BAG1();
         TEST_MAKE_BAG2();
         TEST_INTERACT();
@@ -189,14 +191,18 @@ public class Tests
         itemManager.SHOW_BAG_CONTENTS(a1.SearchParentContainer().uid);
         itemManager.SHOW_BAG_CONTENTS(p3.SearchParentContainer().uid);
 
+        Debug.Log("");
+        Debug.Log("");
 
-        itemManager.SHOW_BAG_CONTENTS(a1.SearchParentContainer().SearchParentContainer().uid);
-        itemManager.SHOW_BAG_CONTENTS(p3.SearchParentContainer().SearchParentContainer().uid);
+        itemManager.SHOW_BAG_CONTENTS(a1.SearchParentContainer().uid);
+        itemManager.SHOW_BAG_CONTENTS(p3.SearchParentContainer().uid);
 
+        Debug.LogWarning("a1' parent(Bag) <-> p3");
         a1.SearchParentContainer().Collide(p3);
 
-        itemManager.SHOW_BAG_CONTENTS(a1.SearchParentContainer().SearchParentContainer().uid);
-        itemManager.SHOW_BAG_CONTENTS(p3.SearchParentContainer().SearchParentContainer().uid);
+        itemManager.SHOW_BAG_CONTENTS(a1.SearchParentContainer().uid);
+        itemManager.SHOW_BAG_CONTENTS(p3.SearchParentContainer().uid);
+        itemManager.SHOW_BAG_CONTENTS(1);
 
         Debug.LogWarning("TEST_COLLIDE end");
         Debug.Log("");

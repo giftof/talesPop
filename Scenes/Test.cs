@@ -139,14 +139,14 @@ public class Test : MonoBehaviour
 
         ItemManager itemManager = new ItemManager();
 
-        Debug.LogError($"container count = {itemManager.SIZE()}");
+        Debug.LogWarning($"container count = {itemManager.SIZE()}");
 
         Bag bag1 = itemManager.CreateBag(bagJson1);
         Bag bag2 = itemManager.CreateBag(bagJson2);
         Debug.Log($">>>> bag1 type = {bag1?.inventoryType}, contentCNT = {bag1?.container.Count}");
         Debug.Log($">>>> bag2 type = {bag2?.inventoryType}, contentCNT = {bag2?.container.Count}");
 
-        Debug.LogError($"container count = {itemManager.SIZE()}");
+        Debug.LogWarning($"container count = {itemManager.SIZE()}");
 
         Item p1 = itemManager.SearchItem(2);
         Item p2 = itemManager.SearchItem(3);
@@ -186,24 +186,29 @@ public class Test : MonoBehaviour
         itemManager.SHOW_BAG_CONTENTS(a1.SearchParentContainer().uid);
         itemManager.SHOW_BAG_CONTENTS(p3.SearchParentContainer().uid);
 
-        
-        itemManager.SHOW_BAG_CONTENTS(a1.SearchParentContainer().SearchParentContainer().uid);
-        itemManager.SHOW_BAG_CONTENTS(p3.SearchParentContainer().SearchParentContainer().uid);
+        Debug.Log("");
+        Debug.Log("");
 
+        itemManager.SHOW_BAG_CONTENTS(a1.SearchParentContainer().uid);
+        itemManager.SHOW_BAG_CONTENTS(p3.SearchParentContainer().uid);
+
+        Debug.LogWarning("a1' parent(Bag) <-> p3");
         a1.SearchParentContainer().Collide(p3);
 
-        itemManager.SHOW_BAG_CONTENTS(a1.SearchParentContainer().SearchParentContainer().uid);
-        itemManager.SHOW_BAG_CONTENTS(p3.SearchParentContainer().SearchParentContainer().uid);
+        itemManager.SHOW_BAG_CONTENTS(a1.SearchParentContainer().uid);
+        itemManager.SHOW_BAG_CONTENTS(p3.SearchParentContainer().uid);
+        itemManager.SHOW_BAG_CONTENTS(1);
 
         Debug.LogWarning("TEST_COLLIDE end");
         Debug.Log("");
 
-
+/*
         foreach (var pair in itemManager.CONTAINER())
         {
             if (pair.Value != null)
                 DisplayBagContents(pair.Value);
         }
+*/
     }
 
 

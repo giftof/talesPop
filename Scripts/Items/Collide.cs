@@ -19,13 +19,14 @@ namespace TalesPop.Items
     {
         public void Perform(Item a, Item b)
         {
+            if (a == null || b == null)
+                return;
+
             Bag bagA = a.SearchParentContainer();
             Bag bagB = b.SearchParentContainer();
 
             if (bagA == null || bagB == null)
                 return;
-
-            // need check a or b is wrapping b or a ;;;;;;;;;;;;
 
             int slotId = (int)a.slotId;
             int groupId = a.groupId;
@@ -39,29 +40,24 @@ namespace TalesPop.Items
             bagA.Remove(a.uid);
             bagB.Remove(b.uid);
 
-            bagA.Add(b);
-            bagB.Add(a);
+            bagA.Insert(b);
+            bagB.Insert(a);
         }
     }
 
-    internal interface ICollide<T>
+    internal interface ICollide
     {
-        public void Perform(T destination, Item source);
+        public void Perform(Item destination, Item source);
     }
 
-    internal class StackBase : ICollide<Item>
+    internal class StackBase : ICollide
     {
         public void Perform(Item destination, Item source)
         {
             if (!destination?.nameId.Equals(source?.nameId) ?? false)
-            {
                 swap.Perform(destination, source);
-            }
             else
-            {
                 Merge(destination, source);
-            }
-            //Debug.Log("[IMPL: ICollide] Perform by Stack");
         }
 
         private void Merge(Item destination, Item source)
@@ -69,19 +65,30 @@ namespace TalesPop.Items
             destination.Increment(source.Decrement(destination.Space));
 
             if (source.Occupied == 0)
-            {
                 source.Remove();
-            }
         }
 
         private readonly ISwap swap = new Swap();
     }
 
-    internal class SolidBase : ICollide<Item>
+    internal class SolidBase : ICollide
     {
         public void Perform(Item destination, Item source)
         {
             swap.Perform(destination, source);
+        }
+
+        private readonly ISwap swap = new Swap();
+    }
+
+    internal class InventoryBase : ICollide
+    {
+        public void Perform(Item destination, Item source)
+        {
+            if (destination is Bag bag && bag.EnableTakeItem(source))
+                bag.TakeItem(source);
+            else
+                swap.Perform(destination, source);
         }
 
         private readonly ISwap swap = new Swap();

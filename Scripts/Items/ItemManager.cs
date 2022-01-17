@@ -81,6 +81,7 @@ namespace TalesPop.Items
             }
 
             currentBag = AddRootBag(processBag.Pop());
+            currentBag.searchInclude = SearchItemByUIDFromBag;
             return currentBag;
         }
 
@@ -131,33 +132,7 @@ namespace TalesPop.Items
                 if (bag.container.ContainsKey(uid))
                     bag.container.Remove(uid);
             }
-
-            //if (container.ContainsKey(key))
-            //    container[key].Remove(uid);
         }
-
-        //private bool HaveItem(int uid, Bag bag, ref Item match)
-        //{
-        //    match = bag?.container.FirstOrDefault(e => e.Value?.uid.Equals(uid) ?? false).Value;
-        //    return match != null;
-        //}
-
-        //private bool IsDeepDuplicated(int uid)
-        //{
-        //    return currentRootBag.container.FirstOrDefault(e => IsDuplicatedNestedBag(e.Value, uid)).Value != null;
-        //}
-
-        //private bool IsDuplicatedNestedBag(Item source, int uid)
-        //{
-        //    if (source == null)
-        //        return false;
-
-        //    if (source.itemType.Equals(ItemType.Bag))
-        //        return ((Bag)source).container.FirstOrDefault(e => IsDuplicatedNestedBag(e.Value, uid)).Value != null;
-        //    return source.uid.Equals(uid);
-        //}
-
-
 
         private Item SearchItemByUIDFromInventoryKey(int key, int uid)
         {
@@ -211,9 +186,10 @@ namespace TalesPop.Items
         public Dictionary<int, Bag> CONTAINER() => container;
         public void SHOW_BAG_CONTENTS(int key)
         {
-            Debug.LogError($"SHOW BAG CONTENTS -- [bag uid = {key}]");
+            
             if (SearchItem(key) is Bag bag)
             {
+Debug.LogWarning($"SHOW BAG CONTENTS -- bag [uid = {key}] [name = {bag.name}]");
                 foreach (var e in bag.container)
                 {
                     if (e.Value != null)

@@ -11,22 +11,22 @@ namespace TalesPop.Items
 
     public enum SlotType
     {
-        Any = 0x1FFF,
-        RightHand = 0x0001,
-        LeftHand = 0x0002,
-        Chest = 0x0004,
-        Head = 0x0008,
-        Neck = 0x0010,
+        Any         = 0x1FFF,
+        RightHand   = 0x0001,
+        LeftHand    = 0x0002,
+        Chest       = 0x0004,
+        Head        = 0x0008,
+        Neck        = 0x0010,
 
-        Some1 = 0x0020,
-        Some2 = 0x0040,
-        Some3 = 0x0080,
-        Some4 = 0x0100,
+        Some1       = 0x0020,
+        Some2       = 0x0040,
+        Some3       = 0x0080,
+        Some4       = 0x0100,
     }
 
     public enum InventoryType
     {
-        Any = 0x01,
+        Any         = 0x01,
         UniqueEquip = 0x02,
     }
 
@@ -36,7 +36,8 @@ namespace TalesPop.Items
         [JsonIgnore]
         public Dictionary<int, Item> container;
         [JsonIgnore]
-        public Item parent = null;
+        public T_DELEGATE_TT<Item, Item, int> searchInclude;
+
         [JsonProperty]
         public JToken[] contents;
         [JsonProperty]
@@ -48,7 +49,7 @@ namespace TalesPop.Items
         {
             itemType = ItemType.Bag;
             interact = new ToggleBag();
-            //collide = new StackBase();    // complex!!!! into item or... swap position
+            collide = new InventoryBase();
             inventoryType = StringToEnum<InventoryType>(jObject[ItemArgs.inventoryType].Value<string>());
             container = new Dictionary<int, Item>
             {
@@ -56,14 +57,6 @@ namespace TalesPop.Items
             };
             ++capacity;
         }
-
-        //public Bag(string json) : base(json)
-        //{
-        //    Initialize();
-        //    // something extra
-        //    // enable use 'parsed'
-        //    interact = new ToggleBag();
-        //}
 
         public Bag(JObject jObject) : base(jObject)
         {
@@ -82,10 +75,17 @@ namespace TalesPop.Items
             container.Add(item.uid, item);
         }
 
-        public void Add(Item item)
+        public void Insert(Item item)
         {
             if (!container.ContainsKey(item.uid))
-                container.Add(item.uid, item);
+                AddForce(item);
+        }
+
+        public void InsertAndSetData(Item item)
+        {
+            item.slotId = (int)EmptySlotId();
+            item.groupId = uid;
+            Insert(item);
         }
 
         public void Remove(int uid)
@@ -109,9 +109,9 @@ namespace TalesPop.Items
             return item;
         }
 
-        public Item SearchByUID(int uid)
+        public Item SearchInclude(int uid)
         {
-            return container.FirstOrDefault(e => e.Key.Equals(uid)).Value;
+            return searchInclude?.Invoke(this, uid);
         }
 
         public int? EmptySlotId(int? presetId)
@@ -132,7 +132,6 @@ namespace TalesPop.Items
             if (Space == 0)
                 return null;
 
-            //IEnumerable<int> slotList = (IEnumerable<int>)container.Where(e => e.Value != null && e.Value.slotId != null).Select(e => e.Value.slotId).OrderBy(e => e);
             IEnumerable<int?> slotList = container.Where(e => e.Value != null && e.Value.slotId != null).Select(e => e.Value.slotId).OrderBy(e => e);
 
             foreach (int i in slotList)
@@ -143,6 +142,44 @@ namespace TalesPop.Items
             }
 
             return slotId;
+        }
+
+        public bool EnableTakeItem(Item item)
+        {
+            if (!(item is Stackable))
+                return 0 < Space;
+
+            int amount = item.Occupied;
+            var array = container.Where(e => e.Value != null && e.Value.nameId.Equals(item.nameId)).OrderBy(e => e.Value.slotId).Select(e => e.Value);
+
+            foreach (var e in array)
+            {
+                amount -= e.Space;
+            }
+
+            return amount <= 0 || 0 < Space;
+        }
+
+        public void TakeItem(Item item)
+        {
+            if (!(item is Stackable))
+            {
+                item.Remove();
+                InsertAndSetData(item);
+                return;
+            }
+
+            var array = container.Where(e => e.Value != null && e.Value.nameId.Equals(item.nameId)).OrderBy(e => e.Value.slotId).Select(e => e.Value);
+            foreach (var e in array)
+            {
+                e.Collide(item);
+            }
+
+            if (0 < item.Occupied && 0 < Space)
+            {
+                item.Remove();
+                InsertAndSetData(item);
+            }
         }
 
         /*
