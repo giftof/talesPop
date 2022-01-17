@@ -17,6 +17,7 @@ namespace TalesPop.Items
             { NULL_ID, null }
         };
         private readonly Stack<Bag> processBag;
+        private Bag currentRootBag;
         private Factory factory;
 
         public ItemManager(Factory factory = null)
@@ -27,7 +28,13 @@ namespace TalesPop.Items
 
         public Bag CreateBag(string json)
         {
-            return CreateBag(JObject.Parse(json));
+            JObject jObject = JObject.Parse(json);
+
+            currentRootBag = null;
+            if (!IsSame(jObject[ItemArgs.itemType]?.Value<string>(), ItemType.Bag.ToString()))
+                return null;
+
+            return CreateBag(jObject);
         }
 
         /*
@@ -46,31 +53,50 @@ namespace TalesPop.Items
             set { factory = value; }
         }
 
+
+
+
+
+
+
+
+
+
+
         /*
          * Privates
          */
         private Bag CreateBag(JObject jObject)
         {
-            if (!IsSame(jObject[ItemArgs.itemType]?.Value<string>(), ItemType.Bag.ToString()))
-                return null;
             Bag currentBag = new Bag(jObject);
 
+            currentRootBag = currentRootBag ?? currentBag;
             processBag.Push(currentBag);
+
             foreach (JToken element in currentBag.contents)
             {
                 if (CreateItem(element) == null)
+                {
+                    processBag.Pop();
+                    currentRootBag = null;
                     return null;
+                }
             }
 
             currentBag = processBag.Pop();
 
-            if (!container.ContainsKey(currentBag.uid))
-                container.Add(currentBag.uid, currentBag);
-            else
-                currentBag = null;
+            if (processBag.Count == 0)
+            {
+                if (!container.ContainsKey(currentBag.uid))
+                    container.Add(currentBag.uid, currentBag);
+                else
+                    currentBag = null;
+            }
 
             return currentBag;
         }
+
+
 
         private Item CreateItem(JToken token)
         {
@@ -79,18 +105,59 @@ namespace TalesPop.Items
             Item item = IsSame(ItemType.Bag, itemCategory)
                 ? CreateBag(jObject)
                 : factory.Create(itemCategory, jObject);
+            Bag bag = processBag.Peek();
 
-            if (processBag.Peek()?.Validate(item) == null)
+            if (bag?.Validate(item) == null)
                 return null;
 
-            processBag.Peek().container.Add(item.uid, item);
+            if (IsDeepDuplicated(item.uid))
+                return null;
+
+            item.groupId = bag.uid;
+            item.remove = RemoveDelegate;
+            bag.container.Add(item.uid, item);
+
             return item;
+        }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+        private void RemoveDelegate(int key, int uid)
+        {
+            if (container.ContainsKey(key))
+                container[key].Remove(uid);
         }
 
         private bool HaveItem(int uid, Bag bag, ref Item match)
         {
             match = bag?.container.FirstOrDefault(e => e.Value?.uid.Equals(uid) ?? false).Value;
             return match != null;
+        }
+
+        private bool IsDeepDuplicated(int uid)
+        {
+            return currentRootBag.container.FirstOrDefault(e => IsDuplicatedNestedBag(e.Value, uid)).Value != null;
+        }
+
+        private bool IsDuplicatedNestedBag(Item source, int uid)
+        {
+            if (source == null)
+                return false;
+
+            if (source.itemType.Equals(ItemType.Bag))
+                return ((Bag)source).container.FirstOrDefault(e => IsDuplicatedNestedBag(e.Value, uid)).Value != null;
+            return source.uid.Equals(uid);
         }
     }
 }

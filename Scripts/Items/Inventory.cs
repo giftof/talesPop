@@ -86,10 +86,16 @@ namespace TalesPop.Items
                 container.Add(item.uid, item);
         }
 
-        public void Remove(Item item)
+        //public void Remove(Item item)
+        //{
+        //    if (container.ContainsKey(item.uid))
+        //        container.Remove(item.uid);
+        //}
+
+        public void Remove(int uid)
         {
-            if (container.ContainsKey(item.uid))
-                container.Remove(item.uid);
+            if (container.ContainsKey(uid))
+                container.Remove(uid);
         }
 
         public Item Validate(Item item)
@@ -101,7 +107,7 @@ namespace TalesPop.Items
                 return null;
 
             if (inventoryType.Equals(InventoryType.UniqueEquip)
-                && container.FirstOrDefault(e => IsDuplicatedSlot(e.Value, item)).Value != null)
+                && container.FirstOrDefault(e => IsDuplicateEquipSlot(e.Value, item)).Value != null)
                 return null;
 
             return item;
@@ -139,7 +145,7 @@ namespace TalesPop.Items
         /*
          * Privates
          */
-        private bool IsDuplicatedSlot(Item currentItem, Item newItem)
+        private bool IsDuplicateEquipSlot(Item currentItem, Item newItem)
         {
             if (ITEM_EQUIP_CAP < (currentItem?.itemType ?? ITEM_LAST_ENUM))
                 return false;

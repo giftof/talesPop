@@ -16,18 +16,13 @@ namespace TalesPop.Items
         [JsonProperty]
         public int amount;
 
-        // public Stackable(string json): base(json)
-        // {
-        //     // something extra
-        //     // enable use 'parsed'
-        //     amount = jObject[ItemArgs.amount].Value<int>();
-        // }
-
         public Stackable(JObject jObject) : base(jObject)
         {
             // something extra
             // enable use 'parsed'
             amount = jObject[ItemArgs.amount].Value<int>();
+            collide = new StackBase();
+            interact = new Use();
         }
 
         /*
@@ -44,23 +39,27 @@ namespace TalesPop.Items
         }
     }
 
+    internal abstract class Mergeable: Stackable
+    {
+        public Mergeable(JObject jObject): base(jObject)
+        {
+            interact = new Craft();
+        }
+    }
 
 
     internal abstract class Solid : Item
     {
         [JsonProperty]
         public int[] spellUIDArray;
-        // public Solid(string json): base(json)
-        // {
-        //     // something extra
-        //     // enable use 'parsed'
-        // }
 
         public Solid(JObject jObject) : base(jObject)
         {
             // something extra
             // enable use 'parsed'
             spellUIDArray = jObject[ItemArgs.spellUIDArray]?.Values<int>().ToArray();
+            collide = new SolidBase();
+            interact = null;
         }
 
         /*
@@ -79,180 +78,26 @@ namespace TalesPop.Items
 
 
 
+    internal abstract class Equipable : Solid
+    {
+
+        public Equipable(JObject jObject) : base(jObject)
+        {
+            interact = new Equip();
+        }
+
+    }
+
+
+
     sealed internal class Potion : Stackable
     {
         private void Initialize()
         {
             itemType = ItemType.Potion;
-            interact = new Use();
-            collide = new Stack();
         }
-
-        // public Potion(string json): base(json)
-        // {
-        //     Initialize();
-        //     // something extra
-        //     // enable use 'parsed'
-        // }
 
         public Potion(JObject jObject) : base(jObject)
-        {
-            Initialize();
-            // something extra
-            // enable use 'parsed'
-        }
-    }
-
-
-
-    sealed internal class Weapon : Solid
-    {
-
-        private void Initialize()
-        {
-            itemType = ItemType.Weapon;
-            interact = new Equip();
-            //collide = new Charge();
-        }
-
-        // public Weapon(string json): base(json)
-        // {
-        //     Initialize();
-        //     // something extra
-        //     // enable use 'parsed'
-        // }
-
-        public Weapon(JObject jObject) : base(jObject)
-        {
-            Initialize();
-            // something extra
-            // enable use 'parsed'
-        }
-    }
-
-
-
-    sealed internal class Armor : Solid
-    {
-        private void Initialize()
-        {
-            itemType = ItemType.Armor;
-            interact = new Equip();
-            //collide = new Charge();
-        }
-
-        // public Armor(string json): base(json)
-        // {
-        //     Initialize();
-        //     // something extra
-        //     // enable use 'parsed'
-        // }
-
-        public Armor(JObject jObject) : base(jObject)
-        {
-            Initialize();
-            // something extra
-            // enable use 'parsed'
-        }
-    }
-
-
-
-    sealed internal class Amulet : Solid
-    {
-        private void Initialize()
-        {
-            itemType = ItemType.Armor;
-            interact = new Equip();
-            //collide = new Charge();
-        }
-
-        // public Armor(string json): base(json)
-        // {
-        //     Initialize();
-        //     // something extra
-        //     // enable use 'parsed'
-        // }
-
-        public Amulet(JObject jObject) : base(jObject)
-        {
-            Initialize();
-            // something extra
-            // enable use 'parsed'
-        }
-    }
-
-
-
-    sealed internal class Helmet : Solid
-    {
-        private void Initialize()
-        {
-            itemType = ItemType.Armor;
-            interact = new Equip();
-            //collide = new Charge();
-        }
-
-        // public Armor(string json): base(json)
-        // {
-        //     Initialize();
-        //     // something extra
-        //     // enable use 'parsed'
-        // }
-
-        public Helmet(JObject jObject) : base(jObject)
-        {
-            Initialize();
-            // something extra
-            // enable use 'parsed'
-        }
-    }
-
-
-
-    sealed internal class Shield : Solid
-    {
-        private void Initialize()
-        {
-            itemType = ItemType.Armor;
-            interact = new Equip();
-            //collide = new Charge();
-        }
-
-        // public Armor(string json): base(json)
-        // {
-        //     Initialize();
-        //     // something extra
-        //     // enable use 'parsed'
-        // }
-
-        public Shield(JObject jObject) : base(jObject)
-        {
-            Initialize();
-            // something extra
-            // enable use 'parsed'
-        }
-    }
-
-
-
-    sealed internal class TwoHand : Solid
-    {
-        private void Initialize()
-        {
-            itemType = ItemType.Armor;
-            interact = new Equip();
-            //collide = new Charge();
-        }
-
-        // public Armor(string json): base(json)
-        // {
-        //     Initialize();
-        //     // something extra
-        //     // enable use 'parsed'
-        // }
-
-        public TwoHand(JObject jObject) : base(jObject)
         {
             Initialize();
             // something extra
@@ -267,18 +112,114 @@ namespace TalesPop.Items
         private void Initialize()
         {
             itemType = ItemType.Material;
-            interact = new Use();
-            //collide = new Blend();
         }
-
-        // public Material(string json): base(json)
-        // {
-        //     Initialize();
-        // }
 
         public Material(JObject jObject) : base(jObject)
         {
             Initialize();
+        }
+    }
+
+
+
+    sealed internal class Weapon : Equipable
+    {
+
+        private void Initialize()
+        {
+            itemType = ItemType.Weapon;
+        }
+
+        public Weapon(JObject jObject) : base(jObject)
+        {
+            Initialize();
+            // something extra
+            // enable use 'parsed'
+        }
+    }
+
+
+
+    sealed internal class Armor : Equipable
+    {
+        private void Initialize()
+        {
+            itemType = ItemType.Armor;
+        }
+
+        public Armor(JObject jObject) : base(jObject)
+        {
+            Initialize();
+            // something extra
+            // enable use 'parsed'
+        }
+    }
+
+
+
+    sealed internal class Amulet : Equipable
+    {
+        private void Initialize()
+        {
+            itemType = ItemType.Amulet;
+        }
+
+        public Amulet(JObject jObject) : base(jObject)
+        {
+            Initialize();
+            // something extra
+            // enable use 'parsed'
+        }
+    }
+
+
+
+    sealed internal class Helmet : Equipable
+    {
+        private void Initialize()
+        {
+            itemType = ItemType.Helmet;
+        }
+
+        public Helmet(JObject jObject) : base(jObject)
+        {
+            Initialize();
+            // something extra
+            // enable use 'parsed'
+        }
+    }
+
+
+
+    sealed internal class Shield : Equipable
+    {
+        private void Initialize()
+        {
+            itemType = ItemType.Shield;
+        }
+
+        public Shield(JObject jObject) : base(jObject)
+        {
+            Initialize();
+            // something extra
+            // enable use 'parsed'
+        }
+    }
+
+
+
+    sealed internal class TwoHand : Equipable
+    {
+        private void Initialize()
+        {
+            itemType = ItemType.TwoHand;
+        }
+
+        public TwoHand(JObject jObject) : base(jObject)
+        {
+            Initialize();
+            // something extra
+            // enable use 'parsed'
         }
     }
 

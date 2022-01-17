@@ -55,6 +55,7 @@ public static class Common
         return result;
     }
 
+    /*
     private static AssemblyName lastAssemblyName;
 
     public static bool GetTypeFromEnumName(string typeName, out Type type)
@@ -116,13 +117,16 @@ public static class Common
 
         return type;
     }
+    */
 
+    /*
     public static void Swap<T>(ref T a, ref T b)
     {
         T temp = a;
         a = b;
         b = temp;
     }
+    */
 
     public static bool IsSame<T>(T a, T b)
     {

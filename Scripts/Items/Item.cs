@@ -40,10 +40,6 @@ namespace TalesPop.Items
     //    public void Perform(ref T a, ref Item b);
     //}
 
-    internal interface ICollide<T>
-    {
-       public void Perform(T destination, Item source);
-    }
 
     /*
      * Stackable item
@@ -69,34 +65,6 @@ namespace TalesPop.Items
     //    }
     //}
 
-    internal class Stack: ICollide<Item>
-    {
-    //    ISwap<Item> swap = new Swap();
-
-    //    public void SetSwapEnable(EnableSwap enableSwap)
-    //    {
-    //        swap.EnableSwap = enableSwap;
-    //    }
-
-       public void Perform(Item destination, Item source)
-       {
-           Debug.Log("[IMPL: ICollide] Perform by Stack");
-        //    if (destination.nameId.Equals(source?.nameId))
-        //    {
-        //        destination.Increment(source.Decrement(destination.Space));
-        //    }
-        //    else
-        //    {
-                
-        //        if (!swap.EnableSwap(destination, source))
-        //            return;
-
-        //        swap.Perform(ref destination, ref source);
-        //    }
-
-           //destination.relationObserver?.Invoke(destination, source);
-       }
-    }
 
     ///*
     // * MagicItem charge spell count
@@ -227,6 +195,8 @@ namespace TalesPop.Items
         internal IInteraction interact;
         [JsonIgnore]
         internal ICollide<Item> collide;
+        [JsonIgnore]
+        internal UnityAction<int, int> remove;
         //[JsonIgnore]
         //internal UnityAction propertyObserver = null;
         //[JsonIgnore]
@@ -266,6 +236,11 @@ namespace TalesPop.Items
 
             Occupied -= decrement;
             return decrement;
+        }
+
+        public void Remove()
+        {
+            remove?.Invoke(groupId, uid);
         }
 
         [JsonIgnore]
