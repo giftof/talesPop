@@ -1,7 +1,4 @@
 using System.Linq;
-using System.Collections;
-using System.Collections.Generic;
-using UnityEngine;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
 
@@ -69,6 +66,7 @@ namespace TalesPop.Items
         {
             get { return 0; }
         }
+
         public override int Occupied
         {
             get { return 0; }

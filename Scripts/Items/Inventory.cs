@@ -1,7 +1,5 @@
 using System.Linq;
-using System.Collections;
 using System.Collections.Generic;
-using UnityEngine;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
 
@@ -56,8 +54,6 @@ namespace TalesPop.Items
                 { NULL_ID, null }
             };
             ++capacity;
-
-            //collide = new Add();
         }
 
         public Bag(string json) : base(json)
@@ -78,19 +74,12 @@ namespace TalesPop.Items
         }
 
         /*
-         * Brhaviours
+         * Behaviours
          */
-        public void Add(Item item)
+        public void AddForce(Item item)
         {
-            if (!container.ContainsKey(item.uid) && 0 < Space)
-                container.Add(item.uid, item);
+            container.Add(item.uid, item);
         }
-
-        //public void Remove(Item item)
-        //{
-        //    if (container.ContainsKey(item.uid))
-        //        container.Remove(item.uid);
-        //}
 
         public void Remove(int uid)
         {
@@ -101,24 +90,14 @@ namespace TalesPop.Items
         public Item Validate(Item item)
         {
             if (item == null)
-            {
-Debug.LogError("item == null");
                 return null;
-            }
 
             if (Space <= 0 || container.ContainsKey(item.uid))
-            {
-Debug.LogError("Space <= 0 || container.ContainsKey(item.uid)");
-Debug.LogError($"Space = {Space}, contains = {container.ContainsKey(item.uid)}");
                 return null;
-            }
 
             if (inventoryType.Equals(InventoryType.UniqueEquip)
                 && container.FirstOrDefault(e => IsDuplicateEquipSlot(e.Value, item)).Value != null)
-            {
-                Debug.LogError($"FIND DUPLICATE! at {item.name}");
                 return null;
-            }
 
             return item;
         }

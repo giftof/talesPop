@@ -1,8 +1,6 @@
-using System;
 using System.Linq;
 using System.Collections.Generic;
 using Newtonsoft.Json.Linq;
-using UnityEngine;
 
 
 
@@ -94,7 +92,7 @@ namespace TalesPop.Items
 
             item.groupId = bag.uid;
             item.remove = RemoveDelegate;
-            bag.container.Add(item.uid, item);
+            bag.AddForce(item);
 
             return item;
         }

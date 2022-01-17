@@ -1,9 +1,5 @@
-using System.Collections;
-using System.Collections.Generic;
-using UnityEngine;
 using UnityEngine.Events;
 using System;
-using System.Linq;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
 
@@ -29,130 +25,6 @@ namespace TalesPop.Items
         public const string spellUIDArray   = "spellUIDArray";
         public const string inventoryType   = "inventoryType";
     }
-
-
-
-
-    //internal interface ISwap<T>
-    //{
-    //    public EnableSwap EnableSwap { get; set; }
-
-    //    public void Perform(ref T a, ref Item b);
-    //}
-
-
-    /*
-     * Stackable item
-     * only same nameId and have space
-     */
-    //internal class Swap : ISwap<Item>
-    //{
-    //    public EnableSwap EnableSwap { get; set; }
-
-    //    public void Perform(ref Item a, ref Item b)
-    //    {
-    //        if (!EnableSwap(a, b))
-    //            return;
-
-    //        int groupId = a.groupId;
-    //        int slotId = a.slotId;
-
-    //        a.groupId = b.groupId;
-    //        a.slotId = b.slotId;
-
-    //        b.groupId = groupId;
-    //        b.slotId = slotId;
-    //    }
-    //}
-
-
-    ///*
-    // * MagicItem charge spell count
-    // * only same spellid
-    // */
-    //internal class Charge: ICollide<Item>
-    //{
-    //    public void Perform<T>(T destination, Item source) where T : Item
-    //    {
-    //        Debug.Log("[IMPL: ICollide] Perform by Charge");
-    //    }
-
-    //    public void Perform(Item destination, Item source)
-    //    {
-    //        throw new NotImplementedException();
-    //    }
-
-    //    public void Swap(ref Item a, ref Item b)
-    //    {
-    //        throw new NotImplementedException();
-    //    }
-    //}
-
-    ///*
-    // * Bag only
-    // */
-    //internal class Add: ICollide<Item>
-    //{
-    //    public void Perform<T>(T destination, Item source) where T : Item
-    //    {
-    //        Debug.Log("[IMPL: ICollide] Perform by Add");
-    //    }
-
-    //    public void Perform(Item destination, Item source)
-    //    {
-    //        throw new NotImplementedException();
-    //    }
-
-    //    public void Swap(ref Item a, ref Item b)
-    //    {
-    //        throw new NotImplementedException();
-    //    }
-    //}
-
-    ///*
-    // * material blend => combine two material item
-    // */
-    //internal class Blend: ICollide<Item>
-    //{
-    //    public void Perform<T>(T destination, Item source) where T : Item
-    //    {
-    //        Debug.Log("[IMPL: ICollide] Perform by Blend");
-    //    }
-
-    //    public void Perform(Item destination, Item source)
-    //    {
-    //        throw new NotImplementedException();
-    //    }
-
-    //    public void Swap(ref Item a, ref Item b)
-    //    {
-    //        throw new NotImplementedException();
-    //    }
-    //}
-
-    /*
-     * Swap is not default export to exception case
-     */
-    //internal class Swap: ICollide<Item>
-    //{
-    //    public void Perform<T>(T destination, Item source) where T : Item
-    //    {
-    //        Debug.Log("[IMPL: ICollide] Perform by Swap");
-    //    }
-
-    //    public void Perform(Item destination, Item source)
-    //    {
-    //        throw new NotImplementedException();
-    //    }
-
-    //    void ICollide<Item>.Swap(ref Item a, ref Item b)
-    //    {
-    //        throw new NotImplementedException();
-    //    }
-    //}
-
-
-
     
     public abstract class Item //: IItem
     {
@@ -197,20 +69,6 @@ namespace TalesPop.Items
         internal ICollide<Item> collide;
         [JsonIgnore]
         internal UnityAction<int, int> remove;
-        //[JsonIgnore]
-        //internal UnityAction propertyObserver = null;
-        //[JsonIgnore]
-        //internal UnityAction<ItemCategory, ItemCategory> relationObserver = null;
-
-        //public void AddPropertyObserver(UnityAction unityAction)
-        //{
-        //    propertyObserver += unityAction;
-        //}
-
-        //public void AddRelationObserver(UnityAction<ItemCategory, ItemCategory> unityAction)
-        //{
-        //    relationObserver += unityAction;
-        //}
 
         public void Interact()
         {
@@ -258,11 +116,6 @@ namespace TalesPop.Items
             nameId   = jObject[ItemArgs.nameId]  .Value<int>   ();
             capacity = jObject[ItemArgs.capacity].Value<int>   ();
         }
-
-        // private ItemCategory GetCategory(JObject jObject)
-        // {
-        //     return StringToEnum<ItemCategory>(jObject[ItemArgs.category].Value<string>());
-        // }
     }
 
 
