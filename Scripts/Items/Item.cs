@@ -9,7 +9,8 @@ namespace TalesPop.Items
 {
     using static Common;
 
-    public delegate bool EnableSwap(Item item1, Item item2);
+    //public delegate bool EnableSwap(Item item1, Item item2);
+    public delegate T1 T_DELEGATE_T<T1, T2>(T2 _);
 
     internal static class ItemArgs
     {
@@ -18,6 +19,7 @@ namespace TalesPop.Items
         public const string nameId          = "nameId";
         public const string itemType        = "itemType";
         public const string capacity        = "capacity";
+        public const string slotId          = "slotId";
 
         public const string amount          = "amount";
         public const string charge          = "charge";
@@ -41,7 +43,7 @@ namespace TalesPop.Items
         [JsonProperty]
         public int groupId;
         [JsonProperty]
-        public int slotId;
+        public int? slotId;
         [JsonProperty]
         public int materialId;
 
@@ -69,6 +71,10 @@ namespace TalesPop.Items
         internal ICollide<Item> collide;
         [JsonIgnore]
         internal UnityAction<int, int> remove;
+        [JsonIgnore]
+        internal T_DELEGATE_T<Item, int> searchBag;
+        [JsonIgnore]
+        internal T_DELEGATE_T<bool, int> searchWrapper;
 
         public void Interact()
         {
@@ -101,6 +107,21 @@ namespace TalesPop.Items
             remove?.Invoke(groupId, uid);
         }
 
+        public Bag SearchParentContainer()
+        {
+            if (searchBag?.Invoke(groupId) is Bag bag)
+                return bag;
+
+            return null;
+        }
+
+        // 
+        //public bool IsWrapped(int target)
+        //{
+        //    Item upper = SearchParentContainer();
+
+        //}
+
         [JsonIgnore]
         public abstract int Space { get; }
         [JsonIgnore]
@@ -115,6 +136,7 @@ namespace TalesPop.Items
             name     = jObject[ItemArgs.name]    .Value<string>();
             nameId   = jObject[ItemArgs.nameId]  .Value<int>   ();
             capacity = jObject[ItemArgs.capacity].Value<int>   ();
+            slotId   = jObject[ItemArgs.slotId]? .Value<int>   ();
         }
     }
 

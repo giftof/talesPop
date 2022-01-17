@@ -48,6 +48,7 @@ namespace TalesPop.Items
         {
             itemType = ItemType.Bag;
             interact = new ToggleBag();
+            //collide = new StackBase();    // complex!!!! into item or... swap position
             inventoryType = StringToEnum<InventoryType>(jObject[ItemArgs.inventoryType].Value<string>());
             container = new Dictionary<int, Item>
             {
@@ -56,13 +57,13 @@ namespace TalesPop.Items
             ++capacity;
         }
 
-        public Bag(string json) : base(json)
-        {
-            Initialize();
-            // something extra
-            // enable use 'parsed'
-            interact = new ToggleBag();
-        }
+        //public Bag(string json) : base(json)
+        //{
+        //    Initialize();
+        //    // something extra
+        //    // enable use 'parsed'
+        //    interact = new ToggleBag();
+        //}
 
         public Bag(JObject jObject) : base(jObject)
         {
@@ -79,6 +80,12 @@ namespace TalesPop.Items
         public void AddForce(Item item)
         {
             container.Add(item.uid, item);
+        }
+
+        public void Add(Item item)
+        {
+            if (!container.ContainsKey(item.uid))
+                container.Add(item.uid, item);
         }
 
         public void Remove(int uid)
@@ -105,6 +112,37 @@ namespace TalesPop.Items
         public Item SearchByUID(int uid)
         {
             return container.FirstOrDefault(e => e.Key.Equals(uid)).Value;
+        }
+
+        public int? EmptySlotId(int? presetId)
+        {
+            if (Space == 0)
+                return null;
+
+            if (presetId != null && container.FirstOrDefault(e => e.Value?.slotId.Equals(presetId) ?? false).Value == null)
+                return presetId;
+
+            return EmptySlotId();
+        }
+
+        public int? EmptySlotId()
+        {
+            int slotId = 0;
+
+            if (Space == 0)
+                return null;
+
+            //IEnumerable<int> slotList = (IEnumerable<int>)container.Where(e => e.Value != null && e.Value.slotId != null).Select(e => e.Value.slotId).OrderBy(e => e);
+            IEnumerable<int?> slotList = container.Where(e => e.Value != null && e.Value.slotId != null).Select(e => e.Value.slotId).OrderBy(e => e);
+
+            foreach (int i in slotList)
+            {
+                if (slotId != i)
+                    break;
+                ++slotId;
+            }
+
+            return slotId;
         }
 
         /*

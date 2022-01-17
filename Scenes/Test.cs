@@ -17,9 +17,9 @@ public class Test : MonoBehaviour
         //    var item = new Stackable(json);
         //});
 
-        TEST_MAKE_BAG1();
+        //TEST_MAKE_BAG1();
         TEST_MAKE_BAG2();
-        TEST_INTERACT();
+        //TEST_INTERACT();
         TEST_COLLIDE();
 
 
@@ -31,7 +31,7 @@ public class Test : MonoBehaviour
         Debug.LogWarning("TEST_MAKE_BAG1 begin");
         string armorJson1 = "{\"uid\": 0, \"name\": \"some named armor1\", \"nameId\": 0, \"itemType\": \"Armor\", \"spellUIDArray\": [231, 123], \"capacity\": 10}";
         string weaponJson = "{\"uid\": 10, \"name\": \"some named weapon\", \"nameId\": 4, \"itemType\": \"Weapon\", \"capacity\": 10}";
-        string twoHandJson = "{\"uid\": 11, \"name\": \"some named twoHand\", \"nameId\": 5, \"itemType\": \"TwoHand\", \"capacity\": 10}";
+        string twoHandJson = "{\"uid\": 13, \"name\": \"some named twoHand\", \"nameId\": 5, \"itemType\": \"TwoHand\", \"capacity\": 10}";
         string potionJson1 = "{\"uid\": 2, \"name\": \"some named potion1\", \"nameId\": 2, \"itemType\": \"Potion\", \"capacity\": 10, \"amount\": 6}";
         string potionJson2 = "{\"uid\": 3, \"name\": \"some named potion2\", \"nameId\": 2, \"itemType\": \"Potion\", \"capacity\": 10, \"amount\": 3}";
         string potionJson3 = "{\"uid\": 11, \"name\": \"some named potion3\", \"nameId\": 2, \"itemType\": \"Potion\", \"capacity\": 10, \"amount\": 6}";
@@ -57,7 +57,7 @@ public class Test : MonoBehaviour
         Debug.LogWarning("TEST_MAKE_BAG2 begin");
         string armorJson1 = "{\"uid\": 0, \"name\": \"some named armor1\", \"nameId\": 0, \"itemType\": \"Armor\", \"spellUIDArray\": [231, 123], \"capacity\": 10}";
         string weaponJson = "{\"uid\": 10, \"name\": \"some named weapon\", \"nameId\": 4, \"itemType\": \"Weapon\", \"capacity\": 10}";
-        string twoHandJson = "{\"uid\": 11, \"name\": \"some named twoHand\", \"nameId\": 5, \"itemType\": \"TwoHand\", \"capacity\": 10}";
+        string twoHandJson = "{\"uid\": 13, \"name\": \"some named twoHand\", \"nameId\": 5, \"itemType\": \"TwoHand\", \"capacity\": 10}";
         string potionJson1 = "{\"uid\": 2, \"name\": \"some named potion1\", \"nameId\": 2, \"itemType\": \"Potion\", \"capacity\": 10, \"amount\": 6}";
         string potionJson2 = "{\"uid\": 3, \"name\": \"some named potion2\", \"nameId\": 2, \"itemType\": \"Potion\", \"capacity\": 10, \"amount\": 3}";
         string potionJson3 = "{\"uid\": 11, \"name\": \"some named potion3\", \"nameId\": 2, \"itemType\": \"Potion\", \"capacity\": 10, \"amount\": 6}";
@@ -84,7 +84,7 @@ public class Test : MonoBehaviour
         Debug.LogWarning("TEST_INTERACT begin");
         string armorJson1 = "{\"uid\": 0, \"name\": \"some named armor1\", \"nameId\": 0, \"itemType\": \"Armor\", \"spellUIDArray\": [231, 123], \"capacity\": 10}";
         string weaponJson = "{\"uid\": 10, \"name\": \"some named weapon\", \"nameId\": 4, \"itemType\": \"Weapon\", \"capacity\": 10}";
-        string twoHandJson = "{\"uid\": 11, \"name\": \"some named twoHand\", \"nameId\": 5, \"itemType\": \"TwoHand\", \"capacity\": 10}";
+        string twoHandJson = "{\"uid\": 13, \"name\": \"some named twoHand\", \"nameId\": 5, \"itemType\": \"TwoHand\", \"capacity\": 10}";
         string potionJson1 = "{\"uid\": 2, \"name\": \"some named potion1\", \"nameId\": 2, \"itemType\": \"Potion\", \"capacity\": 10, \"amount\": 6}";
         string potionJson2 = "{\"uid\": 3, \"name\": \"some named potion2\", \"nameId\": 2, \"itemType\": \"Potion\", \"capacity\": 10, \"amount\": 3}";
         string potionJson3 = "{\"uid\": 11, \"name\": \"some named potion3\", \"nameId\": 2, \"itemType\": \"Potion\", \"capacity\": 10, \"amount\": 6}";
@@ -98,11 +98,17 @@ public class Test : MonoBehaviour
 
         ItemManager itemManager = new ItemManager();
 
+        Debug.LogError($"container count = {itemManager.SIZE()}");
+
         Bag bag1 = itemManager.CreateBag(bagJson1);
         Bag bag2 = itemManager.CreateBag(bagJson2);
+        Debug.Log($">>>> bag1 type = {bag1?.inventoryType}, contentCNT = {bag1?.container.Count}");
+        Debug.Log($">>>> bag2 type = {bag2?.inventoryType}, contentCNT = {bag2?.container.Count}");
 
-        Item p1 = itemManager.SearchByUID(2);
-        Item p2 = itemManager.SearchByUID(10);
+        Debug.LogError($"container count = {itemManager.SIZE()}");
+
+        Item p1 = itemManager.SearchItem(2);
+        Item p2 = itemManager.SearchItem(10);
 
         bag1?.Interact();
         bag2?.Interact();
@@ -119,7 +125,7 @@ public class Test : MonoBehaviour
         Debug.LogWarning("TEST_COLLIDE begin");
         string armorJson1 = "{\"uid\": 0, \"name\": \"some named armor1\", \"nameId\": 0, \"itemType\": \"Armor\", \"spellUIDArray\": [231, 123], \"capacity\": 10}";
         string weaponJson = "{\"uid\": 10, \"name\": \"some named weapon\", \"nameId\": 4, \"itemType\": \"Weapon\", \"capacity\": 10}";
-        string twoHandJson = "{\"uid\": 11, \"name\": \"some named twoHand\", \"nameId\": 5, \"itemType\": \"TwoHand\", \"capacity\": 10}";
+        string twoHandJson = "{\"uid\": 13, \"name\": \"some named twoHand\", \"nameId\": 5, \"itemType\": \"TwoHand\", \"capacity\": 10}";
         string potionJson1 = "{\"uid\": 2, \"name\": \"some named potion1\", \"nameId\": 2, \"itemType\": \"Potion\", \"capacity\": 10, \"amount\": 6}";
         string potionJson2 = "{\"uid\": 3, \"name\": \"some named potion2\", \"nameId\": 2, \"itemType\": \"Potion\", \"capacity\": 10, \"amount\": 3}";
         string potionJson3 = "{\"uid\": 11, \"name\": \"some named potion3\", \"nameId\": 2, \"itemType\": \"Potion\", \"capacity\": 10, \"amount\": 6}";
@@ -133,25 +139,71 @@ public class Test : MonoBehaviour
 
         ItemManager itemManager = new ItemManager();
 
+        Debug.LogError($"container count = {itemManager.SIZE()}");
+
         Bag bag1 = itemManager.CreateBag(bagJson1);
         Bag bag2 = itemManager.CreateBag(bagJson2);
+        Debug.Log($">>>> bag1 type = {bag1?.inventoryType}, contentCNT = {bag1?.container.Count}");
+        Debug.Log($">>>> bag2 type = {bag2?.inventoryType}, contentCNT = {bag2?.container.Count}");
 
+        Debug.LogError($"container count = {itemManager.SIZE()}");
 
-        Item p1 = itemManager.SearchByUID(2);
-        Item p2 = itemManager.SearchByUID(3);
+        Item p1 = itemManager.SearchItem(2);
+        Item p2 = itemManager.SearchItem(3);
+        Item p3 = itemManager.SearchItem(11);
 
-        Item a = itemManager.SearchByUID(0);
-        Item w = itemManager.SearchByUID(10);
+        Item a1 = itemManager.SearchItem(0);
+        Item a2 = itemManager.SearchItem(4);
 
-        Debug.Log(p1?.name);
-        Debug.Log(p2?.name);
+        Debug.LogWarning($"p1?.name = {p1?.name}, p1?.uid = {p1?.uid}, p1?.Occupied = {p1?.Occupied}, p1?.groupId = {p1?.groupId}, p1?.slotId = {p1?.slotId}");
+        Debug.LogWarning($"p2?.name = {p2?.name}, p2?.uid = {p2?.uid}, p2?.Occupied = {p2?.Occupied}, p2?.groupId = {p2?.groupId}, p2?.slotId = {p2?.slotId}");
+        Debug.LogWarning($"p3?.name = {p3?.name}, p3?.uid = {p3?.uid}, p3?.Occupied = {p3?.Occupied}, p3?.groupId = {p3?.groupId}, p3?.slotId = {p3?.slotId}");
 
         p1?.Collide(p2);
-        //a.Collide(w);
-        //w.Collide(p1);
+        Debug.LogWarning($"p1?.name = {p1?.name}, p1?.uid = {p1?.uid}, p1?.Occupied = {p1?.Occupied}, p1?.groupId = {p1?.groupId}, p1?.slotId = {p1?.slotId}");
+        Debug.LogWarning($"p2?.name = {p2?.name}, p2?.uid = {p2?.uid}, p2?.Occupied = {p2?.Occupied}, p2?.groupId = {p2?.groupId}, p2?.slotId = {p2?.slotId}");
+        Debug.LogWarning($"p3?.name = {p3?.name}, p3?.uid = {p3?.uid}, p3?.Occupied = {p3?.Occupied}, p3?.groupId = {p3?.groupId}, p3?.slotId = {p3?.slotId}");
+
+        Item remove = itemManager.SearchItem(3);
+        Debug.LogWarning($"remove is Exist? [{remove}]");
+
+        p1?.Collide(p3);
+        Debug.LogWarning($"p1?.name = {p1?.name}, p1?.uid = {p1?.uid}, p1?.Occupied = {p1?.Occupied}, p1?.groupId = {p1?.groupId}, p1?.slotId = {p1?.slotId}");
+        Debug.LogWarning($"p3?.name = {p3?.name}, p3?.uid = {p3?.uid}, p3?.Occupied = {p3?.Occupied}, p3?.groupId = {p3?.groupId}, p3?.slotId = {p3?.slotId}");
+
+        Debug.Log("");
+
+        Debug.LogWarning($"a1?.name = {a1?.name}, a1?.uid = {a1?.uid}, a1?.Occupied = {a1?.Occupied}, a1?.groupId = {a1?.groupId}, a1?.slotId = {a1?.slotId}");
+        Debug.LogWarning($"p3?.name = {p3?.name}, p3?.uid = {p3?.uid}, p3?.Occupied = {p3?.Occupied}, p3?.groupId = {p3?.groupId}, p3?.slotId = {p3?.slotId}");
+
+        itemManager.SHOW_BAG_CONTENTS(a1.SearchParentContainer().uid);
+        itemManager.SHOW_BAG_CONTENTS(p3.SearchParentContainer().uid);
+
+        a1.Collide(p3);
+        Debug.LogWarning($"a1?.name = {a1?.name}, a1?.uid = {a1?.uid}, a1?.Occupied = {a1?.Occupied}, a1?.groupId = {a1?.groupId}, a1?.slotId = {a1?.slotId}");
+        Debug.LogWarning($"p3?.name = {p3?.name}, p3?.uid = {p3?.uid}, p3?.Occupied = {p3?.Occupied}, p3?.groupId = {p3?.groupId}, p3?.slotId = {p3?.slotId}");
+
+        itemManager.SHOW_BAG_CONTENTS(a1.SearchParentContainer().uid);
+        itemManager.SHOW_BAG_CONTENTS(p3.SearchParentContainer().uid);
+
+        
+        itemManager.SHOW_BAG_CONTENTS(a1.SearchParentContainer().SearchParentContainer().uid);
+        itemManager.SHOW_BAG_CONTENTS(p3.SearchParentContainer().SearchParentContainer().uid);
+
+        a1.SearchParentContainer().Collide(p3);
+
+        itemManager.SHOW_BAG_CONTENTS(a1.SearchParentContainer().SearchParentContainer().uid);
+        itemManager.SHOW_BAG_CONTENTS(p3.SearchParentContainer().SearchParentContainer().uid);
 
         Debug.LogWarning("TEST_COLLIDE end");
         Debug.Log("");
+
+
+        foreach (var pair in itemManager.CONTAINER())
+        {
+            if (pair.Value != null)
+                DisplayBagContents(pair.Value);
+        }
     }
 
 
