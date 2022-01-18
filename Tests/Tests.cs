@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using NUnit.Framework;
 using UnityEngine;
 using UnityEngine.TestTools;
-using TalesPop.Items;
+using TalesPop.Objects.Items;
 using static Common;
 
 
@@ -48,16 +48,16 @@ public class Tests
         string potionJson3 = "{\"uid\": 11, \"name\": \"some named potion3\", \"nameId\": 2, \"itemType\": \"Potion\", \"capacity\": 10, \"amount\": 6}";
         string potionJson4 = "{\"uid\": 12, \"name\": \"some named potion4\", \"nameId\": 3, \"itemType\": \"Potion\", \"capacity\": 10, \"amount\": 6}";
         string armorJson2 = "{\"uid\": 4, \"name\": \"some named armor2\", \"nameId\": 0, \"itemType\": \"Armor\", \"capacity\": 10}";
-        string bagJson1 = $"{{\"uid\": 1, \"name\": \"some named bag1\", \"nameId\": 1, \"itemType\": \"Bag\", \"capacity\": 10, \"inventoryType\": \"UniqueEquip\", \"contents\": [{armorJson1}, {twoHandJson}, {weaponJson}]}}";
+        string bagJson1 = $"{{\"uid\": 1, \"name\": \"some named bag1\", \"nameId\": 1, \"itemType\": \"Bag\", \"capacity\": 10, \"inventoryType\": \"Equip\", \"contents\": [{armorJson1}, {twoHandJson}, {weaponJson}]}}";
         string bagJson2 = $"{{\"uid\": 5, \"name\": \"some named bag2\", \"nameId\": 1, \"itemType\": \"Bag\", \"capacity\": 10, \"inventoryType\": \"Any\", \"contents\": [{potionJson1}, {potionJson2}, {armorJson2}]}}";
         string bagJson3 = $"{{\"uid\": 6, \"name\": \"some named bag3\", \"nameId\": 1, \"itemType\": \"Bag\", \"capacity\": 10, \"inventoryType\": \"Any\", \"contents\": [{potionJson3}, {potionJson4}]}}";
-        string bagJson4 = $"{{\"uid\": 7, \"name\": \"some named bag4\", \"nameId\": 1, \"itemType\": \"Bag\", \"capacity\": 10, \"inventoryType\": \"UniqueEquip\", \"contents\": []}}";
+        string bagJson4 = $"{{\"uid\": 7, \"name\": \"some named bag4\", \"nameId\": 1, \"itemType\": \"Bag\", \"capacity\": 10, \"inventoryType\": \"Equip\", \"contents\": []}}";
         string bagJson5 = $"{{\"uid\": 8, \"name\": \"some named bag5\", \"nameId\": 1, \"itemType\": \"Bag\", \"capacity\": 10, \"inventoryType\": \"Any\", \"contents\": [{potionJson4}, {bagJson1}, {bagJson2}, {bagJson3}, {bagJson4}]}}";
 
         ItemManager itemManager = new ItemManager();
 
         Bag bag5 = itemManager.CreateBag(bagJson5);
-        Debug.LogWarning($"bag5 type = {bag5?.inventoryType}, contentCNT = {bag5?.container.Count}");
+        Debug.LogWarning($"bag5 type = {bag5?.inventoryType}, contentCNT = {bag5?.Occupied}");
         DisplayBagContents(bag5);
         Debug.LogWarning("TEST_MAKE_BAG1 end");
         Debug.Log("");
@@ -74,16 +74,16 @@ public class Tests
         string potionJson3 = "{\"uid\": 11, \"name\": \"some named potion3\", \"nameId\": 2, \"itemType\": \"Potion\", \"capacity\": 10, \"amount\": 6}";
         string potionJson4 = "{\"uid\": 12, \"name\": \"some named potion4\", \"nameId\": 3, \"itemType\": \"Potion\", \"capacity\": 10, \"amount\": 6}";
         string armorJson2 = "{\"uid\": 4, \"name\": \"some named armor2\", \"nameId\": 0, \"itemType\": \"Armor\", \"capacity\": 10}";
-        string bagJson1 = $"{{\"uid\": 1, \"name\": \"some named bag1\", \"nameId\": 1, \"itemType\": \"Bag\", \"capacity\": 10, \"inventoryType\": \"UniqueEquip\", \"contents\": [{armorJson1}, {weaponJson}]}}";
+        string bagJson1 = $"{{\"uid\": 1, \"name\": \"some named bag1\", \"nameId\": 1, \"itemType\": \"Bag\", \"capacity\": 10, \"inventoryType\": \"Equip\", \"contents\": [{armorJson1}, {weaponJson}]}}";
         string bagJson2 = $"{{\"uid\": 5, \"name\": \"some named bag2\", \"nameId\": 1, \"itemType\": \"Bag\", \"capacity\": 10, \"inventoryType\": \"Any\", \"contents\": [{potionJson1}, {potionJson2}, {armorJson2}]}}";
         string bagJson3 = $"{{\"uid\": 6, \"name\": \"some named bag3\", \"nameId\": 1, \"itemType\": \"Bag\", \"capacity\": 10, \"inventoryType\": \"Any\", \"contents\": [{potionJson3}, {potionJson4}]}}";
-        string bagJson4 = $"{{\"uid\": 7, \"name\": \"some named bag4\", \"nameId\": 1, \"itemType\": \"Bag\", \"capacity\": 10, \"inventoryType\": \"UniqueEquip\", \"contents\": []}}";
+        string bagJson4 = $"{{\"uid\": 7, \"name\": \"some named bag4\", \"nameId\": 1, \"itemType\": \"Bag\", \"capacity\": 10, \"inventoryType\": \"Equip\", \"contents\": []}}";
         string bagJson5 = $"{{\"uid\": 8, \"name\": \"some named bag5\", \"nameId\": 1, \"itemType\": \"Bag\", \"capacity\": 10, \"inventoryType\": \"Any\", \"contents\": [{bagJson1}, {bagJson2}, {bagJson3}, {bagJson4}]}}";
 
         ItemManager itemManager = new ItemManager();
 
         Bag bag5 = itemManager.CreateBag(bagJson5);
-        Debug.LogWarning($"bag5 type = {bag5?.inventoryType}, contentCNT = {bag5?.container.Count}");
+        Debug.LogWarning($"bag5 type = {bag5?.inventoryType}, contentCNT = {bag5?.Occupied}");
         DisplayBagContents(bag5);
         Debug.LogWarning("TEST_MAKE_BAG2 end");
         Debug.Log("");
@@ -101,10 +101,10 @@ public class Tests
         string potionJson3 = "{\"uid\": 11, \"name\": \"some named potion3\", \"nameId\": 2, \"itemType\": \"Potion\", \"capacity\": 10, \"amount\": 6}";
         string potionJson4 = "{\"uid\": 12, \"name\": \"some named potion4\", \"nameId\": 3, \"itemType\": \"Potion\", \"capacity\": 10, \"amount\": 6}";
         string armorJson2 = "{\"uid\": 4, \"name\": \"some named armor2\", \"nameId\": 0, \"itemType\": \"Armor\", \"capacity\": 10}";
-        string bagJson1 = $"{{\"uid\": 1, \"name\": \"some named bag1\", \"nameId\": 1, \"itemType\": \"Bag\", \"capacity\": 10, \"inventoryType\": \"UniqueEquip\", \"contents\": [{armorJson1}, {weaponJson}]}}";
+        string bagJson1 = $"{{\"uid\": 1, \"name\": \"some named bag1\", \"nameId\": 1, \"itemType\": \"Bag\", \"capacity\": 10, \"inventoryType\": \"Equip\", \"contents\": [{armorJson1}, {weaponJson}]}}";
         string bagJson2 = $"{{\"uid\": 5, \"name\": \"some named bag2\", \"nameId\": 1, \"itemType\": \"Bag\", \"capacity\": 10, \"inventoryType\": \"Any\", \"contents\": [{potionJson1}, {potionJson2}, {armorJson2}]}}";
         string bagJson3 = $"{{\"uid\": 6, \"name\": \"some named bag3\", \"nameId\": 1, \"itemType\": \"Bag\", \"capacity\": 10, \"inventoryType\": \"Any\", \"contents\": [{potionJson3}, {potionJson4}]}}";
-        string bagJson4 = $"{{\"uid\": 7, \"name\": \"some named bag4\", \"nameId\": 1, \"itemType\": \"Bag\", \"capacity\": 10, \"inventoryType\": \"UniqueEquip\", \"contents\": []}}";
+        string bagJson4 = $"{{\"uid\": 7, \"name\": \"some named bag4\", \"nameId\": 1, \"itemType\": \"Bag\", \"capacity\": 10, \"inventoryType\": \"Equip\", \"contents\": []}}";
         string bagJson5 = $"{{\"uid\": 8, \"name\": \"some named bag5\", \"nameId\": 1, \"itemType\": \"Bag\", \"capacity\": 10, \"inventoryType\": \"Any\", \"contents\": [{bagJson1}, {bagJson2}, {bagJson3}, {bagJson4}]}}";
 
         ItemManager itemManager = new ItemManager();
@@ -136,10 +136,10 @@ public class Tests
         string potionJson3 = "{\"uid\": 11, \"name\": \"some named potion3\", \"nameId\": 2, \"itemType\": \"Potion\", \"capacity\": 10, \"amount\": 6}";
         string potionJson4 = "{\"uid\": 12, \"name\": \"some named potion4\", \"nameId\": 3, \"itemType\": \"Potion\", \"capacity\": 10, \"amount\": 6}";
         string armorJson2 = "{\"uid\": 4, \"name\": \"some named armor2\", \"nameId\": 0, \"itemType\": \"Armor\", \"capacity\": 10}";
-        string bagJson1 = $"{{\"uid\": 1, \"name\": \"some named bag1\", \"nameId\": 1, \"itemType\": \"Bag\", \"capacity\": 10, \"inventoryType\": \"UniqueEquip\", \"contents\": [{armorJson1}, {weaponJson}]}}";
+        string bagJson1 = $"{{\"uid\": 1, \"name\": \"some named bag1\", \"nameId\": 1, \"itemType\": \"Bag\", \"capacity\": 10, \"inventoryType\": \"Equip\", \"contents\": [{armorJson1}, {weaponJson}]}}";
         string bagJson2 = $"{{\"uid\": 5, \"name\": \"some named bag2\", \"nameId\": 1, \"itemType\": \"Bag\", \"capacity\": 10, \"inventoryType\": \"Any\", \"contents\": [{potionJson1}, {potionJson2}, {armorJson2}]}}";
         string bagJson3 = $"{{\"uid\": 6, \"name\": \"some named bag3\", \"nameId\": 1, \"itemType\": \"Bag\", \"capacity\": 10, \"inventoryType\": \"Any\", \"contents\": [{potionJson3}, {potionJson4}]}}";
-        string bagJson4 = $"{{\"uid\": 7, \"name\": \"some named bag4\", \"nameId\": 1, \"itemType\": \"Bag\", \"capacity\": 10, \"inventoryType\": \"UniqueEquip\", \"contents\": []}}";
+        string bagJson4 = $"{{\"uid\": 7, \"name\": \"some named bag4\", \"nameId\": 1, \"itemType\": \"Bag\", \"capacity\": 10, \"inventoryType\": \"Equip\", \"contents\": []}}";
         string bagJson5 = $"{{\"uid\": 8, \"name\": \"some named bag5\", \"nameId\": 1, \"itemType\": \"Bag\", \"capacity\": 10, \"inventoryType\": \"Any\", \"contents\": [{bagJson1}, {bagJson2}, {bagJson3}, {bagJson4}]}}";
 
         ItemManager itemManager = new ItemManager();
@@ -148,8 +148,8 @@ public class Tests
 
         Bag bag1 = itemManager.CreateBag(bagJson1);
         Bag bag2 = itemManager.CreateBag(bagJson2);
-        Debug.Log($">>>> bag1 type = {bag1?.inventoryType}, contentCNT = {bag1?.container.Count}");
-        Debug.Log($">>>> bag2 type = {bag2?.inventoryType}, contentCNT = {bag2?.container.Count}");
+        Debug.Log($">>>> bag1 type = {bag1?.inventoryType}, contentCNT = {bag1?.Occupied}");
+        Debug.Log($">>>> bag2 type = {bag2?.inventoryType}, contentCNT = {bag2?.Occupied}");
 
         Debug.LogWarning($"container count = {itemManager.SIZE()}");
 
@@ -214,7 +214,7 @@ public class Tests
         if (bag == null)
             return;
 
-        foreach (KeyValuePair<int, Item> element in bag.container)
+        foreach (KeyValuePair<int, Item> element in bag.CONTAINER)
         {
             if (element.Value == null)
                 continue;
@@ -232,15 +232,18 @@ public class Tests
             }
         }
     }
+
+
+
+
+    //A UnityTest behaves like a coroutine in Play Mode. In Edit Mode you can use
+    // `yield return null;` to skip a frame.
+    [UnityTest]
+    public IEnumerator TestsWithEnumeratorPasses()
+    {
+        // Use the Assert class to test conditions.
+        // Use yield to skip a frame.
+        yield return null;
+    }
 }
 
-// A UnityTest behaves like a coroutine in Play Mode. In Edit Mode you can use
-// `yield return null;` to skip a frame.
-//[UnityTest]
-//    public IEnumerator TestsWithEnumeratorPasses()
-//    {
-//        // Use the Assert class to test conditions.
-//        // Use yield to skip a frame.
-//        yield return null;
-//    }
-//}

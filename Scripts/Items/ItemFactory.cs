@@ -4,7 +4,7 @@ using Newtonsoft.Json.Linq;
 
 
 
-namespace TalesPop.Items
+namespace TalesPop.Objects.Items
 {
     using static Common;
 

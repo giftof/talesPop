@@ -13,16 +13,16 @@ public static class Common
      */
     public enum ItemType
     {
-        Weapon = 0x0001,
-        Shield = 0x0002,
+        Weapon  = 0x0001,
+        Shield  = 0x0002,
         TwoHand = 0x0003,
-        Armor = 0x0004,
-        Helmet = 0x0008,
-        Amulet = 0x0010,
+        Armor   = 0x0004,
+        Helmet  = 0x0008,
+        Amulet  = 0x0010,
 
         Material = 0x0100,
-        Potion = 0x0200,
-        Bag = 0x1FFF,
+        Potion  = 0x0200,
+        Bag     = 0x1FFF,
     }
 
     public const string TALESPOP_ITEMS = "TalesPop.Items";
@@ -34,7 +34,7 @@ public static class Common
     public static void ForceQuit()
     {
 #if UNITY_EDITOR
-            Debug.LogWarning("call quit on UNITY_EDITOR");
+            Debug.LogError("call quit on UNITY_EDITOR");
             UnityEditor.EditorApplication.isPlaying = false;
 #else
         Debug.LogWarning("call quit on not UNITY_EDITOR");
@@ -50,7 +50,10 @@ public static class Common
         if (name != null)
             result = (T)Enum.Parse(typeof(T), name);
         else
+        {
+            Debug.LogError($"from = {from}");
             ForceQuit();
+        }
 
         return result;
     }

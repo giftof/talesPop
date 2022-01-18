@@ -1,7 +1,10 @@
 {
-    "name": "TEST_SCRIPTS_ASSEMBLY",
+    "name": "TEST_CHARACTORS_ASSEMBLY",
     "rootNamespace": "",
-    "references": [],
+    "references": [
+        "TEST_SCRIPTS_ASSEMBLY",
+        "TEST_ITEMS_ASSEMBLY"
+    ],
     "includePlatforms": [
         "Editor"
     ],

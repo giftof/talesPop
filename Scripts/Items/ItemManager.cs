@@ -5,16 +5,13 @@ using UnityEngine;
 
 
 
-namespace TalesPop.Items
+namespace TalesPop.Objects.Items
 {
     using static Common;
 
     public class ItemManager
     {
-        private static readonly Dictionary<int, Bag> container = new Dictionary<int, Bag>
-        {
-            { NULL_ID, null }
-        };
+        private static readonly Dictionary<int, Bag> container = new Dictionary<int, Bag>();
         private readonly Stack<Bag> processBag;
         private Bag currentRootBag;
         private Factory factory;
@@ -81,7 +78,6 @@ namespace TalesPop.Items
             }
 
             currentBag = AddRootBag(processBag.Pop());
-            currentBag.searchInclude = SearchItemByUIDFromBag;
             return currentBag;
         }
 
@@ -128,10 +124,7 @@ namespace TalesPop.Items
         private void RemoveDelegate(int key, int uid)
         {
             if (SearchItemByUID(key) is Bag bag)
-            {
-                if (bag.container.ContainsKey(uid))
-                    bag.container.Remove(uid);
-            }
+                bag.Remove(uid);
         }
 
         private Item SearchItemByUIDFromInventoryKey(int key, int uid)
@@ -146,9 +139,9 @@ namespace TalesPop.Items
         {
             Item result = null;
 
-            foreach (var e in container)
+            foreach (KeyValuePair<int, Bag> pair in container)
             {
-                result = SearchItemByUIDFromBag(e.Value, uid);
+                result = SearchItemByUIDFromBag(pair.Value, uid);
                 if (result != null)
                     return result;
             }
@@ -158,23 +151,11 @@ namespace TalesPop.Items
 
         private Item SearchItemByUIDFromBag(Item source, int uid)
         {
-            Item result;
-
-            if (source == null)
-                return source;
-
-            if (source is Bag)
-            {
-                foreach (var e in (source as Bag).container)
-                {
-                    result = SearchItemByUIDFromBag(e.Value, uid);
-                    if (result != null)
-                        return result;
-                }
-            }
-
             if (source.uid.Equals(uid))
                 return source;
+
+            if (source is Bag bag)
+                return bag.SearchInclude(uid);
 
             return null;
         }
@@ -190,11 +171,8 @@ namespace TalesPop.Items
             if (SearchItem(key) is Bag bag)
             {
 Debug.LogWarning($"SHOW BAG CONTENTS -- bag [uid = {key}] [name = {bag.name}]");
-                foreach (var e in bag.container)
-                {
-                    if (e.Value != null)
-                        Debug.Log($"item = {e.Value.name}");
-                }
+                foreach (KeyValuePair<int, Item> pair in bag.CONTAINER)
+                    Debug.Log($"item = {pair.Value.name}");
             }
         }
     }

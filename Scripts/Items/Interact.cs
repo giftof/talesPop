@@ -6,7 +6,7 @@ using UnityEngine;
 
 
 
-namespace TalesPop.Items
+namespace TalesPop.Objects.Items
 {
     internal interface IInteraction
     {

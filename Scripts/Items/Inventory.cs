@@ -5,9 +5,15 @@ using Newtonsoft.Json.Linq;
 
 
 
-namespace TalesPop.Items
+namespace TalesPop.Objects.Items
 {
     using static Common;
+
+    internal static class InventoryArgs
+    {
+        public const string contents        = "contents";
+        public const string inventoryType   = "inventoryType";
+    }
 
     public enum SlotType
     {
@@ -27,16 +33,14 @@ namespace TalesPop.Items
     public enum InventoryType
     {
         Any         = 0x01,
-        UniqueEquip = 0x02,
+        Equip       = 0x02,
     }
 
 
     sealed public class Bag : Item
     {
         [JsonIgnore]
-        public Dictionary<int, Item> container;
-        [JsonIgnore]
-        public T_DELEGATE_TT<Item, Item, int> searchInclude;
+        private Dictionary<int, Item> container;
 
         [JsonProperty]
         public JToken[] contents;
@@ -50,12 +54,8 @@ namespace TalesPop.Items
             itemType = ItemType.Bag;
             interact = new ToggleBag();
             collide = new InventoryBase();
-            inventoryType = StringToEnum<InventoryType>(jObject[ItemArgs.inventoryType].Value<string>());
-            container = new Dictionary<int, Item>
-            {
-                { NULL_ID, null }
-            };
-            ++capacity;
+            inventoryType = StringToEnum<InventoryType>(jObject[InventoryArgs.inventoryType].Value<string>());
+            container = new Dictionary<int, Item>();
         }
 
         public Bag(JObject jObject) : base(jObject)
@@ -64,7 +64,7 @@ namespace TalesPop.Items
             // something extra
             // enable use 'parsed'
             interact = new ToggleBag();
-            contents = jObject[ItemArgs.contents]?.Values<JToken>().ToArray();
+            contents = jObject[InventoryArgs.contents]?.Values<JToken>().ToArray();
         }
 
         /*
@@ -102,7 +102,7 @@ namespace TalesPop.Items
             if (Space <= 0 || container.ContainsKey(item.uid))
                 return null;
 
-            if (inventoryType.Equals(InventoryType.UniqueEquip)
+            if (inventoryType.Equals(InventoryType.Equip)
                 && container.FirstOrDefault(e => IsDuplicateEquipSlot(e.Value, item)).Value != null)
                 return null;
 
@@ -111,7 +111,24 @@ namespace TalesPop.Items
 
         public Item SearchInclude(int uid)
         {
-            return searchInclude?.Invoke(this, uid);
+            Item result;
+
+            foreach (KeyValuePair<int, Item> pair in container)
+            {
+                if (pair.Value is Bag bag)
+                {
+                    result = bag.SearchInclude(uid);
+                    if (result != null)
+                        return result;
+                }
+
+                if (pair.Value.uid.Equals(uid))
+                    return pair.Value;
+            }
+
+            return null;
+
+            //return searchInclude?.Invoke(this, uid);
         }
 
         public int? EmptySlotId(int? presetId)
@@ -132,7 +149,7 @@ namespace TalesPop.Items
             if (Space == 0)
                 return null;
 
-            IEnumerable<int?> slotList = container.Where(e => e.Value != null && e.Value.slotId != null).Select(e => e.Value.slotId).OrderBy(e => e);
+            IEnumerable<int?> slotList = container.Where(e => e.Value.slotId != null).Select(e => e.Value.slotId).OrderBy(e => e);
 
             foreach (int i in slotList)
             {
@@ -150,11 +167,11 @@ namespace TalesPop.Items
                 return 0 < Space;
 
             int amount = item.Occupied;
-            var array = container.Where(e => e.Value != null && e.Value.nameId.Equals(item.nameId)).OrderBy(e => e.Value.slotId).Select(e => e.Value);
+            IEnumerable<Item> array = container.Where(e => e.Value.nameId.Equals(item.nameId)).OrderBy(e => e.Value.slotId).Select(e => e.Value);
 
-            foreach (var e in array)
+            foreach (Item element in array)
             {
-                amount -= e.Space;
+                amount -= element.Space;
             }
 
             return amount <= 0 || 0 < Space;
@@ -169,10 +186,10 @@ namespace TalesPop.Items
                 return;
             }
 
-            var array = container.Where(e => e.Value != null && e.Value.nameId.Equals(item.nameId)).OrderBy(e => e.Value.slotId).Select(e => e.Value);
-            foreach (var e in array)
+            IEnumerable<Item> array = container.Where(e => e.Value.nameId.Equals(item.nameId)).OrderBy(e => e.Value.slotId).Select(e => e.Value);
+            foreach (Item element in array)
             {
-                e.Collide(item);
+                element.Collide(item);
             }
 
             if (0 < item.Occupied && 0 < Space)
@@ -215,5 +232,10 @@ namespace TalesPop.Items
                 return false;
             return 0 < ((currentItem?.itemType ?? 0) & newItem.itemType);
         }
+
+        /*
+         * TEST_CODE
+         */
+        public Dictionary<int, Item> CONTAINER => container;
     }
 }

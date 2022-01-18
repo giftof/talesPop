@@ -4,9 +4,16 @@ using Newtonsoft.Json.Linq;
 
 
 
-namespace TalesPop.Items
+namespace TalesPop.Objects.Items
 {
     using static Common;
+
+    internal static class ItemDetailArgs
+    {
+        public const string amount          = "amount";
+        public const string charge          = "charge";
+        public const string spellUIDArray   = "spellUIDArray";
+    }
 
     internal abstract class Stackable : Item
     {
@@ -17,7 +24,7 @@ namespace TalesPop.Items
         {
             // something extra
             // enable use 'parsed'
-            amount = jObject[ItemArgs.amount].Value<int>();
+            amount = jObject[ItemDetailArgs.amount].Value<int>();
             collide = new StackBase();
             interact = new Use();
         }
@@ -45,16 +52,16 @@ namespace TalesPop.Items
     }
 
 
-    internal abstract class Solid : Item
+    internal abstract class Solidable : Item
     {
         [JsonProperty]
         public int[] spellUIDArray;
 
-        public Solid(JObject jObject) : base(jObject)
+        public Solidable(JObject jObject) : base(jObject)
         {
             // something extra
             // enable use 'parsed'
-            spellUIDArray = jObject[ItemArgs.spellUIDArray]?.Values<int>().ToArray();
+            spellUIDArray = jObject[ItemDetailArgs.spellUIDArray]?.Values<int>().ToArray();
             collide = new SolidBase();
             interact = null;
         }
@@ -76,7 +83,7 @@ namespace TalesPop.Items
 
 
 
-    internal abstract class Equipable : Solid
+    internal abstract class Equipable : Solidable
     {
 
         public Equipable(JObject jObject) : base(jObject)
