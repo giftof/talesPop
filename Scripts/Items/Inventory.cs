@@ -32,8 +32,9 @@ namespace TalesPop.Objects.Items
 
     public enum InventoryType
     {
-        Any         = 0x01,
+        Pouch       = 0x01,
         Equip       = 0x02,
+        Extra       = 0x04,
     }
 
 
@@ -204,7 +205,7 @@ namespace TalesPop.Objects.Items
          */
         public override int Space
         {
-            get { return capacity - container.Count; }
+            get { return (int)capacity - container.Count; }
         }
 
         public override int Occupied

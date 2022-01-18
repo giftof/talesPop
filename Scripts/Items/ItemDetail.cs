@@ -10,9 +10,9 @@ namespace TalesPop.Objects.Items
 
     internal static class ItemDetailArgs
     {
-        public const string amount          = "amount";
-        public const string charge          = "charge";
-        public const string spellUIDArray   = "spellUIDArray";
+        public const string amount  = "amount";
+        public const string charge  = "charge";
+        public const string spellID = "spellID";
     }
 
     internal abstract class Stackable : Item
@@ -34,7 +34,7 @@ namespace TalesPop.Objects.Items
          */
         public override int Space
         {
-            get { return capacity - amount; }
+            get { return (int)capacity - amount; }
         }
         public override int Occupied
         {
@@ -55,13 +55,13 @@ namespace TalesPop.Objects.Items
     internal abstract class Solidable : Item
     {
         [JsonProperty]
-        public int[] spellUIDArray;
+        public int? spellID;
 
         public Solidable(JObject jObject) : base(jObject)
         {
             // something extra
             // enable use 'parsed'
-            spellUIDArray = jObject[ItemDetailArgs.spellUIDArray]?.Values<int>().ToArray();
+            spellID = jObject[ItemDetailArgs.spellID]?.Value<int>();
             collide = new SolidBase();
             interact = null;
         }

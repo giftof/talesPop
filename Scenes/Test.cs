@@ -8,6 +8,146 @@ using static Common;
 
 public class Test : MonoBehaviour
 {
+    static string armor1 = "{" +
+        "\"uid\": 0, " +
+        "\"name\": \"armor1\", " +
+        "\"nameId\": 0, " +
+        "\"iconId\": 0, " +
+        "\"itemType\": \"Armor\", " +
+        "\"spellID\": 0, " +
+        "\"capacity\": 10" +
+        "}";
+    static string weapon1 = "{" +
+        "\"uid\": 1, " +
+        "\"name\": \"weapon1\", " +
+        "\"nameId\": 1, " +
+        "\"iconId\": 1, " +
+        "\"itemType\": \"Weapon\"" +
+        "}";
+    static string twoHand1 = "{" +
+        "\"uid\": 2, " +
+        "\"name\": \"twoHand1\", " +
+        "\"nameId\": 2, " +
+        "\"iconId\": 2, " +
+        "\"itemType\": \"TwoHand\", " +
+        "\"spellID\": 1, " +
+        "\"capacity\": 10" +
+        "}";
+    static string armor2 = "{" +
+        "\"uid\": 3, " +
+        "\"name\": \"armor2\", " +
+        "\"nameId\": 0, " +
+        "\"iconId\": 3, " +
+        "\"itemType\": \"Armor\"" +
+        "}";
+    static string potion1 = "{" +
+        "\"uid\": 4, " +
+        "\"name\": \"potion1(3:6)\", " +
+        "\"nameId\": 3, " +
+        "\"itemType\": \"Potion\", " +
+        "\"capacity\": 10, " +
+        "\"amount\": 6" +
+        "}";
+    static string potion2 = "{" +
+        "\"uid\": 5, " +
+        "\"name\": \"potion2(3:3)\", " +
+        "\"nameId\": 3, " +
+        "\"itemType\": \"Potion\", " +
+        "\"capacity\": 10, " +
+        "\"amount\": 3" +
+        "}";
+    static string potion3 = "{" +
+        "\"uid\": 6, " +
+        "\"name\": \"potion3(3:6)\", " +
+        "\"nameId\": 3, " +
+        "\"itemType\": \"Potion\", " +
+        "\"capacity\": 10, " +
+        "\"amount\": 6" +
+        "}";
+    static string potion4 = "{" +
+        "\"uid\": 7, " +
+        "\"name\": \"potion4(4:6)\", " +
+        "\"nameId\": 4, " +
+        "\"itemType\": \"Potion\", " +
+        "\"capacity\": 10, " +
+        "\"amount\": 6" +
+        "}";
+
+    static string bag1 = "{" +
+        "\"uid\": 100, " +
+        "\"name\": \"bag1 (equip slot duplicated)\", " +
+        "\"nameId\": 100, " +
+        "\"itemType\": \"Bag\", " +
+        "\"capacity\": 5, " +
+        "\"inventoryType\": \"Equip\", " +
+        $"\"contents\": [{armor1}, {twoHand1}, {weapon1}]" +
+        "}";
+    static string bag2 = "{" +
+        "\"uid\": 101, " +
+        "\"name\": \"bag2 (equip)\", " +
+        "\"nameId\": 100, " +
+        "\"itemType\": \"Bag\", " +
+        "\"capacity\": 5, " +
+        "\"inventoryType\": \"Equip\", " +
+        $"\"contents\": [{armor1}, {weapon1}]" +
+        "}";
+    static string bag3 = "{" +
+        "\"uid\": 102, " +
+        "\"name\": \"bag3 (pouch overflow)\", " +
+        "\"nameId\": 101, " +
+        "\"itemType\": \"Bag\", " +
+        "\"capacity\": 2, " +
+        "\"inventoryType\": \"Pouch\", " +
+        $"\"contents\": [{potion1}, {potion2}, {armor2}]" +
+        "}";
+    static string bag4 = "{" +
+        "\"uid\": 103, " +
+        "\"name\": \"bag4 (pouch)\", " +
+        "\"nameId\": 101, " +
+        "\"itemType\": \"Bag\", " +
+        "\"capacity\": 2, " +
+        "\"inventoryType\": \"Pouch\", " +
+        $"\"contents\": [{potion3}, {potion4}]" +
+        "}";
+    static string bag5 = "{" +
+        "\"uid\": 104, " +
+        "\"name\": \"bag5 (equip)\", " +
+        "\"nameId\": 100, " +
+        "\"itemType\": \"Bag\", " +
+        "\"capacity\": 5, " +
+        "\"inventoryType\": \"Equip\", " +
+        "\"contents\": []" +
+        "}";
+    static string bag6 = "{" +
+        "\"uid\": 105, " +
+        "\"name\": \"bag6 (pouch overflow)\", " +
+        "\"nameId\": 101, " +
+        "\"itemType\": \"Bag\", " +
+        "\"capacity\": 2, " +
+        "\"inventoryType\": \"Pouch\", " +
+        $"\"contents\": [{bag1}, {bag2}, {bag3}, {bag4}]" +
+        "}";
+    static string bag7 = "{" +
+        "\"uid\": 106, " +
+        "\"name\": \"bag7 (extra)\", " +
+        "\"nameId\": 101, " +
+        "\"itemType\": \"Bag\", " +
+        "\"capacity\": 2, " +
+        "\"inventoryType\": \"Extra\", " +
+        $"\"contents\": [{bag2}, {bag4}]" +
+        "}";
+    static string bag8 = "{" +
+        "\"uid\": 107, " +
+        "\"name\": \"bag8 (pouch)\", " +
+        "\"nameId\": 101, " +
+        "\"itemType\": \"Bag\", " +
+        "\"capacity\": 2, " +
+        "\"inventoryType\": \"Pouch\", " +
+        $"\"contents\": [{bag7}, ]" +
+        "}";
+
+    ItemManager itemManager = new ItemManager();
+
     void Start()
     {
         Debug.LogWarning("--- TEST BEGIN ---");
@@ -18,9 +158,9 @@ public class Test : MonoBehaviour
         //    var item = new Stackable(json);
         //});
 
-        //TEST_MAKE_BAG1();
+        TEST_MAKE_BAG1();
         TEST_MAKE_BAG2();
-        //TEST_INTERACT();
+        TEST_INTERACT();
         TEST_COLLIDE();
 
 
@@ -30,25 +170,9 @@ public class Test : MonoBehaviour
     private void TEST_MAKE_BAG1()
     {
         Debug.LogWarning("TEST_MAKE_BAG1 begin");
-        string armorJson1 = "{\"uid\": 0, \"name\": \"some named armor1\", \"nameId\": 0, \"itemType\": \"Armor\", \"spellUIDArray\": [231, 123], \"capacity\": 10}";
-        string weaponJson = "{\"uid\": 10, \"name\": \"some named weapon\", \"nameId\": 4, \"itemType\": \"Weapon\", \"capacity\": 10}";
-        string twoHandJson = "{\"uid\": 13, \"name\": \"some named twoHand\", \"nameId\": 5, \"itemType\": \"TwoHand\", \"capacity\": 10}";
-        string potionJson1 = "{\"uid\": 2, \"name\": \"some named potion1\", \"nameId\": 2, \"itemType\": \"Potion\", \"capacity\": 10, \"amount\": 6}";
-        string potionJson2 = "{\"uid\": 3, \"name\": \"some named potion2\", \"nameId\": 2, \"itemType\": \"Potion\", \"capacity\": 10, \"amount\": 3}";
-        string potionJson3 = "{\"uid\": 11, \"name\": \"some named potion3\", \"nameId\": 2, \"itemType\": \"Potion\", \"capacity\": 10, \"amount\": 6}";
-        string potionJson4 = "{\"uid\": 12, \"name\": \"some named potion4\", \"nameId\": 3, \"itemType\": \"Potion\", \"capacity\": 10, \"amount\": 6}";
-        string armorJson2 = "{\"uid\": 4, \"name\": \"some named armor2\", \"nameId\": 0, \"itemType\": \"Armor\", \"capacity\": 10}";
-        string bagJson1 = $"{{\"uid\": 1, \"name\": \"some named bag1\", \"nameId\": 1, \"itemType\": \"Bag\", \"capacity\": 10, \"inventoryType\": \"Equip\", \"contents\": [{armorJson1}, {twoHandJson}, {weaponJson}]}}";
-        string bagJson2 = $"{{\"uid\": 5, \"name\": \"some named bag2\", \"nameId\": 1, \"itemType\": \"Bag\", \"capacity\": 10, \"inventoryType\": \"Any\", \"contents\": [{potionJson1}, {potionJson2}, {armorJson2}]}}";
-        string bagJson3 = $"{{\"uid\": 6, \"name\": \"some named bag3\", \"nameId\": 1, \"itemType\": \"Bag\", \"capacity\": 10, \"inventoryType\": \"Any\", \"contents\": [{potionJson3}, {potionJson4}]}}";
-        string bagJson4 = $"{{\"uid\": 7, \"name\": \"some named bag4\", \"nameId\": 1, \"itemType\": \"Bag\", \"capacity\": 10, \"inventoryType\": \"Equip\", \"contents\": []}}";
-        string bagJson5 = $"{{\"uid\": 8, \"name\": \"some named bag5\", \"nameId\": 1, \"itemType\": \"Bag\", \"capacity\": 10, \"inventoryType\": \"Any\", \"contents\": [{potionJson4}, {bagJson1}, {bagJson2}, {bagJson3}, {bagJson4}]}}";
-
-        ItemManager itemManager = new ItemManager();
-
-        Bag bag5 = itemManager.CreateBag(bagJson5);
-        Debug.Log($">>>> bag5 type = {bag5?.inventoryType}, contentCNT = {bag5?.Occupied}");
-        DisplayBagContents(bag5);
+        Bag pouch = itemManager.CreateBag(bag6);
+        Debug.Log($">>>> bag6 type = {pouch?.inventoryType}, contentCNT = {pouch?.Occupied}");
+        DisplayBagContents(pouch);
         Debug.LogWarning("TEST_MAKE_BAG1 end");
         Debug.Log("");
     }
@@ -56,25 +180,10 @@ public class Test : MonoBehaviour
     private void TEST_MAKE_BAG2()
     {
         Debug.LogWarning("TEST_MAKE_BAG2 begin");
-        string armorJson1 = "{\"uid\": 0, \"name\": \"some named armor1\", \"nameId\": 0, \"itemType\": \"Armor\", \"spellUIDArray\": [231, 123], \"capacity\": 10}";
-        string weaponJson = "{\"uid\": 10, \"name\": \"some named weapon\", \"nameId\": 4, \"itemType\": \"Weapon\", \"capacity\": 10}";
-        string twoHandJson = "{\"uid\": 13, \"name\": \"some named twoHand\", \"nameId\": 5, \"itemType\": \"TwoHand\", \"capacity\": 10}";
-        string potionJson1 = "{\"uid\": 2, \"name\": \"some named potion1\", \"nameId\": 2, \"itemType\": \"Potion\", \"capacity\": 10, \"amount\": 6}";
-        string potionJson2 = "{\"uid\": 3, \"name\": \"some named potion2\", \"nameId\": 2, \"itemType\": \"Potion\", \"capacity\": 10, \"amount\": 3}";
-        string potionJson3 = "{\"uid\": 11, \"name\": \"some named potion3\", \"nameId\": 2, \"itemType\": \"Potion\", \"capacity\": 10, \"amount\": 6}";
-        string potionJson4 = "{\"uid\": 12, \"name\": \"some named potion4\", \"nameId\": 3, \"itemType\": \"Potion\", \"capacity\": 10, \"amount\": 6}";
-        string armorJson2 = "{\"uid\": 4, \"name\": \"some named armor2\", \"nameId\": 0, \"itemType\": \"Armor\", \"capacity\": 10}";
-        string bagJson1 = $"{{\"uid\": 1, \"name\": \"some named bag1\", \"nameId\": 1, \"itemType\": \"Bag\", \"capacity\": 10, \"inventoryType\": \"Equip\", \"contents\": [{armorJson1}, {weaponJson}]}}";
-        string bagJson2 = $"{{\"uid\": 5, \"name\": \"some named bag2\", \"nameId\": 1, \"itemType\": \"Bag\", \"capacity\": 10, \"inventoryType\": \"Any\", \"contents\": [{potionJson1}, {potionJson2}, {armorJson2}]}}";
-        string bagJson3 = $"{{\"uid\": 6, \"name\": \"some named bag3\", \"nameId\": 1, \"itemType\": \"Bag\", \"capacity\": 10, \"inventoryType\": \"Any\", \"contents\": [{potionJson3}, {potionJson4}]}}";
-        string bagJson4 = $"{{\"uid\": 7, \"name\": \"some named bag4\", \"nameId\": 1, \"itemType\": \"Bag\", \"capacity\": 10, \"inventoryType\": \"Equip\", \"contents\": []}}";
-        string bagJson5 = $"{{\"uid\": 8, \"name\": \"some named bag5\", \"nameId\": 1, \"itemType\": \"Bag\", \"capacity\": 10, \"inventoryType\": \"Any\", \"contents\": [{bagJson1}, {bagJson2}, {bagJson3}, {bagJson4}]}}";
 
-        ItemManager itemManager = new ItemManager();
-
-        Bag bag5 = itemManager.CreateBag(bagJson5);
-        Debug.Log($">>>> bag5 type = {bag5?.inventoryType}, contentCNT = {bag5?.Occupied}");
-        DisplayBagContents(bag5);
+        Bag pouch = itemManager.CreateBag(bag8);
+        Debug.Log($">>>> bag8 type = {pouch?.inventoryType}, contentCNT = {pouch?.Occupied}");
+        DisplayBagContents(pouch);
         Debug.LogWarning("TEST_MAKE_BAG2 end");
         Debug.Log("");
     }
@@ -83,36 +192,21 @@ public class Test : MonoBehaviour
     private void TEST_INTERACT()
     {
         Debug.LogWarning("TEST_INTERACT begin");
-        string armorJson1 = "{\"uid\": 0, \"name\": \"some named armor1\", \"nameId\": 0, \"itemType\": \"Armor\", \"spellUIDArray\": [231, 123], \"capacity\": 10}";
-        string weaponJson = "{\"uid\": 10, \"name\": \"some named weapon\", \"nameId\": 4, \"itemType\": \"Weapon\", \"capacity\": 10}";
-        string twoHandJson = "{\"uid\": 13, \"name\": \"some named twoHand\", \"nameId\": 5, \"itemType\": \"TwoHand\", \"capacity\": 10}";
-        string potionJson1 = "{\"uid\": 2, \"name\": \"some named potion1\", \"nameId\": 2, \"itemType\": \"Potion\", \"capacity\": 10, \"amount\": 6}";
-        string potionJson2 = "{\"uid\": 3, \"name\": \"some named potion2\", \"nameId\": 2, \"itemType\": \"Potion\", \"capacity\": 10, \"amount\": 3}";
-        string potionJson3 = "{\"uid\": 11, \"name\": \"some named potion3\", \"nameId\": 2, \"itemType\": \"Potion\", \"capacity\": 10, \"amount\": 6}";
-        string potionJson4 = "{\"uid\": 12, \"name\": \"some named potion4\", \"nameId\": 3, \"itemType\": \"Potion\", \"capacity\": 10, \"amount\": 6}";
-        string armorJson2 = "{\"uid\": 4, \"name\": \"some named armor2\", \"nameId\": 0, \"itemType\": \"Armor\", \"capacity\": 10}";
-        string bagJson1 = $"{{\"uid\": 1, \"name\": \"some named bag1\", \"nameId\": 1, \"itemType\": \"Bag\", \"capacity\": 10, \"inventoryType\": \"Equip\", \"contents\": [{armorJson1}, {weaponJson}]}}";
-        string bagJson2 = $"{{\"uid\": 5, \"name\": \"some named bag2\", \"nameId\": 1, \"itemType\": \"Bag\", \"capacity\": 10, \"inventoryType\": \"Any\", \"contents\": [{potionJson1}, {potionJson2}, {armorJson2}]}}";
-        string bagJson3 = $"{{\"uid\": 6, \"name\": \"some named bag3\", \"nameId\": 1, \"itemType\": \"Bag\", \"capacity\": 10, \"inventoryType\": \"Any\", \"contents\": [{potionJson3}, {potionJson4}]}}";
-        string bagJson4 = $"{{\"uid\": 7, \"name\": \"some named bag4\", \"nameId\": 1, \"itemType\": \"Bag\", \"capacity\": 10, \"inventoryType\": \"Equip\", \"contents\": []}}";
-        string bagJson5 = $"{{\"uid\": 8, \"name\": \"some named bag5\", \"nameId\": 1, \"itemType\": \"Bag\", \"capacity\": 10, \"inventoryType\": \"Any\", \"contents\": [{bagJson1}, {bagJson2}, {bagJson3}, {bagJson4}]}}";
 
-        ItemManager itemManager = new ItemManager();
+        Debug.LogWarning($"container count = {itemManager.SIZE()}");
 
-        Debug.LogError($"container count = {itemManager.SIZE()}");
+        Bag equip1 = itemManager.CreateBag(bag2);
+        Bag equip2 = itemManager.CreateBag(bag5);
+        Debug.Log($">>>> bag2 type = {equip1?.inventoryType}, contentCNT = {equip1?.Occupied}");
+        Debug.Log($">>>> bag5 type = {equip2?.inventoryType}, contentCNT = {equip2?.Occupied}");
 
-        Bag bag1 = itemManager.CreateBag(bagJson1);
-        Bag bag2 = itemManager.CreateBag(bagJson2);
-        Debug.Log($">>>> bag1 type = {bag1?.inventoryType}, contentCNT = {bag1?.Occupied}");
-        Debug.Log($">>>> bag2 type = {bag2?.inventoryType}, contentCNT = {bag2?.Occupied}");
+        Debug.LogWarning($"container count = {itemManager.SIZE()}");
 
-        Debug.LogError($"container count = {itemManager.SIZE()}");
+        Item p1 = itemManager.SearchItem(4);
+        Item p2 = itemManager.SearchItem(5);
 
-        Item p1 = itemManager.SearchItem(2);
-        Item p2 = itemManager.SearchItem(10);
-
-        bag1?.Interact();
-        bag2?.Interact();
+        equip1?.Interact();
+        equip2?.Interact();
 
         p1?.Interact();
         p2?.Interact();
@@ -124,37 +218,22 @@ public class Test : MonoBehaviour
     private void TEST_COLLIDE()
     {
         Debug.LogWarning("TEST_COLLIDE begin");
-        string armorJson1 = "{\"uid\": 0, \"name\": \"some named armor1\", \"nameId\": 0, \"itemType\": \"Armor\", \"spellUIDArray\": [231, 123], \"capacity\": 10}";
-        string weaponJson = "{\"uid\": 10, \"name\": \"some named weapon\", \"nameId\": 4, \"itemType\": \"Weapon\", \"capacity\": 10}";
-        string twoHandJson = "{\"uid\": 13, \"name\": \"some named twoHand\", \"nameId\": 5, \"itemType\": \"TwoHand\", \"capacity\": 10}";
-        string potionJson1 = "{\"uid\": 2, \"name\": \"some named potion1\", \"nameId\": 2, \"itemType\": \"Potion\", \"capacity\": 10, \"amount\": 6}";
-        string potionJson2 = "{\"uid\": 3, \"name\": \"some named potion2\", \"nameId\": 2, \"itemType\": \"Potion\", \"capacity\": 10, \"amount\": 3}";
-        string potionJson3 = "{\"uid\": 11, \"name\": \"some named potion3\", \"nameId\": 2, \"itemType\": \"Potion\", \"capacity\": 10, \"amount\": 6}";
-        string potionJson4 = "{\"uid\": 12, \"name\": \"some named potion4\", \"nameId\": 3, \"itemType\": \"Potion\", \"capacity\": 10, \"amount\": 6}";
-        string armorJson2 = "{\"uid\": 4, \"name\": \"some named armor2\", \"nameId\": 0, \"itemType\": \"Armor\", \"capacity\": 10}";
-        string bagJson1 = $"{{\"uid\": 1, \"name\": \"some named bag1\", \"nameId\": 1, \"itemType\": \"Bag\", \"capacity\": 10, \"inventoryType\": \"Equip\", \"contents\": [{armorJson1}, {weaponJson}]}}";
-        string bagJson2 = $"{{\"uid\": 5, \"name\": \"some named bag2\", \"nameId\": 1, \"itemType\": \"Bag\", \"capacity\": 10, \"inventoryType\": \"Any\", \"contents\": [{potionJson1}, {potionJson2}, {armorJson2}]}}";
-        string bagJson3 = $"{{\"uid\": 6, \"name\": \"some named bag3\", \"nameId\": 1, \"itemType\": \"Bag\", \"capacity\": 10, \"inventoryType\": \"Any\", \"contents\": [{potionJson3}, {potionJson4}]}}";
-        string bagJson4 = $"{{\"uid\": 7, \"name\": \"some named bag4\", \"nameId\": 1, \"itemType\": \"Bag\", \"capacity\": 10, \"inventoryType\": \"Equip\", \"contents\": []}}";
-        string bagJson5 = $"{{\"uid\": 8, \"name\": \"some named bag5\", \"nameId\": 1, \"itemType\": \"Bag\", \"capacity\": 10, \"inventoryType\": \"Any\", \"contents\": [{bagJson1}, {bagJson2}, {bagJson3}, {bagJson4}]}}";
-
-        ItemManager itemManager = new ItemManager();
 
         Debug.LogWarning($"container count = {itemManager.SIZE()}");
 
-        Bag bag1 = itemManager.CreateBag(bagJson1);
-        Bag bag2 = itemManager.CreateBag(bagJson2);
-        Debug.Log($">>>> bag1 type = {bag1?.inventoryType}, contentCNT = {bag1?.Occupied}");
-        Debug.Log($">>>> bag2 type = {bag2?.inventoryType}, contentCNT = {bag2?.Occupied}");
+        Bag pouch1 = itemManager.CreateBag(bag4);
+        Bag pouch2 = itemManager.CreateBag(bag8);
+        Debug.Log($">>>> bag4 type = {pouch1?.inventoryType}, contentCNT = {pouch1?.Occupied}");
+        Debug.Log($">>>> bag8 type = {pouch2?.inventoryType}, contentCNT = {pouch2?.Occupied}");
 
         Debug.LogWarning($"container count = {itemManager.SIZE()}");
 
-        Item p1 = itemManager.SearchItem(2);
-        Item p2 = itemManager.SearchItem(3);
-        Item p3 = itemManager.SearchItem(11);
+        Item p1 = itemManager.SearchItem(4);
+        Item p2 = itemManager.SearchItem(5);
+        Item p3 = itemManager.SearchItem(6);
 
         Item a1 = itemManager.SearchItem(0);
-        Item a2 = itemManager.SearchItem(4);
+        Item a2 = itemManager.SearchItem(3);
 
         Debug.LogWarning($"p1?.name = {p1?.name}, p1?.uid = {p1?.uid}, p1?.Occupied = {p1?.Occupied}, p1?.groupId = {p1?.groupId}, p1?.slotId = {p1?.slotId}");
         Debug.LogWarning($"p2?.name = {p2?.name}, p2?.uid = {p2?.uid}, p2?.Occupied = {p2?.Occupied}, p2?.groupId = {p2?.groupId}, p2?.slotId = {p2?.slotId}");
@@ -165,7 +244,7 @@ public class Test : MonoBehaviour
         Debug.LogWarning($"p2?.name = {p2?.name}, p2?.uid = {p2?.uid}, p2?.Occupied = {p2?.Occupied}, p2?.groupId = {p2?.groupId}, p2?.slotId = {p2?.slotId}");
         Debug.LogWarning($"p3?.name = {p3?.name}, p3?.uid = {p3?.uid}, p3?.Occupied = {p3?.Occupied}, p3?.groupId = {p3?.groupId}, p3?.slotId = {p3?.slotId}");
 
-        Item remove = itemManager.SearchItem(3);
+        Item remove = itemManager.SearchItem(5);
         Debug.LogWarning($"remove is Exist? [{remove}]");
 
         p1?.Collide(p3);

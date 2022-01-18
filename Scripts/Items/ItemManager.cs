@@ -24,7 +24,9 @@ namespace TalesPop.Objects.Items
 
         public Bag CreateBag(string json)
         {
+            Debug.Log("parse begin");
             JObject jObject = JObject.Parse(json);
+            Debug.Log("parse end");
 
             currentRootBag = null;
             if (!IsSame(jObject[ItemArgs.itemType]?.Value<string>(), ItemType.Bag.ToString()))

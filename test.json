@@ -1,0 +1,130 @@
+{
+    "uid": 105,
+    "name": "bag6 (pouch overflow)",
+    "nameId": 101,
+    "itemType": "Bag",
+    "capacity": 2,
+    "inventoryType": "Pouch",
+    "contents": [
+        {
+            "uid": 100,
+            "name": "bag1 (equip slot duplicated)",
+            "nameId": 100,
+            "itemType": "Bag",
+            "capacity": 5,
+            "inventoryType": "Equip",
+            "contents": [
+                {
+                    "uid": 0,
+                    "name": "armor1",
+                    "nameId": 0,
+                    "iconId": 0,
+                    "itemType": "Armor",
+                    "spellID": 0,
+                    "capacity": 10
+                },
+                {
+                    "uid": 2,
+                    "name": "twoHand1",
+                    "nameId": 2,
+                    "iconId": 2,
+                    "itemType": "TwoHand",
+                    "spellID": 1,
+                    "capacity": 10
+                },
+                {
+                    "uid": 1,
+                    "name": "weapon1",
+                    "nameId": 1,
+                    "iconId": 1,
+                    "itemType": "Weapon"
+                }
+            ]
+        },
+        {
+            "uid": 101,
+            "name": "bag2 (equip)",
+            "nameId": 100,
+            "itemType": "Bag",
+            "capacity": 5,
+            "inventoryType": "Equip",
+            "contents": [
+                {
+                    "uid": 0,
+                    "name": "armor1",
+                    "nameId": 0,
+                    "iconId": 0,
+                    "itemType": "Armor",
+                    "spellID": 0,
+                    "capacity": 10
+                },
+                {
+                    "uid": 1,
+                    "name": "weapon1",
+                    "nameId": 1,
+                    "iconId": 1,
+                    "itemType": "Weapon"
+                }
+            ]
+        },
+        {
+            "uid": 102,
+            "name": "bag3 (pouch overflow)",
+            "nameId": 101,
+            "itemType": "Bag",
+            "capacity": 2,
+            "inventoryType": "Pouch",
+            "contents": [
+                {
+                    "uid": 4,
+                    "name": "potion1(3:6)",
+                    "nameId": 3,
+                    "itemType": "Potion",
+                    "capacity": 10,
+                    "amount": 6
+                },
+                {
+                    "uid": 5,
+                    "name": "potion2(3:3)",
+                    "nameId": 3,
+                    "itemType": "Potion",
+                    "capacity": 10,
+                    "amount": 3
+                },
+                {
+                    "uid": 3,
+                    "name": "armor2",
+                    "nameId": 0,
+                    "iconId": 3,
+                    "itemType": "Armor"
+                }
+            ]
+        },
+        {
+            "uid": 103,
+            "name": "bag4 (pouch)",
+            "nameId": 101,
+            "itemType": "Bag",
+            "capacity": 2,
+            "inventoryType": "Pouch",
+            "contents": [
+                {
+                    "uid": 6,
+                    "name": "potion3(3:6)",
+                    "nameId": 3,
+                    "itemType": "Potion",
+                    "capacity": 10,
+                    "amount": 6
+                },
+                {
+                    "uid": 7,
+                    "name": "potion4(4:6)",
+                    "nameId": 4,
+                    "itemType": "Potion",
+                    "capacity": 10,
+                    "amount": 6
+                }
+            ]
+        }
+    ]
+}

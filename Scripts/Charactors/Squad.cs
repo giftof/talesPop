@@ -1,3 +1,4 @@
+using System.Linq;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
@@ -14,6 +15,7 @@ namespace TalesPop.Objects.Charactors
     internal static class SquadArgs
     {
         public const string capacity = "capacity";
+        public const string contents = "contents";
     }
 
     public enum SquadType
@@ -28,8 +30,8 @@ namespace TalesPop.Objects.Charactors
         private Dictionary<int, Charactor> container;
         [JsonProperty]
         public int capacity;
-        //[JsonProperty]
-        //public JToken[] contents;
+        [JsonProperty]
+        public JToken[] contents;
 
 
 
@@ -51,7 +53,8 @@ namespace TalesPop.Objects.Charactors
         private void Initialize()
         {
             capacity = jObject[SquadArgs.capacity].Value<int>();
-
+            //contents = jObject[SquadArgs.contents]
+            contents = jObject[SquadArgs.contents]?.Values<JToken>().ToArray();
             container = new Dictionary<int, Charactor>();
         }
     }

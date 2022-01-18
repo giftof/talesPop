@@ -21,7 +21,7 @@ namespace TalesPop.Objects.Items
         [JsonProperty]
         public ItemType itemType;
         [JsonProperty]
-        public int capacity;
+        public int? capacity;
         [JsonProperty]
         public int groupId;
         [JsonProperty]
@@ -103,7 +103,7 @@ namespace TalesPop.Objects.Items
          */
         private void SetProperties()
         {
-            capacity = jObject[ItemArgs.capacity].Value<int>();
+            capacity = jObject[ItemArgs.capacity]?.Value<int>();
             slotId = jObject[ItemArgs.slotId]? .Value<int>();
         }
     }
