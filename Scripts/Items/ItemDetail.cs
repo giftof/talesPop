@@ -22,8 +22,6 @@ namespace TalesPop.Objects.Items
 
         public Stackable(JObject jObject) : base(jObject)
         {
-            // something extra
-            // enable use 'parsed'
             amount = jObject[ItemDetailArgs.amount].Value<int>();
             collide = new StackBase();
             interact = new Use();
@@ -43,6 +41,8 @@ namespace TalesPop.Objects.Items
         }
     }
 
+
+
     internal abstract class Mergeable: Stackable
     {
         public Mergeable(JObject jObject): base(jObject)
@@ -59,8 +59,6 @@ namespace TalesPop.Objects.Items
 
         public Solidable(JObject jObject) : base(jObject)
         {
-            // something extra
-            // enable use 'parsed'
             spellID = jObject[ItemDetailArgs.spellID]?.Value<int>();
             collide = new SolidBase();
             interact = null;
@@ -136,7 +134,7 @@ namespace TalesPop.Objects.Items
 
 
 
-    sealed internal class Weapon : Equipable
+    sealed internal class Weapon : Solidable
     {
 
         private void Initialize()
@@ -154,7 +152,7 @@ namespace TalesPop.Objects.Items
 
 
 
-    sealed internal class Armor : Equipable
+    sealed internal class Armor : Solidable
     {
         private void Initialize()
         {
@@ -168,6 +166,10 @@ namespace TalesPop.Objects.Items
             // enable use 'parsed'
         }
     }
+
+
+
+
 
 
 

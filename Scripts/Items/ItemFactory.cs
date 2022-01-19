@@ -21,7 +21,8 @@ namespace TalesPop.Objects.Items
             {
                 ItemType.Amulet => new Amulet(jObject),
                 ItemType.Armor => new Armor(jObject),
-                ItemType.Bag => new Bag(jObject),
+                ItemType.Pouch => new Pouch(jObject),
+                ItemType.ExtraPouch => new ExtraPouch(jObject),
                 ItemType.Helmet => new Helmet(jObject),
                 ItemType.Material => new Material(jObject),
                 ItemType.Potion => new Potion(jObject),

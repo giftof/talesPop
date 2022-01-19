@@ -170,7 +170,8 @@ public class Test : MonoBehaviour
     private void TEST_MAKE_BAG1()
     {
         Debug.LogWarning("TEST_MAKE_BAG1 begin");
-        Bag pouch = itemManager.CreateBag(bag6);
+
+        Inventory pouch = itemManager.CreateInventory(bag6);
         Debug.Log($">>>> bag6 type = {pouch?.inventoryType}, contentCNT = {pouch?.Occupied}");
         DisplayBagContents(pouch);
         Debug.LogWarning("TEST_MAKE_BAG1 end");
@@ -181,7 +182,7 @@ public class Test : MonoBehaviour
     {
         Debug.LogWarning("TEST_MAKE_BAG2 begin");
 
-        Bag pouch = itemManager.CreateBag(bag8);
+        Inventory pouch = itemManager.CreateInventory(bag8);
         Debug.Log($">>>> bag8 type = {pouch?.inventoryType}, contentCNT = {pouch?.Occupied}");
         DisplayBagContents(pouch);
         Debug.LogWarning("TEST_MAKE_BAG2 end");
@@ -195,8 +196,8 @@ public class Test : MonoBehaviour
 
         Debug.LogWarning($"container count = {itemManager.SIZE()}");
 
-        Bag equip1 = itemManager.CreateBag(bag2);
-        Bag equip2 = itemManager.CreateBag(bag5);
+        Inventory equip1 = itemManager.CreateInventory(bag2);
+        Inventory equip2 = itemManager.CreateInventory(bag5);
         Debug.Log($">>>> bag2 type = {equip1?.inventoryType}, contentCNT = {equip1?.Occupied}");
         Debug.Log($">>>> bag5 type = {equip2?.inventoryType}, contentCNT = {equip2?.Occupied}");
 
@@ -221,8 +222,8 @@ public class Test : MonoBehaviour
 
         Debug.LogWarning($"container count = {itemManager.SIZE()}");
 
-        Bag pouch1 = itemManager.CreateBag(bag4);
-        Bag pouch2 = itemManager.CreateBag(bag8);
+        Inventory pouch1 = itemManager.CreateInventory(bag4);
+        Inventory pouch2 = itemManager.CreateInventory(bag8);
         Debug.Log($">>>> bag4 type = {pouch1?.inventoryType}, contentCNT = {pouch1?.Occupied}");
         Debug.Log($">>>> bag8 type = {pouch2?.inventoryType}, contentCNT = {pouch2?.Occupied}");
 
@@ -284,7 +285,7 @@ public class Test : MonoBehaviour
     }
 
 
-    private void DisplayBagContents(Bag bag) 
+    private void DisplayBagContents(Inventory bag) 
     {
         if (bag == null)
             return;
@@ -296,10 +297,11 @@ public class Test : MonoBehaviour
 
             Debug.Log($"name = {element.Value.name}");
 
-            if (element.Value.itemType.Equals(ItemType.Bag))
+            if (element.Value.itemType.Equals(ItemType.ExtraPouch)
+                || element.Value.itemType.Equals(ItemType.Pouch))
             {
                 Debug.LogWarning($"Found BAG! = {element.Value.name}");
-                DisplayBagContents((Bag)element.Value);
+                DisplayBagContents((Inventory)element.Value);
             }
             else
             {

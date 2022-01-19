@@ -11,28 +11,29 @@ namespace TalesPop.Objects.Items
 
     public class ItemManager
     {
-        private static readonly Dictionary<int, Bag> container = new Dictionary<int, Bag>();
-        private readonly Stack<Bag> processBag;
-        private Bag currentRootBag;
+        private static readonly Dictionary<int, Inventory> container = new Dictionary<int, Inventory>();
+        private readonly Stack<Inventory> processInventory;
+        private Inventory currentRootInventory;
         private Factory factory;
 
         public ItemManager(Factory factory = null)
         {
             this.factory = factory ?? new Normal();
-            processBag = new Stack<Bag>();
+            processInventory = new Stack<Inventory>();
         }
 
-        public Bag CreateBag(string json)
+        public Inventory CreateInventory(string json)
         {
-            Debug.Log("parse begin");
             JObject jObject = JObject.Parse(json);
-            Debug.Log("parse end");
+            string typeString = jObject[ItemArgs.itemType].Value<string>();
+            ItemType type = StringToEnum<ItemType>(typeString);
 
-            currentRootBag = null;
-            if (!IsSame(jObject[ItemArgs.itemType]?.Value<string>(), ItemType.Bag.ToString()))
-                return null;
+            currentRootInventory = null;
 
-            return CreateBag(jObject);
+            if (type.Equals(ItemType.Pouch) || type.Equals(ItemType.ExtraPouch))
+                return CreateInventory(type, jObject);
+
+            return null;
         }
 
         /*
@@ -62,77 +63,80 @@ namespace TalesPop.Objects.Items
         /*
          * Privates
          */
-        private Bag CreateBag(JObject jObject)
+        private Inventory CreateInventory(ItemType type, JObject jObject)
         {
-            Bag currentBag = new Bag(jObject);
+            Inventory currentInventory = factory.Create(type, jObject) as Inventory;
 
-            currentRootBag = currentRootBag ?? currentBag;
-            processBag.Push(currentBag);
+            currentRootInventory = currentRootInventory ?? currentInventory;
+            processInventory.Push(currentInventory);
 
-            foreach (JToken element in currentBag.contents)
+            foreach (JToken element in currentInventory.contents)
             {
                 if (CreateItem(element) == null)
                 {
-                    processBag.Pop();
-                    currentRootBag = null;
+                    processInventory.Pop();
+                    currentRootInventory = null;
                     return null;
                 }
             }
 
-            currentBag = AddRootBag(processBag.Pop());
-            return currentBag;
+            currentInventory = AddRootInventory(processInventory.Pop());
+            return currentInventory;
         }
 
         private Item CreateItem(JToken token)
         {
             JObject  jObject      = (JObject)token;
             ItemType itemCategory = StringToEnum<ItemType>(jObject[ItemArgs.itemType].Value<string>());
-            Bag      bag          = processBag.Peek();
-            Item     item         = IsSame(ItemType.Bag, itemCategory)
-                                        ? CreateBag(jObject)
+            Inventory inventory   = processInventory.Peek();
+            Item     item         = IsSame(ItemType.Pouch, itemCategory) || IsSame(ItemType.ExtraPouch, itemCategory)
+                                        ? CreateInventory(itemCategory, jObject)
                                         : factory.Create(itemCategory, jObject);
-            int?     slotId       = bag.EmptySlotId(item?.slotId);
+            int?     slotId       = inventory.EmptySlotId(item?.slotId);
 
             if (slotId == null)
                 return null;
 
-            if (bag?.Validate(item) == null)
+            if (item == null)
+                return null;
+
+            if (inventory?.Validate(item) == null)
                 return null;
 
             if (SearchItemByUID(item.uid) != null)
                 return null;
 
-            item.groupId = bag.uid;
+            item.groupId = inventory.uid;
             item.slotId = (int)slotId;
             item.remove = RemoveDelegate;
             item.searchBag = SearchItem;
-            bag.AddForce(item);
+            inventory.AddForce(item);
 
             return item;
         }
 
-        private Bag AddRootBag(Bag bag)
+        private Inventory AddRootInventory(Inventory inventory)
         {
-            if (processBag.Count == 0)
+            if (processInventory.Count == 0)
             {
-                if (!container.ContainsKey(bag.uid))
-                    container.Add(bag.uid, bag);
+                if (!container.ContainsKey(inventory.uid))
+                    container.Add(inventory.uid, inventory);
                 else
                     return null;
             }
-            return bag;
+            return inventory;
         }
 
         private void RemoveDelegate(int key, int uid)
         {
-            if (SearchItemByUID(key) is Bag bag)
-                bag.Remove(uid);
+            if (SearchItemByUID(key) is Inventory inventory)
+                inventory.Remove(uid);
         }
 
         private Item SearchItemByUIDFromInventoryKey(int key, int uid)
         {
-            if (SearchItemByUID(key) is Bag bag)
-                return SearchItemByUIDFromBag(bag, uid);
+            if (SearchItemByUID(key) is Inventory inventory)
+                return SearchItemByUIDFromBag(inventory, uid);
 
             return null;
         }
@@ -141,7 +145,7 @@ namespace TalesPop.Objects.Items
         {
             Item result = null;
 
-            foreach (KeyValuePair<int, Bag> pair in container)
+            foreach (KeyValuePair<int, Inventory> pair in container)
             {
                 result = SearchItemByUIDFromBag(pair.Value, uid);
                 if (result != null)
@@ -156,8 +160,8 @@ namespace TalesPop.Objects.Items
             if (source.uid.Equals(uid))
                 return source;
 
-            if (source is Bag bag)
-                return bag.SearchInclude(uid);
+            if (source is Inventory inventory)
+                return inventory.SearchInclude(uid);
 
             return null;
         }
@@ -166,14 +170,14 @@ namespace TalesPop.Objects.Items
          * TEST_CODE
          */
         public int SIZE() => container.Count;
-        public Dictionary<int, Bag> CONTAINER() => container;
+        public Dictionary<int, Inventory> CONTAINER() => container;
         public void SHOW_BAG_CONTENTS(int key)
         {
             
-            if (SearchItem(key) is Bag bag)
+            if (SearchItem(key) is Inventory inventory)
             {
-Debug.LogWarning($"SHOW BAG CONTENTS -- bag [uid = {key}] [name = {bag.name}]");
-                foreach (KeyValuePair<int, Item> pair in bag.CONTAINER)
+Debug.LogWarning($"SHOW BAG CONTENTS -- inventory [uid = {key}] [name = {inventory.name}]");
+                foreach (KeyValuePair<int, Item> pair in inventory.CONTAINER)
                     Debug.Log($"item = {pair.Value.name}");
             }
         }

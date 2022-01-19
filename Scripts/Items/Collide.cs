@@ -1,15 +1,5 @@
-using System.Collections;
-using System.Collections.Generic;
-using UnityEngine;
-
-
-
-
-
 namespace TalesPop.Objects.Items
 {
-    using static Common;
-
     internal interface ISwap
     {
         public void Perform(Item a, Item b);
@@ -22,10 +12,10 @@ namespace TalesPop.Objects.Items
             if (a == null || b == null)
                 return;
 
-            Bag bagA = a.SearchParentContainer();
-            Bag bagB = b.SearchParentContainer();
+            Inventory inventory1 = a.SearchParentContainer();
+            Inventory inventory2 = b.SearchParentContainer();
 
-            if (bagA == null || bagB == null)
+            if (inventory1 == null || inventory2 == null)
                 return;
 
             int slotId = (int)a.slotId;
@@ -37,11 +27,11 @@ namespace TalesPop.Objects.Items
             a.groupId = b.groupId;
             b.groupId = groupId;
 
-            bagA.Remove(a.uid);
-            bagB.Remove(b.uid);
+            inventory1.Remove(a.uid);
+            inventory2.Remove(b.uid);
 
-            bagA.Insert(b);
-            bagB.Insert(a);
+            inventory1.Insert(b);
+            inventory2.Insert(a);
         }
     }
 
@@ -73,10 +63,7 @@ namespace TalesPop.Objects.Items
 
     internal class SolidBase : ICollide
     {
-        public void Perform(Item destination, Item source)
-        {
-            swap.Perform(destination, source);
-        }
+        public void Perform(Item destination, Item source) => swap.Perform(destination, source);
 
         private readonly ISwap swap = new Swap();
     }
@@ -85,10 +72,21 @@ namespace TalesPop.Objects.Items
     {
         public void Perform(Item destination, Item source)
         {
-            if (destination is Bag bag && bag.EnableTakeItem(source))
-                bag.TakeItem(source);
+            if (source is Inventory inventory)
+            {
+                if (destination is ExtraPouch && inventory is ExtraPouch)
+                {
+                    swap.Perform(destination, source);
+                    return;
+                }
+
+                Item[] array = inventory.ContentArray;
+
+                foreach (Item item in array)
+                    Perform(destination, item);
+            }
             else
-                swap.Perform(destination, source);
+                (destination as Inventory).TakeItem(source);
         }
 
         private readonly ISwap swap = new Swap();

@@ -22,14 +22,16 @@ public static class Common
 
         Material = 0x0100,
         Potion  = 0x0200,
-        Bag     = 0x1FFF,
+        Pouch   = 0x400,
+        ExtraPouch = 0x800,
+        //Bag     = 0x1FFF,
     }
 
     public const string TALESPOP_ITEMS = "TalesPop.Items";
     public const int NULL_ID = -1;
     public const string EMPTY_STRING = "";
     public const ItemType ITEM_EQUIP_CAP = ItemType.Amulet;
-    public const ItemType ITEM_LAST_ENUM = ItemType.Bag;
+    //public const ItemType ITEM_LAST_ENUM = ItemType.Bag;
 
     public static void ForceQuit()
     {

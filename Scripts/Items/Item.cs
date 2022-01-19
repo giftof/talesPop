@@ -29,10 +29,7 @@ namespace TalesPop.Objects.Items
         [JsonProperty]
         public int materialId;
 
-        public Item(string json) : base(json)
-        {
-            SetProperties();
-        }
+        public Item(string json) : base(json) => SetProperties();
 
         public Item(JObject jObject) : base(jObject)
         {
@@ -51,18 +48,10 @@ namespace TalesPop.Objects.Items
         internal UnityAction<int, int> remove;
         [JsonIgnore]
         internal T_DELEGATE_T<Item, int> searchBag;
-        //[JsonIgnore]
-        //internal T_DELEGATE_T<bool, int> searchWrapper;
 
-        public void Interact()
-        {
-            interact?.Perform();
-        }
+        public void Interact() => interact?.Perform();
 
-        public void Collide(Item source)
-        {
-           collide?.Perform(this, source);
-        }
+        public void Collide(Item source) => collide?.Perform(this, source);
 
         public virtual int Increment(int amount)
         {
@@ -80,16 +69,12 @@ namespace TalesPop.Objects.Items
             return decrement;
         }
 
-        public void Remove()
-        {
-            remove?.Invoke(groupId, uid);
-        }
+        public void Remove() => remove?.Invoke(groupId, uid);
 
-        public Bag SearchParentContainer()
+        public Inventory SearchParentContainer()
         {
-            if (searchBag?.Invoke(groupId) is Bag bag)
-                return bag;
-
+            if (searchBag?.Invoke(groupId) is Inventory inventory)
+                return inventory;
             return null;
         }
 
@@ -107,7 +92,4 @@ namespace TalesPop.Objects.Items
             slotId = jObject[ItemArgs.slotId]? .Value<int>();
         }
     }
-
-
-
 }
