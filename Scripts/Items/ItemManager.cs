@@ -2,6 +2,7 @@ using System.Linq;
 using System.Collections.Generic;
 using Newtonsoft.Json.Linq;
 using UnityEngine;
+using TalesPop.Datas;
 
 
 
@@ -11,6 +12,7 @@ namespace TalesPop.Objects.Items
 
     public class ItemManager
     {
+        private static readonly TalesPopContainer<int, Item> popContainer = new TalesPopContainer<int, Item>();
         private static readonly Dictionary<int, Inventory> container = new Dictionary<int, Inventory>();
         private readonly Stack<Inventory> processInventory;
         private Inventory currentRootInventory;
@@ -20,6 +22,8 @@ namespace TalesPop.Objects.Items
         {
             this.factory = factory ?? new Normal();
             processInventory = new Stack<Inventory>();
+            popContainer.AppendContainerType(typeof(Pouch));
+            popContainer.AppendContainerType(typeof(ExtraPouch));
         }
 
         public Inventory CreateInventory(string json)
@@ -178,7 +182,7 @@ namespace TalesPop.Objects.Items
             {
 Debug.LogWarning($"SHOW BAG CONTENTS -- inventory [uid = {key}] [name = {inventory.name}]");
                 foreach (KeyValuePair<int, Item> pair in inventory.CONTAINER)
-                    Debug.Log($"item = {pair.Value.name}");
+                    Debug.Log($"item = {pair.Value.name}, uid = {pair.Value.uid}");
             }
         }
     }

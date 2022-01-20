@@ -1,10 +1,33 @@
+using System;
 using System.Collections.Generic;
 using UnityEngine;
 using TalesPop.Objects;
 using TalesPop.Objects.Items;
+using TalesPop.Datas;
+using Newtonsoft.Json;
+using Newtonsoft.Json.Linq;
 using static Common;
 
 
+public class D1
+{
+    public Dictionary<int, string> d1 = new Dictionary<int, string>
+    {
+        { 0, "zero" },
+        { 1, "one" },
+        { 2, "two" }
+    };
+}
+
+public class D2
+{
+    public readonly Dictionary<int, string> d2;
+
+    public D2(ref Dictionary<int, string> r)
+    {
+        d2 = r;
+    }
+}
 
 public class Test : MonoBehaviour
 {
@@ -75,74 +98,74 @@ public class Test : MonoBehaviour
 
     static string bag1 = "{" +
         "\"uid\": 100, " +
-        "\"name\": \"bag1 (equip slot duplicated)\", " +
+        "\"name\": \"bag1 (Pouch overflow)\", " +
         "\"nameId\": 100, " +
-        "\"itemType\": \"Bag\", " +
+        "\"itemType\": \"Pouch\", " +
         "\"capacity\": 5, " +
-        "\"inventoryType\": \"Equip\", " +
+        "\"inventoryType\": \"Pouch\", " +
         $"\"contents\": [{armor1}, {twoHand1}, {weapon1}]" +
         "}";
     static string bag2 = "{" +
         "\"uid\": 101, " +
-        "\"name\": \"bag2 (equip)\", " +
+        "\"name\": \"bag2 (Pouch)\", " +
         "\"nameId\": 100, " +
-        "\"itemType\": \"Bag\", " +
+        "\"itemType\": \"Pouch\", " +
         "\"capacity\": 5, " +
-        "\"inventoryType\": \"Equip\", " +
+        "\"inventoryType\": \"Pouch\", " +
         $"\"contents\": [{armor1}, {weapon1}]" +
         "}";
     static string bag3 = "{" +
         "\"uid\": 102, " +
-        "\"name\": \"bag3 (pouch overflow)\", " +
+        "\"name\": \"bag3 (ExtraPouch overflow)\", " +
         "\"nameId\": 101, " +
-        "\"itemType\": \"Bag\", " +
+        "\"itemType\": \"ExtraPouch\", " +
         "\"capacity\": 2, " +
-        "\"inventoryType\": \"Pouch\", " +
+        "\"inventoryType\": \"ExtraPouch\", " +
         $"\"contents\": [{potion1}, {potion2}, {armor2}]" +
         "}";
     static string bag4 = "{" +
         "\"uid\": 103, " +
-        "\"name\": \"bag4 (pouch)\", " +
+        "\"name\": \"bag4 (ExtraPouch)\", " +
         "\"nameId\": 101, " +
-        "\"itemType\": \"Bag\", " +
+        "\"itemType\": \"ExtraPouch\", " +
         "\"capacity\": 2, " +
-        "\"inventoryType\": \"Pouch\", " +
+        "\"inventoryType\": \"ExtraPouch\", " +
         $"\"contents\": [{potion3}, {potion4}]" +
         "}";
     static string bag5 = "{" +
         "\"uid\": 104, " +
-        "\"name\": \"bag5 (equip)\", " +
+        "\"name\": \"bag5 (Pouch)\", " +
         "\"nameId\": 100, " +
-        "\"itemType\": \"Bag\", " +
+        "\"itemType\": \"Pouch\", " +
         "\"capacity\": 5, " +
-        "\"inventoryType\": \"Equip\", " +
+        "\"inventoryType\": \"Pouch\", " +
         "\"contents\": []" +
         "}";
     static string bag6 = "{" +
         "\"uid\": 105, " +
-        "\"name\": \"bag6 (pouch overflow)\", " +
+        "\"name\": \"bag6 (ExtraPouch overflow)\", " +
         "\"nameId\": 101, " +
-        "\"itemType\": \"Bag\", " +
+        "\"itemType\": \"ExtraPouch\", " +
         "\"capacity\": 2, " +
-        "\"inventoryType\": \"Pouch\", " +
+        "\"inventoryType\": \"ExtraPouch\", " +
         $"\"contents\": [{bag1}, {bag2}, {bag3}, {bag4}]" +
         "}";
     static string bag7 = "{" +
         "\"uid\": 106, " +
-        "\"name\": \"bag7 (extra)\", " +
+        "\"name\": \"bag7 (ExtraPouch)\", " +
         "\"nameId\": 101, " +
-        "\"itemType\": \"Bag\", " +
+        "\"itemType\": \"ExtraPouch\", " +
         "\"capacity\": 2, " +
-        "\"inventoryType\": \"Extra\", " +
+        "\"inventoryType\": \"ExtraPouch\", " +
         $"\"contents\": [{bag2}, {bag4}]" +
         "}";
     static string bag8 = "{" +
         "\"uid\": 107, " +
-        "\"name\": \"bag8 (pouch)\", " +
+        "\"name\": \"bag8 (ExtraPouch)\", " +
         "\"nameId\": 101, " +
-        "\"itemType\": \"Bag\", " +
+        "\"itemType\": \"ExtraPouch\", " +
         "\"capacity\": 2, " +
-        "\"inventoryType\": \"Pouch\", " +
+        "\"inventoryType\": \"ExtraPouch\", " +
         $"\"contents\": [{bag7}, ]" +
         "}";
 
@@ -158,13 +181,86 @@ public class Test : MonoBehaviour
         //    var item = new Stackable(json);
         //});
 
-        TEST_MAKE_BAG1();
-        TEST_MAKE_BAG2();
-        TEST_INTERACT();
-        TEST_COLLIDE();
 
+        //TEST_MAKE_BAG1();
+
+        //TEST_MAKE_BAG2();
+
+        //TEST_INTERACT();
+        //TEST_COLLIDE();
+
+        //TEST_CONTAINER();
+
+        D1 d1 = new D1();
+        D2 d2 = new D2(ref d1.d1);
+
+        Debug.Log($"d1.d1.Count = {d1.d1.Count}, d2.d2.Count = {d2.d2.Count}");
+        d1.d1.Remove(0);
+        Debug.Log($"d1.d1.Count = {d1.d1.Count}, d2.d2.Count = {d2.d2.Count}");
+        d2.d2.Remove(1);
+        Debug.Log($"d1.d1.Count = {d1.d1.Count}, d2.d2.Count = {d2.d2.Count}");
 
         Debug.LogWarning("--- TEST END ---");
+    }
+
+    private void TEST_CONTAINER()
+    {
+        TalesPopContainer<int, Item> test_container = new TalesPopContainer<int, Item>();
+        int uid1 = 101; // bag
+        int uid2 = 106; // bag
+        int uid3 = 0; // item
+        int uid4 = 1; // item
+
+        TEST_MAKE_BAG2();
+        //itemManager.SHOW_BAG_CONTENTS(106);
+        //test_container.AppendContainerType(typeof(Amulet));
+
+
+        //test_container.AppendContainerType(typeof(Pouch));
+        //test_container.AppendContainerType(typeof(ExtraPouch));
+        test_container.AppendContainerType(typeof(Inventory));
+
+        Item search1 = itemManager.SearchItem(uid1);
+        Item search2 = itemManager.SearchItem(uid2);
+        Item search3 = itemManager.SearchItem(uid3);
+        Item search4 = itemManager.SearchItem(uid4);
+
+
+        Debug.Log($"search1 = {search1}");
+        Debug.Log($"search2 = {search2}");
+        Debug.Log($"search3 = {search3}");
+        Debug.Log($"search4 = {search4}");
+
+
+        test_container.Add(search1.uid, search1);
+        test_container.Add(search2.uid, search2);
+
+        Item item = test_container.SearchBy(101, typeof(Inventory));
+        //Debug.Log($"[result by my container] name = {item.name}, uid = {item.uid}, parent name = {item.SearchParentContainer().name}, parent uid = {item.SearchParentContainer().uid}");
+        Debug.Log($"[result by my container] name = {item.name}, uid = {item.uid}");
+        itemManager.SHOW_BAG_CONTENTS(item.uid);
+
+
+        //itemManager.SHOW_BAG_CONTENTS(search1.uid);
+        //itemManager.SHOW_BAG_CONTENTS(search2.uid);
+
+        test_container.SHOW_ALL_CONTENTS();
+        //Item search1 = itemManager.SearchItem(uid1);
+        //Debug.Log($"search1 = {search1}");
+        //Debug.Log($"search1 type = {search1.GetType()}");
+        //Debug.Log($"search1 type type = {search1.GetType().GetType()}");
+
+        //Item search2 = itemManager.SearchItem(uid2);
+        //Debug.Log($"search2 = {search2}");
+        //Debug.Log($"search2 type = {search2.GetType()}");
+        //Debug.Log($"search2 type type = {search2.GetType().GetType()}");
+
+        //Item search3 = itemManager.SearchItem(uid3);
+        //Debug.Log($"search3 = {search3}");
+
+        //Item search4 = itemManager.SearchItem(uid4);
+        //Debug.Log($"search4 = {search4}");
+
     }
 
     private void TEST_MAKE_BAG1()
@@ -264,8 +360,8 @@ public class Test : MonoBehaviour
         Debug.LogWarning($"a1?.name = {a1?.name}, a1?.uid = {a1?.uid}, a1?.Occupied = {a1?.Occupied}, a1?.groupId = {a1?.groupId}, a1?.slotId = {a1?.slotId}");
         Debug.LogWarning($"p3?.name = {p3?.name}, p3?.uid = {p3?.uid}, p3?.Occupied = {p3?.Occupied}, p3?.groupId = {p3?.groupId}, p3?.slotId = {p3?.slotId}");
 
-        itemManager.SHOW_BAG_CONTENTS(a1.SearchParentContainer().uid);
-        itemManager.SHOW_BAG_CONTENTS(p3.SearchParentContainer().uid);
+        itemManager.SHOW_BAG_CONTENTS(a1?.SearchParentContainer().uid ?? 0);
+        itemManager.SHOW_BAG_CONTENTS(p3?.SearchParentContainer().uid ?? 0);
 
         Debug.Log("");
         Debug.Log("");

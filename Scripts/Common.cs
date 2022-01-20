@@ -7,6 +7,8 @@ using System.Reflection;
 
 public static class Common
 {
+    public delegate int INT_DELEGATE_TYPE(Type _);
+
     /*
      * enum names MUST SAME with class(type) name
      * enum value MUST MATCH with slotType value

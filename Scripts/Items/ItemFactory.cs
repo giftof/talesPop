@@ -2,8 +2,6 @@ using Newtonsoft.Json.Linq;
 
 
 
-
-
 namespace TalesPop.Objects.Items
 {
     using static Common;
@@ -13,7 +11,8 @@ namespace TalesPop.Objects.Items
         public abstract Item Create(ItemType itemType, JObject jObject);
     }
 
-    internal class Normal : Factory
+    //internal class Normal : Factory
+    public class Normal : Factory
     {
         public override Item Create(ItemType itemType, JObject jObject)
         {

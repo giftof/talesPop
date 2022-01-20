@@ -6,8 +6,6 @@ using Newtonsoft.Json.Linq;
 
 
 
-
-
 namespace TalesPop.Objects
 {
     public delegate T1 T_DELEGATE_T<T1, T2>(T2 _);

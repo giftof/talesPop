@@ -4,6 +4,7 @@ using NUnit.Framework;
 using UnityEngine;
 using UnityEngine.TestTools;
 using TalesPop.Objects.Items;
+using TalesPop.Datas;
 using static Common;
 
 
@@ -79,74 +80,74 @@ public class Tests
 
     static string bag1 = "{" +
         "\"uid\": 100, " +
-        "\"name\": \"bag1 (equip slot duplicated)\", " +
+        "\"name\": \"bag1 (Pouch overflow)\", " +
         "\"nameId\": 100, " +
-        "\"itemType\": \"Bag\", " +
+        "\"itemType\": \"Pouch\", " +
         "\"capacity\": 5, " +
-        "\"inventoryType\": \"Equip\", " +
+        "\"inventoryType\": \"Pouch\", " +
         $"\"contents\": [{armor1}, {twoHand1}, {weapon1}]" +
         "}";
     static string bag2 = "{" +
         "\"uid\": 101, " +
-        "\"name\": \"bag2 (equip)\", " +
+        "\"name\": \"bag2 (Pouch)\", " +
         "\"nameId\": 100, " +
-        "\"itemType\": \"Bag\", " +
+        "\"itemType\": \"Pouch\", " +
         "\"capacity\": 5, " +
-        "\"inventoryType\": \"Equip\", " +
+        "\"inventoryType\": \"Pouch\", " +
         $"\"contents\": [{armor1}, {weapon1}]" +
         "}";
     static string bag3 = "{" +
         "\"uid\": 102, " +
-        "\"name\": \"bag3 (pouch overflow)\", " +
+        "\"name\": \"bag3 (ExtraPouch overflow)\", " +
         "\"nameId\": 101, " +
-        "\"itemType\": \"Bag\", " +
+        "\"itemType\": \"ExtraPouch\", " +
         "\"capacity\": 2, " +
-        "\"inventoryType\": \"Pouch\", " +
+        "\"inventoryType\": \"ExtraPouch\", " +
         $"\"contents\": [{potion1}, {potion2}, {armor2}]" +
         "}";
     static string bag4 = "{" +
         "\"uid\": 103, " +
-        "\"name\": \"bag4 (pouch)\", " +
+        "\"name\": \"bag4 (ExtraPouch)\", " +
         "\"nameId\": 101, " +
-        "\"itemType\": \"Bag\", " +
+        "\"itemType\": \"ExtraPouch\", " +
         "\"capacity\": 2, " +
-        "\"inventoryType\": \"Pouch\", " +
+        "\"inventoryType\": \"ExtraPouch\", " +
         $"\"contents\": [{potion3}, {potion4}]" +
         "}";
     static string bag5 = "{" +
         "\"uid\": 104, " +
-        "\"name\": \"bag5 (equip)\", " +
+        "\"name\": \"bag5 (Pouch)\", " +
         "\"nameId\": 100, " +
-        "\"itemType\": \"Bag\", " +
+        "\"itemType\": \"Pouch\", " +
         "\"capacity\": 5, " +
-        "\"inventoryType\": \"Equip\", " +
+        "\"inventoryType\": \"Pouch\", " +
         "\"contents\": []" +
         "}";
     static string bag6 = "{" +
         "\"uid\": 105, " +
-        "\"name\": \"bag6 (pouch overflow)\", " +
+        "\"name\": \"bag6 (ExtraPouch overflow)\", " +
         "\"nameId\": 101, " +
-        "\"itemType\": \"Bag\", " +
+        "\"itemType\": \"ExtraPouch\", " +
         "\"capacity\": 2, " +
-        "\"inventoryType\": \"Pouch\", " +
+        "\"inventoryType\": \"ExtraPouch\", " +
         $"\"contents\": [{bag1}, {bag2}, {bag3}, {bag4}]" +
         "}";
     static string bag7 = "{" +
         "\"uid\": 106, " +
-        "\"name\": \"bag7 (extra)\", " +
+        "\"name\": \"bag7 (ExtraPouch)\", " +
         "\"nameId\": 101, " +
-        "\"itemType\": \"Bag\", " +
+        "\"itemType\": \"ExtraPouch\", " +
         "\"capacity\": 2, " +
-        "\"inventoryType\": \"Extra\", " +
+        "\"inventoryType\": \"ExtraPouch\", " +
         $"\"contents\": [{bag2}, {bag4}]" +
         "}";
     static string bag8 = "{" +
         "\"uid\": 107, " +
-        "\"name\": \"bag8 (pouch)\", " +
+        "\"name\": \"bag8 (ExtraPouch)\", " +
         "\"nameId\": 101, " +
-        "\"itemType\": \"Bag\", " +
+        "\"itemType\": \"ExtraPouch\", " +
         "\"capacity\": 2, " +
-        "\"inventoryType\": \"Pouch\", " +
+        "\"inventoryType\": \"ExtraPouch\", " +
         $"\"contents\": [{bag7}, ]" +
         "}";
 

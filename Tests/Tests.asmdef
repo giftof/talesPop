@@ -4,9 +4,9 @@
     "references": [
         "UnityEngine.TestRunner",
         "UnityEditor.TestRunner",
-        "TEST_SCRIPTS_ASSEMBLY",
         "TEST_CHARACTORS_ASSEMBLY",
-        "TEST_ITEMS_ASSEMBLY"
+        "TEST_ITEMS_ASSEMBLY",
+        "TEST_SCRIPTS_ASSEMBLY"
     ],
     "includePlatforms": [
         "Editor"
