@@ -1,4 +1,5 @@
 using System;
+using System.Linq;
 using System.Collections.Generic;
 
 
@@ -37,6 +38,14 @@ namespace TalesPop.Datas
             return null;
         }
 
+        public void Clear()
+        {
+            Key[] array = container.Keys.ToArray();
+
+            foreach (Key key in array)
+                Remove(key);
+        }
+
         /*
          * Override
          */
@@ -55,6 +64,7 @@ namespace TalesPop.Datas
             get { return container.Count; }
         }
 
+        /* same as [] */
         public Value Find(Key key)
         {
             if (container.ContainsKey(key))
@@ -77,12 +87,12 @@ namespace TalesPop.Datas
     sealed public class MainContainer<Key, Value> : TalesPopContainer<Key, Value> where Value : class
     {
         private readonly ACQUIRE_KEY_DELEGATE<Key, Value> acquireKeyAction;
-        private readonly Dictionary<Key, Dictionary<Key, Value>> mirrorContainer;
+        private readonly Dictionary<Key, MirrorContainer<Key, Value>> mirrorContainer;
 
         internal MainContainer(ACQUIRE_KEY_DELEGATE<Key, Value> acquireKeyAction) : base()
         {
             this.acquireKeyAction = acquireKeyAction;
-            mirrorContainer = new Dictionary<Key, Dictionary<Key, Value>>();
+            mirrorContainer = new Dictionary<Key, MirrorContainer<Key, Value>>();
         }
 
         /*
@@ -91,30 +101,48 @@ namespace TalesPop.Datas
         public Value Search(Key mirrorKey, Key key)
         {
             return (mirrorContainer.ContainsKey(mirrorKey) && mirrorContainer[mirrorKey].ContainsKey(key))
-                ? mirrorContainer[mirrorKey][key]
+                ? mirrorContainer[mirrorKey].Find(key)
                 : null;
         }
 
-        public MirrorContainer<Key, Value> GetMirrorContainer(Key key)
+        public MirrorContainer<Key, Value> TakeMirrorContainer(Key key)
         {
             if (mirrorContainer.ContainsKey(key))
-                return new MirrorContainer<Key, Value>(Add, Remove, mirrorContainer[key]);
+                return mirrorContainer[key];
             return null;
         }
 
-        public void SetMirrorContainer(Key key, Dictionary<Key, Value> mirrorContainer)
+        public void AddMirrorContainer(Key key, Dictionary<Key, Value> container)
         {
+            if (this.mirrorContainer.ContainsKey(key))
+                return;
+
+            MirrorContainer<Key, Value> mirrorContainer = new MirrorContainer<Key, Value>(container)
+            {
+                SetAdd = Add,
+                SetRemove = Remove
+            };
+
             this.mirrorContainer.Add(key, mirrorContainer);
 
-            foreach (var pair in mirrorContainer)
-                if (!container.ContainsKey(pair.Key))
-                    container.Add(pair.Key, pair.Value);
+            foreach (var pair in container)
+                if (!base.container.ContainsKey(pair.Key))
+                    base.container.Add(pair.Key, pair.Value);
         }
 
         public MirrorContainer<Key, Value> MirrorContainer(Key key, Dictionary<Key, Value> mirrorContainer)
         {
-            SetMirrorContainer(key, mirrorContainer);
-            return GetMirrorContainer(key);
+            AddMirrorContainer(key, mirrorContainer);
+            return TakeMirrorContainer(key);
+        }
+
+        public void RemoveMirrorContainer(Key mirrorKey)
+        {
+            if (mirrorContainer.ContainsKey(mirrorKey))
+            {
+                mirrorContainer[mirrorKey].Clear();
+                mirrorContainer.Remove(mirrorKey);
+            }
         }
 
         /*
@@ -152,15 +180,30 @@ namespace TalesPop.Datas
 
     sealed public class MirrorContainer<Key, Value> : TalesPopContainer<Key, Value> where Value : class
     {
-        internal readonly Dictionary<Key, Value> mirrorContainer;
         internal ADD<Key, Value> add;
         internal REMOVE<Key> remove;
 
-        internal MirrorContainer(ADD<Key, Value> add, REMOVE<Key> remove, Dictionary<Key, Value> mirrorContainer) : base(mirrorContainer)
+        internal MirrorContainer(Dictionary<Key, Value> mirrorContainer) : base(mirrorContainer)
         {
-            this.add = add;
-            this.remove = remove;
         }
+
+        /*
+         * Behaviours
+         */
+
+        /*
+         * Internals
+         */
+        internal ADD<Key, Value> SetAdd
+        {
+            set { add = value; }
+        }
+
+        internal REMOVE<Key> SetRemove
+        {
+            set { remove = value; }
+        }
+
 
         /*
          * Overrides
