@@ -12,7 +12,7 @@ namespace TalesPop.Objects.Items
 
     public class ItemManager
     {
-        private static readonly TalesPopContainer<int, Item> popContainer = new TalesPopContainer<int, Item>();
+        private static readonly MainContainer<int, Item> popContainer = new MainContainer<int, Item>(GetGroupId);
         private static readonly Dictionary<int, Inventory> container = new Dictionary<int, Inventory>();
         private readonly Stack<Inventory> processInventory;
         private Inventory currentRootInventory;
@@ -22,8 +22,6 @@ namespace TalesPop.Objects.Items
         {
             this.factory = factory ?? new Normal();
             processInventory = new Stack<Inventory>();
-            popContainer.AppendContainerType(typeof(Pouch));
-            popContainer.AppendContainerType(typeof(ExtraPouch));
         }
 
         public Inventory CreateInventory(string json)
@@ -43,19 +41,19 @@ namespace TalesPop.Objects.Items
         /*
          * Behaviours
          */
-        public Item SearchItem(int inventoryKey, int uid)
+        public Item SearchItem(int itemUID)
         {
-            return SearchItemByUIDFromInventoryKey(inventoryKey, uid);
+            return popContainer.Search(itemUID);
         }
 
-        public Item SearchItem(Item bag, int uid)
+        public Item SearchItemInInventory(int inventoryUID, int itemUID)
         {
-            return SearchItemByUIDFromBag(bag, uid);
+            return popContainer.Search(inventoryUID, itemUID);
         }
 
-        public Item SearchItem(int uid)
+        public Dictionary<int, Item> SearchInventoryContainer(int inventoryUID)
         {
-            return SearchItemByUID(uid);
+            return popContainer.SearchDuplicateContainer(inventoryUID);
         }
 
         public Factory Factory
@@ -137,13 +135,13 @@ namespace TalesPop.Objects.Items
                 inventory.Remove(uid);
         }
 
-        private Item SearchItemByUIDFromInventoryKey(int key, int uid)
-        {
-            if (SearchItemByUID(key) is Inventory inventory)
-                return SearchItemByUIDFromBag(inventory, uid);
+        //private Item SearchItemByUIDFromInventoryKey(int key, int uid)
+        //{
+        //    if (SearchItemByUID(key) is Inventory inventory)
+        //        return SearchItemByUIDFromBag(inventory, uid);
 
-            return null;
-        }
+        //    return null;
+        //}
 
         private Item SearchItemByUID(int uid)
         {
@@ -168,6 +166,11 @@ namespace TalesPop.Objects.Items
                 return inventory.SearchInclude(uid);
 
             return null;
+        }
+
+        private static int GetGroupId(Item item)
+        {
+            return item.groupId;
         }
 
         /*

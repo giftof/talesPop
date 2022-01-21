@@ -1,103 +1,178 @@
 using System;
-using System.Linq;
 using System.Collections.Generic;
-using UnityEngine;
 
 
 
 namespace TalesPop.Datas
 {
-    sealed public class TalesPopContainer<Key, Value> where Value : class
+    public delegate Key ACQUIRE_KEY_DELEGATE<Key, Value>(Value _);
+    public delegate void ADD<Key, Value>(Key _, Value __);
+    public delegate void REMOVE<Key>(Key _);
+
+
+
+
+
+    public abstract class TalesPopContainer<Key, Value> where Value : class
     {
-        internal readonly Dictionary<Type, int> indexer;
-        internal readonly Dictionary<Key, Value> container;
-        internal List<Dictionary<Key, Value>> extraContainer;
-
-
+        protected readonly Dictionary<Key, Value> container;
 
         public TalesPopContainer()
         {
             container = new Dictionary<Key, Value>();
-            extraContainer = new List<Dictionary<Key, Value>>();
-            indexer = new Dictionary<Type, int>();
+        }
+
+        internal TalesPopContainer(Dictionary<Key, Value> mirrorContainer)
+        {
+            container = mirrorContainer;
         }
 
         /*
          * Behaviours
          */
-        public void AppendContainerType(Type type)
+        public Value Search(Key key)
         {
-            if (0 < container.Count)
-                throw new Exception("Add ContainerType Before input any data");
-
-            if (indexer.ContainsKey(type))
-                return;
-
-            indexer.Add(type, extraContainer.Count);
-            extraContainer.Add(new Dictionary<Key, Value>());
-        }
-
-        public Value Search(Key key) => container[key];
-
-        public Value SearchBy(Key key, params Type[] containerValueType)
-        {
-            foreach (Type type in containerValueType)
-            {
-                if (extraContainer[indexer[type]].ContainsKey(key))
-                    return extraContainer[indexer[type]][key];
-            }
-
+            if (container.ContainsKey(key))
+                return container[key];
             return null;
         }
 
-        public void Add(Key key, Value value)
+        /*
+         * Override
+         */
+        public bool ContainsKey(Key key)
+        {
+            return container.ContainsKey(key);
+        }
+
+        public bool ContainsValue(Value value)
+        {
+            return container.ContainsValue(value);
+        }
+
+        public int Count
+        {
+            get { return container.Count; }
+        }
+
+        public Value Find(Key key)
         {
             if (container.ContainsKey(key))
-                throw new Exception("Duplicated key");
+                return container[key];
 
-            var array = from item in indexer
-                        where IsSubOrSameType(value, item.Key)
-                        select item.Value;
+            throw new Exception($"Dont have such key {key}");
+        }
 
-            foreach (int idx in array)
-                extraContainer[idx].Add(key, value);
+        /*
+         * Abstracts
+         */
+        public abstract void Add(Key key, Value value);
+        public abstract void Remove(Key key);
+    }
+
+
+
+
+
+    sealed public class MainContainer<Key, Value> : TalesPopContainer<Key, Value> where Value : class
+    {
+        private readonly ACQUIRE_KEY_DELEGATE<Key, Value> acquireKeyAction;
+        private readonly Dictionary<Key, Dictionary<Key, Value>> mirrorContainer;
+
+        internal MainContainer(ACQUIRE_KEY_DELEGATE<Key, Value> acquireKeyAction) : base()
+        {
+            this.acquireKeyAction = acquireKeyAction;
+            mirrorContainer = new Dictionary<Key, Dictionary<Key, Value>>();
+        }
+
+        /*
+         * Behaviours
+         */
+        public Value Search(Key mirrorKey, Key key)
+        {
+            return (mirrorContainer.ContainsKey(mirrorKey) && mirrorContainer[mirrorKey].ContainsKey(key))
+                ? mirrorContainer[mirrorKey][key]
+                : null;
+        }
+
+        public MirrorContainer<Key, Value> GetMirrorContainer(Key key)
+        {
+            if (mirrorContainer.ContainsKey(key))
+                return new MirrorContainer<Key, Value>(Add, Remove, mirrorContainer[key]);
+            return null;
+        }
+
+        public void SetMirrorContainer(Key key, Dictionary<Key, Value> mirrorContainer)
+        {
+            this.mirrorContainer.Add(key, mirrorContainer);
+
+            foreach (var pair in mirrorContainer)
+                if (!container.ContainsKey(pair.Key))
+                    container.Add(pair.Key, pair.Value);
+        }
+
+        public MirrorContainer<Key, Value> MirrorContainer(Key key, Dictionary<Key, Value> mirrorContainer)
+        {
+            SetMirrorContainer(key, mirrorContainer);
+            return GetMirrorContainer(key);
+        }
+
+        /*
+         * Overrides
+         */
+        public override void Add(Key key, Value value)
+        {
+            if (container.ContainsKey(key))
+                throw new Exception("[Error] Exist key");
 
             container.Add(key, value);
+
+            Key dKey = acquireKeyAction(value);
+
+            if (mirrorContainer.ContainsKey(dKey))
+                mirrorContainer[dKey].Add(key, value);
         }
 
-        public void Remove(Key key)
+        public override void Remove(Key key)
         {
-            container.Remove(key);
+            if (container.ContainsKey(key))
+            {
+                Key dKey = acquireKeyAction(container[key]);
 
-            foreach (var element in extraContainer)
-                if (element.ContainsKey(key))
-                    element.Remove(key);
+                container.Remove(key);
+                if (mirrorContainer.ContainsKey(dKey))
+                    mirrorContainer[dKey].Remove(key);
+            }
+        }
+    }
+
+
+
+
+
+    sealed public class MirrorContainer<Key, Value> : TalesPopContainer<Key, Value> where Value : class
+    {
+        internal readonly Dictionary<Key, Value> mirrorContainer;
+        internal ADD<Key, Value> add;
+        internal REMOVE<Key> remove;
+
+        internal MirrorContainer(ADD<Key, Value> add, REMOVE<Key> remove, Dictionary<Key, Value> mirrorContainer) : base(mirrorContainer)
+        {
+            this.add = add;
+            this.remove = remove;
         }
 
         /*
-         * Private
+         * Overrides
          */
-        private bool IsSubOrSameType(Value value, Type type) => value.GetType().IsSubclassOf(type) || value.GetType().Equals(type);
-
-        /*
-         * TEST_CODE
-         */
-        public void SHOW_ALL_CONTENTS()
+        public override void Add(Key key, Value value)
         {
-            Debug.Log("----- main container -----");
-            foreach (var item in container)
-            {
-                Debug.Log($"key = {item.Key}, value = {item.Value}");
-            }
+            add?.Invoke(key, value);
+        }
 
-            foreach (var item in extraContainer)
-            {
-                Debug.Log("----- new extra container -----");
-                foreach (var element in item)
-                {
-                    Debug.Log($">> key = {element.Key}, value = {element.Value}");
-                }
-            }
+        public override void Remove(Key key)
+        {
+            remove?.Invoke(key);
         }
     }
 }

@@ -48,12 +48,9 @@ public static class Common
 
     public static T StringToEnum<T>(string from) where T : struct
     {
-        string name = Enum.GetNames(typeof(T)).FirstOrDefault(e => e.Equals(from));
-        T result = default;
+        //string name = Enum.GetNames(typeof(T)).FirstOrDefault(e => e.Equals(from));
 
-        if (name != null)
-            result = (T)Enum.Parse(typeof(T), name);
-        else
+        if (!Enum.TryParse(from, out T result))
         {
             Debug.LogError($"from = {from}");
             ForceQuit();
@@ -133,8 +130,5 @@ public static class Common
     //    b = temp;
     //}
 
-    public static bool IsSame<T>(T a, T b)
-    {
-        return a?.Equals(b) ?? false;
-    }
+    public static bool IsSame<T>(T a, T b) => (a == null && b == null) || (a?.Equals(b) ?? false);
 }

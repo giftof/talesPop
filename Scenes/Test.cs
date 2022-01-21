@@ -199,69 +199,71 @@ public class Test : MonoBehaviour
         Debug.Log($"d1.d1.Count = {d1.d1.Count}, d2.d2.Count = {d2.d2.Count}");
         d2.d2.Remove(1);
         Debug.Log($"d1.d1.Count = {d1.d1.Count}, d2.d2.Count = {d2.d2.Count}");
+        d1.d1 = null;
+        Debug.Log($"d1.d1.Count = {d1.d1?.Count}, d2.d2.Count = {d2.d2?.Count}");
 
         Debug.LogWarning("--- TEST END ---");
     }
 
-    private void TEST_CONTAINER()
-    {
-        TalesPopContainer<int, Item> test_container = new TalesPopContainer<int, Item>();
-        int uid1 = 101; // bag
-        int uid2 = 106; // bag
-        int uid3 = 0; // item
-        int uid4 = 1; // item
+    //private void TEST_CONTAINER()
+    //{
+    //    TalesPopContainer<int, Item> test_container = new TalesPopContainer<int, Item>();
+    //    int uid1 = 101; // bag
+    //    int uid2 = 106; // bag
+    //    int uid3 = 0; // item
+    //    int uid4 = 1; // item
 
-        TEST_MAKE_BAG2();
-        //itemManager.SHOW_BAG_CONTENTS(106);
-        //test_container.AppendContainerType(typeof(Amulet));
-
-
-        //test_container.AppendContainerType(typeof(Pouch));
-        //test_container.AppendContainerType(typeof(ExtraPouch));
-        test_container.AppendContainerType(typeof(Inventory));
-
-        Item search1 = itemManager.SearchItem(uid1);
-        Item search2 = itemManager.SearchItem(uid2);
-        Item search3 = itemManager.SearchItem(uid3);
-        Item search4 = itemManager.SearchItem(uid4);
+    //    TEST_MAKE_BAG2();
+    //    //itemManager.SHOW_BAG_CONTENTS(106);
+    //    //test_container.AppendContainerType(typeof(Amulet));
 
 
-        Debug.Log($"search1 = {search1}");
-        Debug.Log($"search2 = {search2}");
-        Debug.Log($"search3 = {search3}");
-        Debug.Log($"search4 = {search4}");
+    //    //test_container.AppendContainerType(typeof(Pouch));
+    //    //test_container.AppendContainerType(typeof(ExtraPouch));
+    //    test_container.AppendContainerType(typeof(Inventory));
+
+    //    Item search1 = itemManager.SearchItem(uid1);
+    //    Item search2 = itemManager.SearchItem(uid2);
+    //    Item search3 = itemManager.SearchItem(uid3);
+    //    Item search4 = itemManager.SearchItem(uid4);
 
 
-        test_container.Add(search1.uid, search1);
-        test_container.Add(search2.uid, search2);
-
-        Item item = test_container.SearchBy(101, typeof(Inventory));
-        //Debug.Log($"[result by my container] name = {item.name}, uid = {item.uid}, parent name = {item.SearchParentContainer().name}, parent uid = {item.SearchParentContainer().uid}");
-        Debug.Log($"[result by my container] name = {item.name}, uid = {item.uid}");
-        itemManager.SHOW_BAG_CONTENTS(item.uid);
+    //    Debug.Log($"search1 = {search1}");
+    //    Debug.Log($"search2 = {search2}");
+    //    Debug.Log($"search3 = {search3}");
+    //    Debug.Log($"search4 = {search4}");
 
 
-        //itemManager.SHOW_BAG_CONTENTS(search1.uid);
-        //itemManager.SHOW_BAG_CONTENTS(search2.uid);
+    //    test_container.Add(search1.uid, search1);
+    //    test_container.Add(search2.uid, search2);
 
-        test_container.SHOW_ALL_CONTENTS();
-        //Item search1 = itemManager.SearchItem(uid1);
-        //Debug.Log($"search1 = {search1}");
-        //Debug.Log($"search1 type = {search1.GetType()}");
-        //Debug.Log($"search1 type type = {search1.GetType().GetType()}");
+    //    Item item = test_container.SearchBy(101, typeof(Inventory));
+    //    //Debug.Log($"[result by my container] name = {item.name}, uid = {item.uid}, parent name = {item.SearchParentContainer().name}, parent uid = {item.SearchParentContainer().uid}");
+    //    Debug.Log($"[result by my container] name = {item.name}, uid = {item.uid}");
+    //    itemManager.SHOW_BAG_CONTENTS(item.uid);
 
-        //Item search2 = itemManager.SearchItem(uid2);
-        //Debug.Log($"search2 = {search2}");
-        //Debug.Log($"search2 type = {search2.GetType()}");
-        //Debug.Log($"search2 type type = {search2.GetType().GetType()}");
 
-        //Item search3 = itemManager.SearchItem(uid3);
-        //Debug.Log($"search3 = {search3}");
+    //    //itemManager.SHOW_BAG_CONTENTS(search1.uid);
+    //    //itemManager.SHOW_BAG_CONTENTS(search2.uid);
 
-        //Item search4 = itemManager.SearchItem(uid4);
-        //Debug.Log($"search4 = {search4}");
+    //    test_container.SHOW_ALL_CONTENTS();
+    //    //Item search1 = itemManager.SearchItem(uid1);
+    //    //Debug.Log($"search1 = {search1}");
+    //    //Debug.Log($"search1 type = {search1.GetType()}");
+    //    //Debug.Log($"search1 type type = {search1.GetType().GetType()}");
 
-    }
+    //    //Item search2 = itemManager.SearchItem(uid2);
+    //    //Debug.Log($"search2 = {search2}");
+    //    //Debug.Log($"search2 type = {search2.GetType()}");
+    //    //Debug.Log($"search2 type type = {search2.GetType().GetType()}");
+
+    //    //Item search3 = itemManager.SearchItem(uid3);
+    //    //Debug.Log($"search3 = {search3}");
+
+    //    //Item search4 = itemManager.SearchItem(uid4);
+    //    //Debug.Log($"search4 = {search4}");
+
+    //}
 
     private void TEST_MAKE_BAG1()
     {

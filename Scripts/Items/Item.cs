@@ -82,7 +82,8 @@ namespace TalesPop.Objects.Items
         public abstract int Space { get; }
         [JsonIgnore]
         public abstract int Occupied { get; internal set; }
-
+        [JsonIgnore]
+        public int GetGroupId => groupId;
         /*
          * Privates
          */
