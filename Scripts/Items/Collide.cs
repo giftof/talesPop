@@ -30,8 +30,8 @@ namespace TalesPop.Objects.Items
             inventory1.Remove(a.uid);
             inventory2.Remove(b.uid);
 
-            inventory1.Insert(b);
-            inventory2.Insert(a);
+            inventory1.Add(b);
+            inventory2.Add(a);
         }
     }
 

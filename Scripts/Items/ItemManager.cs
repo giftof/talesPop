@@ -1,4 +1,3 @@
-using System.Linq;
 using System.Collections.Generic;
 using Newtonsoft.Json.Linq;
 using UnityEngine;
@@ -13,10 +12,11 @@ namespace TalesPop.Objects.Items
     public class ItemManager
     {
         private static readonly MainContainer<int, Item> popContainer = new MainContainer<int, Item>(GetGroupId);
-        private static readonly Dictionary<int, Inventory> container = new Dictionary<int, Inventory>();
         private readonly Stack<Inventory> processInventory;
         private Inventory currentRootInventory;
         private Factory factory;
+
+
 
         public ItemManager(Factory factory = null)
         {
@@ -46,14 +46,14 @@ namespace TalesPop.Objects.Items
             return popContainer.Search(itemUID);
         }
 
-        public Item SearchItemInInventory(int inventoryUID, int itemUID)
+        public Item SearchItem(int inventoryUID, int itemUID)
         {
             return popContainer.Search(inventoryUID, itemUID);
         }
 
-        public Dictionary<int, Item> SearchInventoryContainer(int inventoryUID)
+        public MirrorContainer<int, Item> SearchMirrorContainer(int inventoryUID)
         {
-            return popContainer.SearchDuplicateContainer(inventoryUID);
+            return popContainer.TakeMirrorContainer(inventoryUID);
         }
 
         public Factory Factory
@@ -62,12 +62,18 @@ namespace TalesPop.Objects.Items
             set { factory = value; }
         }
 
+        public int Size => popContainer.Count;
+
+        public void Clear() => popContainer.Clear();
+
         /*
          * Privates
          */
         private Inventory CreateInventory(ItemType type, JObject jObject)
         {
-            Inventory currentInventory = factory.Create(type, jObject) as Inventory;
+            int uid = jObject[ObjectArgs.uid].Value<int>();
+            MirrorContainer<int, Item> mirrorContainer = popContainer.GenerateMirrorContainer(uid);
+            Inventory currentInventory = factory.Create(type, jObject, mirrorContainer) as Inventory;
 
             currentRootInventory = currentRootInventory ?? currentInventory;
             processInventory.Push(currentInventory);
@@ -82,90 +88,35 @@ namespace TalesPop.Objects.Items
                 }
             }
 
-            currentInventory = AddRootInventory(processInventory.Pop());
-            return currentInventory;
+            return processInventory.Pop();
         }
 
         private Item CreateItem(JToken token)
         {
-            JObject  jObject      = (JObject)token;
-            ItemType itemCategory = StringToEnum<ItemType>(jObject[ItemArgs.itemType].Value<string>());
-            Inventory inventory   = processInventory.Peek();
-            Item     item         = IsSame(ItemType.Pouch, itemCategory) || IsSame(ItemType.ExtraPouch, itemCategory)
-                                        ? CreateInventory(itemCategory, jObject)
-                                        : factory.Create(itemCategory, jObject);
-            int?     slotId       = inventory.EmptySlotId(item?.slotId);
+            JObject  jObject    = (JObject)token;
+            ItemType itemType   = StringToEnum<ItemType>(jObject[ItemArgs.itemType].Value<string>());
+            Inventory inventory = processInventory.Peek();
+            Item     item       = IsSame(ItemType.Pouch, itemType) || IsSame(ItemType.ExtraPouch, itemType)
+                                        ? CreateInventory(itemType, jObject)
+                                        : factory.Create(itemType, jObject);
+            int?     slotId     = inventory.EmptySlotId(item?.slotId);
 
-            if (slotId == null)
-                return null;
-
-            if (item == null)
-                return null;
-
-            if (inventory?.Validate(item) == null)
-                return null;
-
-            if (SearchItemByUID(item.uid) != null)
+            if (slotId == null || item == null || inventory?.Space == 0)
                 return null;
 
             item.groupId = inventory.uid;
             item.slotId = (int)slotId;
             item.remove = RemoveDelegate;
             item.searchBag = SearchItem;
-            inventory.AddForce(item);
+            inventory.Add(item);
 
             return item;
         }
 
-        private Inventory AddRootInventory(Inventory inventory)
-        {
-            if (processInventory.Count == 0)
-            {
-                if (!container.ContainsKey(inventory.uid))
-                    container.Add(inventory.uid, inventory);
-                else
-                    return null;
-            }
-            return inventory;
-        }
-
         private void RemoveDelegate(int key, int uid)
         {
-            if (SearchItemByUID(key) is Inventory inventory)
+            if (popContainer[key] is Inventory inventory)
                 inventory.Remove(uid);
-        }
-
-        //private Item SearchItemByUIDFromInventoryKey(int key, int uid)
-        //{
-        //    if (SearchItemByUID(key) is Inventory inventory)
-        //        return SearchItemByUIDFromBag(inventory, uid);
-
-        //    return null;
-        //}
-
-        private Item SearchItemByUID(int uid)
-        {
-            Item result = null;
-
-            foreach (KeyValuePair<int, Inventory> pair in container)
-            {
-                result = SearchItemByUIDFromBag(pair.Value, uid);
-                if (result != null)
-                    return result;
-            }
-
-            return result;
-        }
-
-        private Item SearchItemByUIDFromBag(Item source, int uid)
-        {
-            if (source.uid.Equals(uid))
-                return source;
-
-            if (source is Inventory inventory)
-                return inventory.SearchInclude(uid);
-
-            return null;
         }
 
         private static int GetGroupId(Item item)
@@ -176,14 +127,13 @@ namespace TalesPop.Objects.Items
         /*
          * TEST_CODE
          */
-        public int SIZE() => container.Count;
-        public Dictionary<int, Inventory> CONTAINER() => container;
+        public IReadOnlyDictionary<int, Item> CONTAINER() => popContainer.C;
         public void SHOW_BAG_CONTENTS(int key)
         {
-            
+
             if (SearchItem(key) is Inventory inventory)
             {
-Debug.LogWarning($"SHOW BAG CONTENTS -- inventory [uid = {key}] [name = {inventory.name}]");
+                Debug.LogWarning($"SHOW BAG CONTENTS -- inventory [uid = {key}] [name = {inventory.name}]");
                 foreach (KeyValuePair<int, Item> pair in inventory.CONTAINER)
                     Debug.Log($"item = {pair.Value.name}, uid = {pair.Value.uid}");
             }

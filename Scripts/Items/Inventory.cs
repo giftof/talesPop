@@ -2,6 +2,9 @@ using System.Linq;
 using System.Collections.Generic;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
+using TalesPop.Datas;
+
+
 
 
 
@@ -9,11 +12,15 @@ namespace TalesPop.Objects.Items
 {
     using static Common;
 
+
+
     internal static class InventoryArgs
     {
         public const string contents        = "contents";
         public const string inventoryType   = "inventoryType";
     }
+
+
 
     public enum SlotType
     {
@@ -30,40 +37,46 @@ namespace TalesPop.Objects.Items
         Some4       = 0x0100,
     }
 
+
+
     public enum InventoryType
     {
         Pouch       = 0x01,
         ExtraPouch  = 0x02,
     }
 
+
+
     sealed public class Pouch : Inventory
     {
-        public Pouch(JObject jObject, ref Dictionary<int, Item> container) : base(jObject, ref container)
+        public Pouch(JObject jObject, TalesPopContainer<int, Item> container) : base(jObject, container)
         {
             itemType = ItemType.Pouch;
         }
     }
 
+
+
     sealed public class ExtraPouch : Inventory
     {
-        public ExtraPouch(JObject jObject, ref Dictionary<int, Item> container) : base(jObject, ref container)
+        public ExtraPouch(JObject jObject, TalesPopContainer<int, Item> container) : base(jObject, container)
         {
             itemType = ItemType.ExtraPouch;
         }
     }
 
+
+
     public abstract class Inventory : Item
     {
         [JsonIgnore]
-        private readonly Dictionary<int, Item> mirrorContainer;
-        //[JsonIgnore]
-        //private readonly Dictionary<int, Item> container;
+        private readonly TalesPopContainer<int, Item> mirrorContainer;
         [JsonProperty]
         public JToken[] contents;
         [JsonProperty]
         public InventoryType inventoryType;
 
-        public Inventory(JObject jObject, ref Dictionary<int, Item> container) : base(jObject)
+        public Inventory(JObject jObject, TalesPopContainer<int, Item> container) : base(jObject)
         {
             mirrorContainer = container;
             Initialize();
@@ -72,121 +85,76 @@ namespace TalesPop.Objects.Items
         /*
          * Behaviours
          */
-        //public void AddForce(Item item)
-        //{
-        //    container.Add(item.uid, item);
-        //}
+        public int? EmptySlotId(int? presetId)
+        {
+            if (Space == 0)
+                return null;
 
-        //public void Insert(Item item)
-        //{
-        //    if (!container.ContainsKey(item.uid))
-        //        AddForce(item);
-        //}
+            if (presetId != null && mirrorContainer.C.FirstOrDefault(e => e.Value.slotId.Equals(presetId)).Value == null)
+                return presetId;
+            return EmptySlotId();
+        }
 
-        //public void InsertAndSetData(Item item)
-        //{
-        //    int? emptySlotId = EmptySlotId();
+        public int? EmptySlotId()
+        {
+            int slotId = 0;
 
-        //    if (emptySlotId == null || Space == 0)
-        //        return;
+            if (Space == 0)
+                return null;
 
-        //    item.slotId = (int)emptySlotId;
-        //    item.groupId = uid;
-        //    Insert(item);
-        //}
+            if (Occupied == 0)
+                return slotId;
 
-        //public void Remove(int uid)
-        //{
-        //    if (container.ContainsKey(uid))
-        //        container.Remove(uid);
-        //}
+            IEnumerable<int?> slotList =
+                from item in mirrorContainer.C
+                where item.Value.slotId != null
+                orderby item.Value.slotId ascending
+                select item.Value.slotId;
 
-        //public Item Validate(Item item)
-        //{
-        //    if (Space <= 0 || container.ContainsKey(item.uid))
-        //        return null;
+            foreach (int i in slotList)
+            {
+                if (slotId != i)
+                    break;
+                ++slotId;
+            }
 
-        //    return item;
-        //}
+            return slotId;
+        }
 
-        //public Item SearchInclude(int uid)
-        //{
-        //    foreach (KeyValuePair<int, Item> pair in container)
-        //    {
-        //        if (pair.Value is ExtraPouch extraPouch)
-        //        {
-        //            Item result = extraPouch.SearchInclude(uid);
+        public void Add(Item item)
+        {
+            mirrorContainer.Add(item.uid, item);
+        }
 
-        //            if (result != null)
-        //                return result;
-        //        }
+        public void Remove(int uid)
+        {
+            mirrorContainer.Remove(uid);
+        }
 
-        //        if (pair.Value.uid.Equals(uid))
-        //            return pair.Value;
-        //    }
+        public void TakeItem(Item item)
+        {
+            if (item is Stackable)
+                TakeStackable(item);
 
-        //    return null;
-        //}
+            if (item is Solidable)
+                TakeSolidable(item);
+        }
 
-        //public int? EmptySlotId(int? presetId)
-        //{
-        //    if (Space == 0)
-        //        return null;
-
-        //    if (presetId != null && container.FirstOrDefault(e => e.Value.slotId.Equals(presetId)).Value == null)
-        //        return presetId;
-
-        //    return EmptySlotId();
-        //}
-
-        //public int? EmptySlotId()
-        //{
-        //    int slotId = 0;
-
-        //    if (Space == 0)
-        //        return null;
-
-        //    if (Occupied == 0)
-        //        return slotId;
-
-        //    IEnumerable<int?> slotList = container.Where(e => e.Value.slotId != null).Select(e => e.Value.slotId).OrderBy(e => e);
-
-        //    foreach (int i in slotList)
-        //    {
-        //        if (slotId != i)
-        //            break;
-        //        ++slotId;
-        //    }
-
-        //    return slotId;
-        //}
-
-        //public void TakeItem(Item item)
-        //{
-        //    if (item is Stackable)
-        //        TakeStackable(item);
-
-        //    if (item is Solidable)
-        //        TakeSolidable(item);
-        //}
-
-        //public Item[] ContentArray
-        //{
-        //    get { return container.Values.ToArray(); }
-        //}
+        public Item[] ContentArray
+        {
+            get { return mirrorContainer.Values.ToArray(); }
+        }
 
         /*
          * Abstract
          */
         public override int Space
         {
-            //get { return (int)capacity - container.Count; }
             get { return (int)capacity - mirrorContainer.Count; }
         }
 
         public override int Occupied
         {
-            //get { return container.Count; }
             get { return mirrorContainer.Count; }
             internal set { }
         }
@@ -196,40 +164,43 @@ namespace TalesPop.Objects.Items
          */
         private void Initialize()
         {
-            //itemType = ItemType.Bag;
             interact = new ToggleBag();
             collide = new InventoryBase();
             inventoryType = StringToEnum<InventoryType>(jObject[InventoryArgs.inventoryType].Value<string>());
             contents = jObject[InventoryArgs.contents]?.Values<JToken>().ToArray();
         }
 
-        //private void TakeSolidable(Item item)
-        //{
-        //    if (0 < Space)
-        //    {
-        //        item.Remove();
-        //        InsertAndSetData(item);
-        //    }
-        //}
+        private void TakeSolidable(Item item)
+        {
+            if (0 < Space)
+            {
+                item.Remove();
+                item.groupId = groupId;
+                item.slotId = EmptySlotId();
 
-        //private void TakeStackable(Item item)
-        //{
-        //    IEnumerable<Item> array = container.Where(e => e.Value.nameId.Equals(item.nameId)).OrderBy(e => e.Value.slotId).Select(e => e.Value);
+                Add(item);
+            }
+        }
 
-        //    if (0 < array.Count())
-        //    {
-        //        foreach (Item i in array)
-        //        {
-        //            i.Increment(item.Decrement(i.Space));
+        private void TakeStackable(Item item)
+        {
+            IEnumerable<Item> array =
+                from pair in mirrorContainer.C
+                where pair.Value.nameId.Equals(item.nameId)
+                orderby pair.Value.slotId
+                select pair.Value;
 
-        //            if (item.Occupied == 0)
-        //                return;
-        //        }
-        //    }
+            foreach (Item element in array)
+            {
+                element.Increment(item.Decrement(element.Space));
 
-        //    if (0 < Space && 0 < item.Occupied)
-        //        InsertAndSetData(item);
-        //}
+                if (item.Occupied == 0)
+                    return;
+            }
+
+            if (0 < item.Occupied)
+                TakeSolidable(item);
+        }
 
         /*
          * Protection
@@ -240,7 +211,7 @@ namespace TalesPop.Objects.Items
         /*
          * TEST_CODE
          */
-        //public Dictionary<int, Item> CONTAINER => container;
+        public IReadOnlyDictionary<int, Item> CONTAINER => mirrorContainer.C;
     }
 
 }

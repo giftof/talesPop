@@ -2,6 +2,8 @@ using System;
 using System.Linq;
 using System.Collections.Generic;
 
+using UnityEngine;
+
 
 
 namespace TalesPop.Datas
@@ -46,6 +48,8 @@ namespace TalesPop.Datas
                 Remove(key);
         }
 
+        public IReadOnlyDictionary<Key, Value> C => container;
+
         /*
          * Override
          */
@@ -64,13 +68,25 @@ namespace TalesPop.Datas
             get { return container.Count; }
         }
 
-        /* same as [] */
-        public Value Find(Key key)
+        public IEnumerable<Value> Values
         {
-            if (container.ContainsKey(key))
-                return container[key];
+            get { return container.Values; }
+        }
 
-            throw new Exception($"Dont have such key {key}");
+        public IEnumerable<Key> Keys
+        {
+            get { return container.Keys; }
+        }
+
+        public Value this[Key key]
+        {
+            get
+            {
+                if (container.ContainsKey(key))
+                    return container[key];
+
+                throw new Exception($"Dont have such key {key}");
+            }
         }
 
         /*
@@ -78,6 +94,12 @@ namespace TalesPop.Datas
          */
         public abstract void Add(Key key, Value value);
         public abstract void Remove(Key key);
+
+        /*
+         * Secret
+         */
+        internal void OriginalAdd(Key key, Value value) => container.Add(key, value);
+        internal void OriginalRemove(Key key) => container.Remove(key);
     }
 
 
@@ -89,7 +111,7 @@ namespace TalesPop.Datas
         private readonly ACQUIRE_KEY_DELEGATE<Key, Value> acquireKeyAction;
         private readonly Dictionary<Key, MirrorContainer<Key, Value>> mirrorContainer;
 
-        internal MainContainer(ACQUIRE_KEY_DELEGATE<Key, Value> acquireKeyAction) : base()
+        public MainContainer(ACQUIRE_KEY_DELEGATE<Key, Value> acquireKeyAction) : base()
         {
             this.acquireKeyAction = acquireKeyAction;
             mirrorContainer = new Dictionary<Key, MirrorContainer<Key, Value>>();
@@ -101,7 +123,7 @@ namespace TalesPop.Datas
         public Value Search(Key mirrorKey, Key key)
         {
             return (mirrorContainer.ContainsKey(mirrorKey) && mirrorContainer[mirrorKey].ContainsKey(key))
-                ? mirrorContainer[mirrorKey].Find(key)
+                ? mirrorContainer[mirrorKey][key]
                 : null;
         }
 
@@ -112,28 +134,16 @@ namespace TalesPop.Datas
             return null;
         }
 
-        public void AddMirrorContainer(Key key, Dictionary<Key, Value> container)
+        public MirrorContainer<Key, Value> GenerateMirrorContainer(Key key)
         {
-            if (this.mirrorContainer.ContainsKey(key))
-                return;
-
-            MirrorContainer<Key, Value> mirrorContainer = new MirrorContainer<Key, Value>(container)
+            MirrorContainer<Key, Value> mirrorContainer = new MirrorContainer<Key, Value>(new Dictionary<Key, Value>())
             {
                 SetAdd = Add,
                 SetRemove = Remove
             };
 
             this.mirrorContainer.Add(key, mirrorContainer);
-
-            foreach (var pair in container)
-                if (!base.container.ContainsKey(pair.Key))
-                    base.container.Add(pair.Key, pair.Value);
-        }
-
-        public MirrorContainer<Key, Value> MirrorContainer(Key key, Dictionary<Key, Value> mirrorContainer)
-        {
-            AddMirrorContainer(key, mirrorContainer);
-            return TakeMirrorContainer(key);
+            return mirrorContainer;
         }
 
         public void RemoveMirrorContainer(Key mirrorKey)
@@ -150,6 +160,7 @@ namespace TalesPop.Datas
          */
         public override void Add(Key key, Value value)
         {
+            Debug.Log($"container.Count = {container.Count}");
             if (container.ContainsKey(key))
                 throw new Exception("[Error] Exist key");
 
@@ -158,7 +169,7 @@ namespace TalesPop.Datas
             Key dKey = acquireKeyAction(value);
 
             if (mirrorContainer.ContainsKey(dKey))
-                mirrorContainer[dKey].Add(key, value);
+                mirrorContainer[dKey].OriginalAdd(key, value);
         }
 
         public override void Remove(Key key)
@@ -169,7 +180,7 @@ namespace TalesPop.Datas
 
                 container.Remove(key);
                 if (mirrorContainer.ContainsKey(dKey))
-                    mirrorContainer[dKey].Remove(key);
+                    mirrorContainer[dKey].OriginalRemove(key);
             }
         }
     }

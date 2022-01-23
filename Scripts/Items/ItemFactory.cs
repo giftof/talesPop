@@ -1,5 +1,6 @@
 using System.Collections.Generic;
 using Newtonsoft.Json.Linq;
+using TalesPop.Datas;
 
 
 
@@ -9,19 +10,19 @@ namespace TalesPop.Objects.Items
 
     public abstract class Factory
     {
-        public abstract Item Create(ItemType itemType, JObject jObject, ref Dictionary<int, Item> dictionary);
+        public abstract Item Create(ItemType itemType, JObject jObject, TalesPopContainer<int, Item> container);
         public abstract Item Create(ItemType itemType, JObject jObject);
     }
 
     //internal class Normal : Factory
     public class Normal : Factory
     {
-        public override Item Create(ItemType itemType, JObject jObject, ref Dictionary<int, Item> dictionary)
+        public override Item Create(ItemType itemType, JObject jObject, TalesPopContainer<int, Item> container)
         {
             return itemType switch
             {
-                ItemType.Pouch => new Pouch(jObject, ref dictionary),
-                ItemType.ExtraPouch => new ExtraPouch(jObject, ref dictionary),
+                ItemType.Pouch => new Pouch(jObject, container),
+                ItemType.ExtraPouch => new ExtraPouch(jObject, container),
                 _ => null,
             };
         }
@@ -45,13 +46,13 @@ namespace TalesPop.Objects.Items
 
     internal class Blessed : Factory
     {
-        public override Item Create(ItemType itemType, JObject jObject, ref Dictionary<int, Item> dictionary) => null;
+        public override Item Create(ItemType itemType, JObject jObject, TalesPopContainer<int, Item> container) => null;
         public override Item Create(ItemType itemType, JObject jObject) => null;
     }
 
     internal class Cursed : Factory
     {
-        public override Item Create(ItemType itemType, JObject jObject, ref Dictionary<int, Item> dictionary) => null;
+        public override Item Create(ItemType itemType, JObject jObject, TalesPopContainer<int, Item> container) => null;
         public override Item Create(ItemType itemType, JObject jObject) => null;
     }
 }

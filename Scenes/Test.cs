@@ -182,25 +182,31 @@ public class Test : MonoBehaviour
         //});
 
 
+
+
         //TEST_MAKE_BAG1();
 
-        //TEST_MAKE_BAG2();
+        TEST_MAKE_BAG2();
 
         //TEST_INTERACT();
         //TEST_COLLIDE();
 
+
+
+
+
         //TEST_CONTAINER();
 
-        D1 d1 = new D1();
-        D2 d2 = new D2(ref d1.d1);
+        //D1 d1 = new D1();
+        //D2 d2 = new D2(ref d1.d1);
 
-        Debug.Log($"d1.d1.Count = {d1.d1.Count}, d2.d2.Count = {d2.d2.Count}");
-        d1.d1.Remove(0);
-        Debug.Log($"d1.d1.Count = {d1.d1.Count}, d2.d2.Count = {d2.d2.Count}");
-        d2.d2.Remove(1);
-        Debug.Log($"d1.d1.Count = {d1.d1.Count}, d2.d2.Count = {d2.d2.Count}");
-        d1.d1 = null;
-        Debug.Log($"d1.d1.Count = {d1.d1?.Count}, d2.d2.Count = {d2.d2?.Count}");
+        //Debug.Log($"d1.d1.Count = {d1.d1.Count}, d2.d2.Count = {d2.d2.Count}");
+        //d1.d1.Remove(0);
+        //Debug.Log($"d1.d1.Count = {d1.d1.Count}, d2.d2.Count = {d2.d2.Count}");
+        //d2.d2.Remove(1);
+        //Debug.Log($"d1.d1.Count = {d1.d1.Count}, d2.d2.Count = {d2.d2.Count}");
+        //d1.d1 = null;
+        //Debug.Log($"d1.d1.Count = {d1.d1?.Count}, d2.d2.Count = {d2.d2?.Count}");
 
         Debug.LogWarning("--- TEST END ---");
     }
@@ -292,14 +298,14 @@ public class Test : MonoBehaviour
     {
         Debug.LogWarning("TEST_INTERACT begin");
 
-        Debug.LogWarning($"container count = {itemManager.SIZE()}");
+        Debug.LogWarning($"container count = {itemManager.Size}");
 
         Inventory equip1 = itemManager.CreateInventory(bag2);
         Inventory equip2 = itemManager.CreateInventory(bag5);
         Debug.Log($">>>> bag2 type = {equip1?.inventoryType}, contentCNT = {equip1?.Occupied}");
         Debug.Log($">>>> bag5 type = {equip2?.inventoryType}, contentCNT = {equip2?.Occupied}");
 
-        Debug.LogWarning($"container count = {itemManager.SIZE()}");
+        Debug.LogWarning($"container count = {itemManager.Size}");
 
         Item p1 = itemManager.SearchItem(4);
         Item p2 = itemManager.SearchItem(5);
@@ -318,14 +324,14 @@ public class Test : MonoBehaviour
     {
         Debug.LogWarning("TEST_COLLIDE begin");
 
-        Debug.LogWarning($"container count = {itemManager.SIZE()}");
+        Debug.LogWarning($"container count = {itemManager.Size}");
 
         Inventory pouch1 = itemManager.CreateInventory(bag4);
         Inventory pouch2 = itemManager.CreateInventory(bag8);
         Debug.Log($">>>> bag4 type = {pouch1?.inventoryType}, contentCNT = {pouch1?.Occupied}");
         Debug.Log($">>>> bag8 type = {pouch2?.inventoryType}, contentCNT = {pouch2?.Occupied}");
 
-        Debug.LogWarning($"container count = {itemManager.SIZE()}");
+        Debug.LogWarning($"container count = {itemManager.Size}");
 
         Item p1 = itemManager.SearchItem(4);
         Item p2 = itemManager.SearchItem(5);

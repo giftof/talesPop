@@ -11,7 +11,7 @@ namespace TalesPop.Objects
     public delegate T1 T_DELEGATE_T<T1, T2>(T2 _);
     public delegate T1 T_DELEGATE_TT<T1, T2, T3>(T2 _, T3 __);
 
-    internal static class ObjectArgs
+    public static class ObjectArgs
     {
         public const string uid     = "uid";
         public const string name    = "name";
