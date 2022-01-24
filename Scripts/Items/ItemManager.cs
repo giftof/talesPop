@@ -30,7 +30,7 @@ namespace TalesPop.Objects.Items
             string typeString = jObject[ItemArgs.itemType].Value<string>();
             ItemType itemType = StringToEnum<ItemType>(typeString);
 
-            if (IsInventory(itemType))
+            if (IsInventoryType(itemType))
                 return CreateInventory(itemType, jObject, true);
 
             return null;
@@ -55,19 +55,19 @@ namespace TalesPop.Objects.Items
         /*
          * Privates
          */
-        private bool IsInventory(ItemType type) => ItemType.Pouch.Equals(type) || ItemType.ExtraPouch.Equals(type);
+        private bool IsInventoryType(ItemType type) => ItemType.Pouch.Equals(type) || ItemType.ExtraPouch.Equals(type);
 
         private Inventory CreateInventory(ItemType type, JObject jObject, bool first = false)
         {
             int uid = jObject[ObjectArgs.uid].Value<int>();
             MirrorContainer<int, Item> mirrorContainer = popContainer.GenerateMirrorContainer(uid);
-            Inventory currentInventory = factory.Create(type, jObject, mirrorContainer) as Inventory;
+            Inventory inventory = factory.Create(type, jObject, mirrorContainer) as Inventory;
 
             if (first)
-                popContainer.Add(currentInventory.uid, currentInventory);
-            processInventory.Push(currentInventory);
+                popContainer.Add(inventory.uid, inventory);
+            processInventory.Push(inventory);
 
-            foreach (JToken element in currentInventory.contents)
+            foreach (JToken element in inventory.contents)
             {
                 if (CreateItem(element) == null)
                 {
@@ -84,7 +84,7 @@ namespace TalesPop.Objects.Items
             JObject  jObject    = (JObject)token;
             ItemType itemType   = StringToEnum<ItemType>(jObject[ItemArgs.itemType].Value<string>());
             Inventory inventory = processInventory.Peek();
-            Item     item       = IsInventory(itemType)
+            Item     item       = IsInventoryType(itemType)
                                         ? CreateInventory(itemType, jObject)
                                         : factory.Create(itemType, jObject);
             int?     slotId     = inventory.EmptySlotId(item?.slotId);
@@ -110,23 +110,12 @@ namespace TalesPop.Objects.Items
                 inventory.Remove(uid);
         }
 
-        private static int GetUID(Item item)
-        {
-            return item.uid;
-        }
-
-        private static int GetGroupId(Item item)
-        {
-            return item.groupId;
-        }
-
+        private static int GetUID(Item item) => item.uid;
+        private static int GetGroupId(Item item) => item.groupId;
         private static int[] GetChildrenId(Item item)
         {
             if (item is Inventory inventory)
-            {
                 return inventory.KeyArray;
-            }
-
             return null;
         }
 

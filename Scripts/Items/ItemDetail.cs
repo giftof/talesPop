@@ -134,7 +134,7 @@ namespace TalesPop.Objects.Items
 
 
 
-    sealed internal class Weapon : Solidable
+    sealed internal class Weapon : Equipable
     {
 
         private void Initialize()
@@ -152,7 +152,7 @@ namespace TalesPop.Objects.Items
 
 
 
-    sealed internal class Armor : Solidable
+    sealed internal class Armor : Equipable
     {
         private void Initialize()
         {

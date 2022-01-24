@@ -2,6 +2,7 @@ using UnityEngine.Events;
 using System;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
+using UnityEngine;
 
 
 
@@ -49,7 +50,12 @@ namespace TalesPop.Objects.Items
         [JsonIgnore]
         internal T_DELEGATE_T<Item, int> searchBag;
 
-        public void Interact() => interact?.Perform();
+        //public void Interact() => interact?.Perform();
+        public void Interact()
+        {
+Debug.Log($"interact = {interact}");
+            interact?.Perform();
+        }
 
         public void Collide(Item source) => collide?.Perform(this, source);
 

@@ -22,6 +22,9 @@ namespace TalesPop.Objects.Items
             if (inventory1 == null || inventory2 == null)
                 return;
 
+            inventory1.Remove(a.uid);
+            inventory2.Remove(b.uid);
+
             int slotId = (int)a.slotId;
             int groupId = a.groupId;
 
@@ -30,9 +33,6 @@ namespace TalesPop.Objects.Items
 
             a.groupId = b.groupId;
             b.groupId = groupId;
-
-            inventory1.Remove(a.uid);
-            inventory2.Remove(b.uid);
 
             inventory1.Add(b);
             inventory2.Add(a);
@@ -48,10 +48,7 @@ namespace TalesPop.Objects.Items
     {
         public void Perform(Item destination, Item source)
         {
-            Debug.Log("hey im perform of stackBase");
-
-
-            if (!destination?.nameId.Equals(source?.nameId) ?? false)
+            if (!source.nameId.Equals(destination?.nameId))
                 swap.Perform(destination, source);
             else
                 Merge(destination, source);
