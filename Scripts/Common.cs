@@ -3,6 +3,9 @@ using System;
 using System.Linq;
 using System.Reflection;
 
+using TalesPop.Objects;
+
+
 
 
 public static class Common
@@ -29,11 +32,25 @@ public static class Common
         //Bag     = 0x1FFF,
     }
 
+    public enum CharactorType
+    {
+        knight      = 0x0001,
+        blacksmith  = 0x0002,
+
+        thief       = 0x0004,
+        bard        = 0x0008,
+
+        alchemist   = 0x0010,
+        cleric      = 0x0020,
+
+        wizard      = 0x0040,
+        necromencer = 0x0080,
+    }
+
     public const string TALESPOP_ITEMS = "TalesPop.Items";
     public const int NULL_ID = -1;
     public const string EMPTY_STRING = "";
     public const ItemType ITEM_EQUIP_CAP = ItemType.Amulet;
-    //public const ItemType ITEM_LAST_ENUM = ItemType.Bag;
 
     public static void ForceQuit()
     {
@@ -130,5 +147,5 @@ public static class Common
     //    b = temp;
     //}
 
-    public static bool IsSame<T>(T a, T b) => (a == null && b == null) || (a?.Equals(b) ?? false);
+    //public static bool IsSame<T>(T a, T b) => (a == null && b == null) || (a?.Equals(b) ?? false);
 }

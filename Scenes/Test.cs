@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using UnityEngine;
 using TalesPop.Objects;
 using TalesPop.Objects.Items;
+using TalesPop.Objects.Charactors;
 using TalesPop.Datas;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
@@ -103,7 +104,8 @@ public class Test : MonoBehaviour
         "\"itemType\": \"Pouch\", " +
         "\"capacity\": 5, " +
         "\"inventoryType\": \"Pouch\", " +
-        $"\"contents\": [{armor1}, {twoHand1}, {weapon1}]" +
+        //$"\"contents\": [{armor1}, {twoHand1}, {weapon1}]" +
+        $"\"contents\": [{twoHand1}]" +
         "}";
     static string bag2 = "{" +
         "\"uid\": 101, " +
@@ -113,6 +115,7 @@ public class Test : MonoBehaviour
         "\"capacity\": 5, " +
         "\"inventoryType\": \"Pouch\", " +
         $"\"contents\": [{armor1}, {weapon1}]" +
+        //$"\"contents\": []" +
         "}";
     static string bag3 = "{" +
         "\"uid\": 102, " +
@@ -148,7 +151,8 @@ public class Test : MonoBehaviour
         "\"itemType\": \"ExtraPouch\", " +
         "\"capacity\": 2, " +
         "\"inventoryType\": \"ExtraPouch\", " +
-        $"\"contents\": [{bag1}, {bag2}, {bag3}, {bag4}]" +
+        //$"\"contents\": [{bag1}, {bag2}, {bag3}, {bag4}]" +
+        $"\"contents\": [{bag1}, {bag2}]" +
         "}";
     static string bag7 = "{" +
         "\"uid\": 106, " +
@@ -170,10 +174,20 @@ public class Test : MonoBehaviour
         "}";
 
     ItemManager itemManager = new ItemManager();
+    CharactorManager charactorManager = new CharactorManager();
+
+
 
     void Start()
     {
-        Debug.LogWarning("--- TEST BEGIN ---");
+        Debug.LogWarning("--- CHARACTOR TEST BEGIN ---");
+
+        charactorManager.Clear();
+
+        Debug.LogWarning("--- CHARACTOR TEST END ---");
+
+
+        Debug.LogWarning("--- ITEM TEST BEGIN ---");
         // Use the Assert class to test conditions
 
 
@@ -183,11 +197,11 @@ public class Test : MonoBehaviour
 
 
 
-        //itemManager.Clear();
-        //TEST_MAKE_BAG1();
+        itemManager.Clear();
+        TEST_MAKE_BAG1();
 
-        //itemManager.Clear();
-        //TEST_MAKE_BAG2();
+        itemManager.Clear();
+        TEST_MAKE_BAG2();
 
         itemManager.Clear();
         TEST_INTERACT();
@@ -212,7 +226,7 @@ public class Test : MonoBehaviour
         //d1.d1 = null;
         //Debug.Log($"d1.d1.Count = {d1.d1?.Count}, d2.d2.Count = {d2.d2?.Count}");
 
-        Debug.LogWarning("--- TEST END ---");
+        Debug.LogWarning("--- ITEM TEST END ---");
     }
 
     //private void TEST_CONTAINER()
@@ -395,9 +409,21 @@ public class Test : MonoBehaviour
         Debug.LogWarning($"p3?.name = {p3?.name}, p3?.uid = {p3?.uid}, p3?.Occupied = {p3?.Occupied}, p3?.groupId = {p3?.groupId}, p3?.slotId = {p3?.slotId}");
         Debug.LogWarning($"p4?.name = {p4?.name}, p4?.uid = {p4?.uid}, p4?.Occupied = {p4?.Occupied}, p4?.groupId = {p4?.groupId}, p4?.slotId = {p4?.slotId}");
         itemManager.POP_CONTAINER().SHOW_CONTENTS();
-
         Debug.Log("");
 
+        pouch1?.Collide(pouch2);
+        Debug.LogWarning($"p1?.name = {p1?.name}, p1?.uid = {p1?.uid}, p1?.Occupied = {p1?.Occupied}, p1?.groupId = {p1?.groupId}, p1?.slotId = {p1?.slotId}");
+        Debug.LogWarning($"p3?.name = {p3?.name}, p3?.uid = {p3?.uid}, p3?.Occupied = {p3?.Occupied}, p3?.groupId = {p3?.groupId}, p3?.slotId = {p3?.slotId}");
+        Debug.LogWarning($"p4?.name = {p4?.name}, p4?.uid = {p4?.uid}, p4?.Occupied = {p4?.Occupied}, p4?.groupId = {p4?.groupId}, p4?.slotId = {p4?.slotId}");
+        Debug.Log("");
+        itemManager.POP_CONTAINER().SHOW_CONTENTS();
+        Debug.Log("");
+
+        pouch2?.Collide(pouch1);
+        Debug.LogWarning($"p1?.name = {p1?.name}, p1?.uid = {p1?.uid}, p1?.Occupied = {p1?.Occupied}, p1?.groupId = {p1?.groupId}, p1?.slotId = {p1?.slotId}");
+        Debug.LogWarning($"p3?.name = {p3?.name}, p3?.uid = {p3?.uid}, p3?.Occupied = {p3?.Occupied}, p3?.groupId = {p3?.groupId}, p3?.slotId = {p3?.slotId}");
+        Debug.LogWarning($"p4?.name = {p4?.name}, p4?.uid = {p4?.uid}, p4?.Occupied = {p4?.Occupied}, p4?.groupId = {p4?.groupId}, p4?.slotId = {p4?.slotId}");
+        Debug.Log("");
         /*
         //Debug.LogWarning($"a1?.name = {a1?.name}, a1?.uid = {a1?.uid}, a1?.Occupied = {a1?.Occupied}, a1?.groupId = {a1?.groupId}, a1?.slotId = {a1?.slotId}");
         Debug.LogWarning($"p3?.name = {p3?.name}, p3?.uid = {p3?.uid}, p3?.Occupied = {p3?.Occupied}, p3?.groupId = {p3?.groupId}, p3?.slotId = {p3?.slotId}");

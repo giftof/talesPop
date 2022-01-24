@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
 using TalesPop.Datas;
+using UnityEngine;
 
 
 
@@ -153,11 +154,7 @@ namespace TalesPop.Objects.Items
         /*
          * Abstract
          */
-        public override int Space
-        {
-            get { return (int)capacity - mirrorContainer.Count; }
-        }
-
+        public override int Space => (int)capacity - mirrorContainer.Count;
         public override int Occupied
         {
             get { return mirrorContainer.Count; }
@@ -180,25 +177,23 @@ namespace TalesPop.Objects.Items
             if (0 < Space)
             {
                 item.Remove();
-                item.groupId = groupId;
+                item.groupId = uid;
                 item.slotId = EmptySlotId();
-
                 Add(item);
             }
         }
 
         private void TakeStackable(Item item)
         {
-            IEnumerable<Item> array =
-                from pair in mirrorContainer.C
-                where pair.Value.nameId.Equals(item.nameId)
-                orderby pair.Value.slotId
-                select pair.Value;
+            Item[] array = mirrorContainer.C
+                .Where(e => e.Value.nameId.Equals(item.nameId))
+                .OrderBy(e => e.Value.slotId)
+                .Select(e => e.Value)
+                .ToArray();
 
             foreach (Item element in array)
             {
                 element.Increment(item.Decrement(element.Space));
-
                 if (item.Occupied == 0)
                     return;
             }

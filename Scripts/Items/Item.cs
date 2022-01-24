@@ -38,6 +38,11 @@ namespace TalesPop.Objects.Items
             SetProperties();
         }
 
+        //~Item()
+        //{
+        //    Debug.LogError($"uid ({uid}) DESTROY!");
+        //}
+
         /*
          * Behaviours
          */
@@ -50,12 +55,7 @@ namespace TalesPop.Objects.Items
         [JsonIgnore]
         internal T_DELEGATE_T<Item, int> searchBag;
 
-        //public void Interact() => interact?.Perform();
-        public void Interact()
-        {
-Debug.Log($"interact = {interact}");
-            interact?.Perform();
-        }
+        public void Interact() => interact?.Perform();
 
         public void Collide(Item source) => collide?.Perform(this, source);
 

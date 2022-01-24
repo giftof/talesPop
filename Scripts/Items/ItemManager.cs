@@ -20,7 +20,7 @@ namespace TalesPop.Objects.Items
 
         public ItemManager(Factory factory = null)
         {
-            this.factory = factory ?? new Normal();
+            this.factory = factory ?? new NormalItemFactory();
             processInventory = new Stack<Inventory>();
         }
 
@@ -39,6 +39,8 @@ namespace TalesPop.Objects.Items
         /*
          * Behaviours
          */
+        public static Item Selected { get; set; }
+        public static Item Collided { get; set; }
         public Item SearchItem(int itemUID) => popContainer.Search(itemUID);
         public Item SearchItem(int inventoryUID, int itemUID) => popContainer.Search(inventoryUID, itemUID);
         public Factory Factory
@@ -51,6 +53,9 @@ namespace TalesPop.Objects.Items
         public void Clear() => popContainer.Clear();
         public void Remove(int uid) => popContainer.Remove(uid);
         public void Add(Item item) => popContainer.Add(item.uid, item);
+
+        public void Interact() => Selected?.Interact();
+        public void Collide() => Selected?.Collide(Collided);
 
         /*
          * Privates
@@ -90,7 +95,7 @@ namespace TalesPop.Objects.Items
             int?     slotId     = inventory.EmptySlotId(item?.slotId);
 
             if (slotId == null || item == null || inventory?.Space == 0)
-                throw new Exception("[Error: ItemManager: CreateItem] Item is null. something wrong.");
+                throw new Exception($"[Error: ItemManager: CreateItem] Item is null. something wrong. slotId: {slotId}, item: {item}, space: {inventory?.Space}");
                 //return null;
 
             item.groupId = inventory.uid;
@@ -134,5 +139,13 @@ namespace TalesPop.Objects.Items
             }
         }
         public MainContainer<int, Item> POP_CONTAINER() => popContainer;
+    }
+
+
+
+    public static class ItemManagerExtension
+    {
+        public static void ToSelected(this Item item) => ItemManager.Selected = item;
+        public static void ToCollided(this Item item) => ItemManager.Collided = item;
     }
 }

@@ -8,6 +8,7 @@ using Newtonsoft.Json.Linq;
 
 
 
+
 namespace TalesPop.Objects.Charactors
 {
     using static Common;
@@ -16,6 +17,7 @@ namespace TalesPop.Objects.Charactors
     {
         public const string capacity = "capacity";
         public const string contents = "contents";
+        public const string side     = "side";
     }
 
     public enum SquadType
@@ -27,7 +29,7 @@ namespace TalesPop.Objects.Charactors
     public abstract class Squad : TalesObject
     {
         [JsonIgnore]
-        private Dictionary<int, Charactor> container;
+        internal Dictionary<int, Charactor> container;
         [JsonProperty]
         public int capacity;
         [JsonProperty]
@@ -53,9 +55,48 @@ namespace TalesPop.Objects.Charactors
         private void Initialize()
         {
             capacity = jObject[SquadArgs.capacity].Value<int>();
-            //contents = jObject[SquadArgs.contents]
             contents = jObject[SquadArgs.contents]?.Values<JToken>().ToArray();
             container = new Dictionary<int, Charactor>();
+        }
+    }
+
+
+
+    public class Allie : Squad
+    {
+        public Allie(JObject jObject) : base(jObject)
+        {
+            foreach (JObject element in contents)
+            {
+                //container.Add(0, new Charactor(element));
+            }
+        }
+
+        /*
+         * Privates
+         */
+        private void Initialize()
+        {
+
+        }
+    }
+
+    public class Enemy : Squad
+    {
+        public Enemy(JObject jObject) : base(jObject)
+        {
+            foreach (JObject element in contents)
+            {
+
+            }
+        }
+
+        /*
+         * Privates
+         */
+        private void Initialize()
+        {
+
         }
     }
 }

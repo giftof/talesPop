@@ -15,7 +15,7 @@ namespace TalesPop.Objects.Items
     }
 
     //internal class Normal : Factory
-    public class Normal : Factory
+    sealed public class NormalItemFactory : Factory
     {
         public override Item Create(ItemType itemType, JObject jObject, TalesPopContainer<int, Item> container)
         {
@@ -44,13 +44,13 @@ namespace TalesPop.Objects.Items
         }
     }
 
-    internal class Blessed : Factory
+    sealed internal class BlessedItemFactory : Factory
     {
         public override Item Create(ItemType itemType, JObject jObject, TalesPopContainer<int, Item> container) => null;
         public override Item Create(ItemType itemType, JObject jObject) => null;
     }
 
-    internal class Cursed : Factory
+    sealed internal class CursedItemFactory : Factory
     {
         public override Item Create(ItemType itemType, JObject jObject, TalesPopContainer<int, Item> container) => null;
         public override Item Create(ItemType itemType, JObject jObject) => null;
