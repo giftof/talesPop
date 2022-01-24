@@ -145,6 +145,11 @@ namespace TalesPop.Objects.Items
             get { return mirrorContainer.Values.ToArray(); }
         }
 
+        public int[] KeyArray
+        {
+            get { return mirrorContainer.Keys.ToArray(); }
+        }
+
         /*
          * Abstract
          */

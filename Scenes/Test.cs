@@ -139,7 +139,7 @@ public class Test : MonoBehaviour
         "\"itemType\": \"Pouch\", " +
         "\"capacity\": 5, " +
         "\"inventoryType\": \"Pouch\", " +
-        "\"contents\": []" +
+        $"\"contents\": [{potion1}, {potion2}]" +
         "}";
     static string bag6 = "{" +
         "\"uid\": 105, " +
@@ -183,13 +183,17 @@ public class Test : MonoBehaviour
 
 
 
-
+        //itemManager.Clear();
         //TEST_MAKE_BAG1();
 
+        itemManager.Clear();
         TEST_MAKE_BAG2();
 
-        //TEST_INTERACT();
-        //TEST_COLLIDE();
+        itemManager.Clear();
+        TEST_INTERACT();
+
+        itemManager.Clear();
+        TEST_COLLIDE();
 
 
 
@@ -279,6 +283,7 @@ public class Test : MonoBehaviour
         Debug.Log($">>>> bag6 type = {pouch?.inventoryType}, contentCNT = {pouch?.Occupied}");
         DisplayBagContents(pouch);
         Debug.LogWarning("TEST_MAKE_BAG1 end");
+        itemManager.POP_CONTAINER().SHOW_CONTENTS();
         Debug.Log("");
     }
 
@@ -289,8 +294,20 @@ public class Test : MonoBehaviour
         Inventory pouch = itemManager.CreateInventory(bag8);
         Debug.Log($">>>> bag8 type = {pouch?.inventoryType}, contentCNT = {pouch?.Occupied}");
         DisplayBagContents(pouch);
+
         Debug.LogWarning("TEST_MAKE_BAG2 end");
-        Debug.Log("");
+        itemManager.POP_CONTAINER().SHOW_CONTENTS();
+        Debug.Log("------------------------------------------");
+        //Item a1 = itemManager.SearchItem(103); // bag 4
+        itemManager.Remove(101);
+        itemManager.Remove(103);
+        itemManager.POP_CONTAINER().SHOW_CONTENTS();
+        Debug.Log("------------------------------------------");
+        itemManager.Remove(106);
+        itemManager.POP_CONTAINER().SHOW_CONTENTS();
+        Debug.Log("------------------------------------------");
+        itemManager.Remove(107);
+        itemManager.POP_CONTAINER().SHOW_CONTENTS();
     }
 
 
@@ -300,6 +317,9 @@ public class Test : MonoBehaviour
 
         Debug.LogWarning($"container count = {itemManager.Size}");
 
+        Debug.Log($"bag2 = {bag2}");
+        Debug.Log($"bag5 = {bag5}");
+
         Inventory equip1 = itemManager.CreateInventory(bag2);
         Inventory equip2 = itemManager.CreateInventory(bag5);
         Debug.Log($">>>> bag2 type = {equip1?.inventoryType}, contentCNT = {equip1?.Occupied}");
@@ -307,15 +327,17 @@ public class Test : MonoBehaviour
 
         Debug.LogWarning($"container count = {itemManager.Size}");
 
-        Item p1 = itemManager.SearchItem(4);
-        Item p2 = itemManager.SearchItem(5);
+        Item a1 = itemManager.SearchItem(0);
+        Item w1 = itemManager.SearchItem(1);
 
         equip1?.Interact();
         equip2?.Interact();
 
-        p1?.Interact();
-        p2?.Interact();
+        a1?.Interact();
+        w1?.Interact();
+
         Debug.LogWarning("TEST_INTERACT end");
+        itemManager.POP_CONTAINER().SHOW_CONTENTS();
         Debug.Log("");
     }
 
@@ -326,8 +348,8 @@ public class Test : MonoBehaviour
 
         Debug.LogWarning($"container count = {itemManager.Size}");
 
-        Inventory pouch1 = itemManager.CreateInventory(bag4);
-        Inventory pouch2 = itemManager.CreateInventory(bag8);
+        Inventory pouch1 = itemManager.CreateInventory(bag4);   // 104 {potion3}, {potion4}
+        Inventory pouch2 = itemManager.CreateInventory(bag5);   // 105 {potion1}, {potion2}
         Debug.Log($">>>> bag4 type = {pouch1?.inventoryType}, contentCNT = {pouch1?.Occupied}");
         Debug.Log($">>>> bag8 type = {pouch2?.inventoryType}, contentCNT = {pouch2?.Occupied}");
 
@@ -337,14 +359,16 @@ public class Test : MonoBehaviour
         Item p2 = itemManager.SearchItem(5);
         Item p3 = itemManager.SearchItem(6);
 
-        Item a1 = itemManager.SearchItem(0);
-        Item a2 = itemManager.SearchItem(3);
+        //Item a1 = itemManager.SearchItem(0);
+        //Item a2 = itemManager.SearchItem(3);
 
         Debug.LogWarning($"p1?.name = {p1?.name}, p1?.uid = {p1?.uid}, p1?.Occupied = {p1?.Occupied}, p1?.groupId = {p1?.groupId}, p1?.slotId = {p1?.slotId}");
         Debug.LogWarning($"p2?.name = {p2?.name}, p2?.uid = {p2?.uid}, p2?.Occupied = {p2?.Occupied}, p2?.groupId = {p2?.groupId}, p2?.slotId = {p2?.slotId}");
         Debug.LogWarning($"p3?.name = {p3?.name}, p3?.uid = {p3?.uid}, p3?.Occupied = {p3?.Occupied}, p3?.groupId = {p3?.groupId}, p3?.slotId = {p3?.slotId}");
 
-        p1?.Collide(p2);
+
+        //p1?.Collide(p2);
+        /*
         Debug.LogWarning($"p1?.name = {p1?.name}, p1?.uid = {p1?.uid}, p1?.Occupied = {p1?.Occupied}, p1?.groupId = {p1?.groupId}, p1?.slotId = {p1?.slotId}");
         Debug.LogWarning($"p2?.name = {p2?.name}, p2?.uid = {p2?.uid}, p2?.Occupied = {p2?.Occupied}, p2?.groupId = {p2?.groupId}, p2?.slotId = {p2?.slotId}");
         Debug.LogWarning($"p3?.name = {p3?.name}, p3?.uid = {p3?.uid}, p3?.Occupied = {p3?.Occupied}, p3?.groupId = {p3?.groupId}, p3?.slotId = {p3?.slotId}");
@@ -358,33 +382,34 @@ public class Test : MonoBehaviour
 
         Debug.Log("");
 
-        Debug.LogWarning($"a1?.name = {a1?.name}, a1?.uid = {a1?.uid}, a1?.Occupied = {a1?.Occupied}, a1?.groupId = {a1?.groupId}, a1?.slotId = {a1?.slotId}");
+        //Debug.LogWarning($"a1?.name = {a1?.name}, a1?.uid = {a1?.uid}, a1?.Occupied = {a1?.Occupied}, a1?.groupId = {a1?.groupId}, a1?.slotId = {a1?.slotId}");
         Debug.LogWarning($"p3?.name = {p3?.name}, p3?.uid = {p3?.uid}, p3?.Occupied = {p3?.Occupied}, p3?.groupId = {p3?.groupId}, p3?.slotId = {p3?.slotId}");
 
-        itemManager.SHOW_BAG_CONTENTS(a1.SearchParentContainer().uid);
+        //itemManager.SHOW_BAG_CONTENTS(a1.SearchParentContainer().uid);
         itemManager.SHOW_BAG_CONTENTS(p3.SearchParentContainer().uid);
 
-        a1.Collide(p3);
-        Debug.LogWarning($"a1?.name = {a1?.name}, a1?.uid = {a1?.uid}, a1?.Occupied = {a1?.Occupied}, a1?.groupId = {a1?.groupId}, a1?.slotId = {a1?.slotId}");
+        //a1.Collide(p3);
+        //Debug.LogWarning($"a1?.name = {a1?.name}, a1?.uid = {a1?.uid}, a1?.Occupied = {a1?.Occupied}, a1?.groupId = {a1?.groupId}, a1?.slotId = {a1?.slotId}");
         Debug.LogWarning($"p3?.name = {p3?.name}, p3?.uid = {p3?.uid}, p3?.Occupied = {p3?.Occupied}, p3?.groupId = {p3?.groupId}, p3?.slotId = {p3?.slotId}");
 
-        itemManager.SHOW_BAG_CONTENTS(a1?.SearchParentContainer().uid ?? 0);
+        //itemManager.SHOW_BAG_CONTENTS(a1?.SearchParentContainer().uid ?? 0);
         itemManager.SHOW_BAG_CONTENTS(p3?.SearchParentContainer().uid ?? 0);
 
         Debug.Log("");
         Debug.Log("");
 
-        itemManager.SHOW_BAG_CONTENTS(a1.SearchParentContainer().uid);
+        //itemManager.SHOW_BAG_CONTENTS(a1.SearchParentContainer().uid);
         itemManager.SHOW_BAG_CONTENTS(p3.SearchParentContainer().uid);
 
-        Debug.LogWarning("a1' parent(Bag) <-> p3");
-        a1.SearchParentContainer().Collide(p3);
+        //Debug.LogWarning("a1' parent(Bag) <-> p3");
+        //a1.SearchParentContainer().Collide(p3);
 
-        itemManager.SHOW_BAG_CONTENTS(a1.SearchParentContainer().uid);
+        //itemManager.SHOW_BAG_CONTENTS(a1.SearchParentContainer().uid);
         itemManager.SHOW_BAG_CONTENTS(p3.SearchParentContainer().uid);
-        itemManager.SHOW_BAG_CONTENTS(1);
-
+        //itemManager.SHOW_BAG_CONTENTS(1);
+        */
         Debug.LogWarning("TEST_COLLIDE end");
+        itemManager.POP_CONTAINER().SHOW_CONTENTS();
         Debug.Log("");
     }
 

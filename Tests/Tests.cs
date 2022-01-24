@@ -169,7 +169,7 @@ public class Tests
 
         itemManager.Clear();
 
-        //TEST_MAKE_BAG1();
+        TEST_MAKE_BAG1();
         TEST_MAKE_BAG2();
         //TEST_INTERACT();
         //TEST_COLLIDE();

@@ -11,7 +11,7 @@ namespace TalesPop.Objects.Items
 
     public class ItemManager
     {
-        private static readonly MainContainer<int, Item> popContainer = new MainContainer<int, Item>(GetGroupId);
+        private static readonly MainContainer<int, Item> popContainer = new MainContainer<int, Item>(GetUID, GetGroupId, GetChildrenId);
         private readonly Stack<Inventory> processInventory;
         private Inventory currentRootInventory;
         private Factory factory;
@@ -51,11 +51,6 @@ namespace TalesPop.Objects.Items
             return popContainer.Search(inventoryUID, itemUID);
         }
 
-        public MirrorContainer<int, Item> SearchMirrorContainer(int inventoryUID)
-        {
-            return popContainer.TakeMirrorContainer(inventoryUID);
-        }
-
         public Factory Factory
         {
             get { return factory; }
@@ -66,6 +61,9 @@ namespace TalesPop.Objects.Items
 
         public void Clear() => popContainer.Clear();
 
+        public void Remove(int uid) => popContainer.Remove(uid);
+
+        public void Add(Item item) => popContainer.Add(item.uid, item);
         /*
          * Privates
          */
@@ -75,7 +73,12 @@ namespace TalesPop.Objects.Items
             MirrorContainer<int, Item> mirrorContainer = popContainer.GenerateMirrorContainer(uid);
             Inventory currentInventory = factory.Create(type, jObject, mirrorContainer) as Inventory;
 
-            currentRootInventory = currentRootInventory ?? currentInventory;
+            if (currentRootInventory == null)
+            {
+                popContainer.Add(currentInventory.uid, currentInventory);
+                currentRootInventory = currentInventory;
+            }
+
             processInventory.Push(currentInventory);
 
             foreach (JToken element in currentInventory.contents)
@@ -83,7 +86,6 @@ namespace TalesPop.Objects.Items
                 if (CreateItem(element) == null)
                 {
                     processInventory.Pop();
-                    currentRootInventory = null;
                     return null;
                 }
             }
@@ -115,13 +117,30 @@ namespace TalesPop.Objects.Items
 
         private void RemoveDelegate(int key, int uid)
         {
+            Debug.Log($"key = {key}, uid = {uid}");
+
             if (popContainer[key] is Inventory inventory)
                 inventory.Remove(uid);
+        }
+
+        private static int GetUID(Item item)
+        {
+            return item.uid;
         }
 
         private static int GetGroupId(Item item)
         {
             return item.groupId;
+        }
+
+        private static int[] GetChildrenId(Item item)
+        {
+            if (item is Inventory inventory)
+            {
+                return inventory.KeyArray;
+            }
+
+            return null;
         }
 
         /*
@@ -138,5 +157,6 @@ namespace TalesPop.Objects.Items
                     Debug.Log($"item = {pair.Value.name}, uid = {pair.Value.uid}");
             }
         }
+        public MainContainer<int, Item> POP_CONTAINER() => popContainer;
     }
 }

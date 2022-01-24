@@ -1,3 +1,7 @@
+using UnityEngine;
+
+
+
 namespace TalesPop.Objects.Items
 {
     internal interface ISwap
@@ -44,6 +48,9 @@ namespace TalesPop.Objects.Items
     {
         public void Perform(Item destination, Item source)
         {
+            Debug.Log("hey im perform of stackBase");
+
+
             if (!destination?.nameId.Equals(source?.nameId) ?? false)
                 swap.Perform(destination, source);
             else
