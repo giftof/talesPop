@@ -298,7 +298,6 @@ public class Test : MonoBehaviour
         Debug.LogWarning("TEST_MAKE_BAG2 end");
         itemManager.POP_CONTAINER().SHOW_CONTENTS();
         Debug.Log("------------------------------------------");
-        //Item a1 = itemManager.SearchItem(103); // bag 4
         itemManager.Remove(101);
         itemManager.Remove(103);
         itemManager.POP_CONTAINER().SHOW_CONTENTS();
@@ -306,7 +305,8 @@ public class Test : MonoBehaviour
         itemManager.Remove(106);
         itemManager.POP_CONTAINER().SHOW_CONTENTS();
         Debug.Log("------------------------------------------");
-        itemManager.Remove(107);
+        Item self = itemManager.SearchItem(107);
+        (self as Inventory).Remove(self.uid);
         itemManager.POP_CONTAINER().SHOW_CONTENTS();
     }
 

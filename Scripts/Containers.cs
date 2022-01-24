@@ -83,16 +83,16 @@ namespace TalesPop.Datas
      */
     sealed public class MainContainer<Key, Value> : TalesPopContainer<Key, Value> where Value : class
     {
-        private readonly ACQUIRE_KEY_DELEGATE<Key, Value> acquireUIDAction;
-        private readonly ACQUIRE_KEY_DELEGATE<Key, Value> acquireGroupIdAction;
-        private readonly ACQUIRE_KEY_ARRAY_DELEGATE<Key, Value> acquireChildrenIdAction;
+        private readonly ACQUIRE_KEY_DELEGATE<Key, Value> getUID;
+        private readonly ACQUIRE_KEY_DELEGATE<Key, Value> getGroupId;
+        private readonly ACQUIRE_KEY_ARRAY_DELEGATE<Key, Value> getChildrenId;
         private readonly Dictionary<Key, MirrorContainer<Key, Value>> mirrorContainer;
 
-        public MainContainer(ACQUIRE_KEY_DELEGATE<Key, Value> acquireUIDAction, ACQUIRE_KEY_DELEGATE<Key, Value> acquireGroupIdAction, ACQUIRE_KEY_ARRAY_DELEGATE<Key, Value> acquireChildrenIdAction) : base()
+        public MainContainer(ACQUIRE_KEY_DELEGATE<Key, Value> getUID, ACQUIRE_KEY_DELEGATE<Key, Value> getGroupId, ACQUIRE_KEY_ARRAY_DELEGATE<Key, Value> getChildrenId) : base()
         {
-            this.acquireUIDAction = acquireUIDAction;
-            this.acquireGroupIdAction = acquireGroupIdAction;
-            this.acquireChildrenIdAction = acquireChildrenIdAction;
+            this.getUID = getUID;
+            this.getGroupId = getGroupId;
+            this.getChildrenId = getChildrenId;
             mirrorContainer = new Dictionary<Key, MirrorContainer<Key, Value>>();
         }
 
@@ -111,25 +111,12 @@ namespace TalesPop.Datas
             MirrorContainer<Key, Value> mirrorContainer = new MirrorContainer<Key, Value>(new Dictionary<Key, Value>())
             {
                 SetAdd = Add,
-                SetRemove = Remove
+                SetRemove = Remove,
+                SetKey = key
             };
 
             this.mirrorContainer.Add(key, mirrorContainer);
             return mirrorContainer;
-        }
-
-        public void RemoveMirrorContainer(Key mirrorKey)
-        {
-            if (mirrorContainer.ContainsKey(mirrorKey))
-            {
-                mirrorContainer[mirrorKey].Clear();
-                mirrorContainer.Remove(mirrorKey);
-            }
-
-            if (container.ContainsKey(mirrorKey))
-            {
-                container.Remove(mirrorKey);
-            }
         }
 
         /*
@@ -137,7 +124,7 @@ namespace TalesPop.Datas
          */
         public void Add(Value value)
         {
-            Add(acquireUIDAction(value), value);
+            Add(getUID(value), value);
         }
 
         public override void Add(Key key, Value value)
@@ -145,7 +132,7 @@ namespace TalesPop.Datas
             if (container.ContainsKey(key))
                 throw new Exception($"[Error] Exist key ({key})");
 
-            Key dKey = acquireGroupIdAction(value);
+            Key dKey = getGroupId(value);
 
             container.Add(key, value);
             if (mirrorContainer.ContainsKey(dKey))
@@ -157,13 +144,13 @@ namespace TalesPop.Datas
             if (!container.ContainsKey(key))
                 throw new Exception($"[Error] Have not key ({key})");
 
-            Key dKey = acquireGroupIdAction(container[key]);
-
-            if (mirrorContainer.ContainsKey(key))
-                RecursiveRemove(container[key]);
+            Key dKey = getGroupId(container[key]);
 
             if (mirrorContainer.ContainsKey(dKey))
                 mirrorContainer[dKey].OriginalRemove(key);
+
+            if (mirrorContainer.ContainsKey(key))
+                RecursiveRemove(container[key]);
 
             container.Remove(key);
         }
@@ -179,17 +166,16 @@ namespace TalesPop.Datas
          */
         private void RecursiveRemove(Value value)
         {
-            Key[] childKeyArray = acquireChildrenIdAction(value);
+            Key[] childKeyArray = getChildrenId(value);
 
             foreach (Key key in childKeyArray)
             {
                 if (mirrorContainer.ContainsKey(key))
                     RecursiveRemove(container[key]);
                 container.Remove(key);
-
             }
 
-            Key self = acquireUIDAction(value);
+            Key self = getUID(value);
 
             if (mirrorContainer.ContainsKey(self))
                 mirrorContainer.Remove(self);
@@ -226,6 +212,7 @@ namespace TalesPop.Datas
     {
         internal ADD<Key, Value> add;
         internal REMOVE<Key> remove;
+        internal Key key;
 
         internal MirrorContainer(Dictionary<Key, Value> mirrorContainer) : base(mirrorContainer) { }
 
@@ -236,15 +223,9 @@ namespace TalesPop.Datas
         /*
          * Internals
          */
-        internal ADD<Key, Value> SetAdd
-        {
-            set { add = value; }
-        }
-
-        internal REMOVE<Key> SetRemove
-        {
-            set { remove = value; }
-        }
+        internal ADD<Key, Value> SetAdd { set { add = value; } }
+        internal REMOVE<Key> SetRemove { set { remove = value; } }
+        internal Key SetKey { set { key = value; } }
 
         /*
          * Overrides

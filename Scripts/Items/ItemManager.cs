@@ -1,3 +1,4 @@
+using System;
 using System.Collections.Generic;
 using Newtonsoft.Json.Linq;
 using UnityEngine;
@@ -13,7 +14,6 @@ namespace TalesPop.Objects.Items
     {
         private static readonly MainContainer<int, Item> popContainer = new MainContainer<int, Item>(GetUID, GetGroupId, GetChildrenId);
         private readonly Stack<Inventory> processInventory;
-        private Inventory currentRootInventory;
         private Factory factory;
 
 
@@ -28,12 +28,10 @@ namespace TalesPop.Objects.Items
         {
             JObject jObject = JObject.Parse(json);
             string typeString = jObject[ItemArgs.itemType].Value<string>();
-            ItemType type = StringToEnum<ItemType>(typeString);
+            ItemType itemType = StringToEnum<ItemType>(typeString);
 
-            currentRootInventory = null;
-
-            if (type.Equals(ItemType.Pouch) || type.Equals(ItemType.ExtraPouch))
-                return CreateInventory(type, jObject);
+            if (IsInventory(itemType))
+                return CreateInventory(itemType, jObject, true);
 
             return null;
         }
@@ -41,16 +39,8 @@ namespace TalesPop.Objects.Items
         /*
          * Behaviours
          */
-        public Item SearchItem(int itemUID)
-        {
-            return popContainer.Search(itemUID);
-        }
-
-        public Item SearchItem(int inventoryUID, int itemUID)
-        {
-            return popContainer.Search(inventoryUID, itemUID);
-        }
-
+        public Item SearchItem(int itemUID) => popContainer.Search(itemUID);
+        public Item SearchItem(int inventoryUID, int itemUID) => popContainer.Search(inventoryUID, itemUID);
         public Factory Factory
         {
             get { return factory; }
@@ -58,27 +48,23 @@ namespace TalesPop.Objects.Items
         }
 
         public int Size => popContainer.Count;
-
         public void Clear() => popContainer.Clear();
-
         public void Remove(int uid) => popContainer.Remove(uid);
-
         public void Add(Item item) => popContainer.Add(item.uid, item);
+
         /*
          * Privates
          */
-        private Inventory CreateInventory(ItemType type, JObject jObject)
+        private bool IsInventory(ItemType type) => ItemType.Pouch.Equals(type) || ItemType.ExtraPouch.Equals(type);
+
+        private Inventory CreateInventory(ItemType type, JObject jObject, bool first = false)
         {
             int uid = jObject[ObjectArgs.uid].Value<int>();
             MirrorContainer<int, Item> mirrorContainer = popContainer.GenerateMirrorContainer(uid);
             Inventory currentInventory = factory.Create(type, jObject, mirrorContainer) as Inventory;
 
-            if (currentRootInventory == null)
-            {
+            if (first)
                 popContainer.Add(currentInventory.uid, currentInventory);
-                currentRootInventory = currentInventory;
-            }
-
             processInventory.Push(currentInventory);
 
             foreach (JToken element in currentInventory.contents)
@@ -98,13 +84,14 @@ namespace TalesPop.Objects.Items
             JObject  jObject    = (JObject)token;
             ItemType itemType   = StringToEnum<ItemType>(jObject[ItemArgs.itemType].Value<string>());
             Inventory inventory = processInventory.Peek();
-            Item     item       = IsSame(ItemType.Pouch, itemType) || IsSame(ItemType.ExtraPouch, itemType)
+            Item     item       = IsInventory(itemType)
                                         ? CreateInventory(itemType, jObject)
                                         : factory.Create(itemType, jObject);
             int?     slotId     = inventory.EmptySlotId(item?.slotId);
 
             if (slotId == null || item == null || inventory?.Space == 0)
-                return null;
+                throw new Exception("[Error: ItemManager: CreateItem] Item is null. something wrong.");
+                //return null;
 
             item.groupId = inventory.uid;
             item.slotId = (int)slotId;
