@@ -4,12 +4,47 @@ using UnityEngine;
 
 namespace TalesPop.Objects.Items
 {
+    public interface ISwapable<T>
+    {
+        public void Remove(int UID);
+        public void Add(T obj);
+    }
+
     internal interface ISwap
     {
         public void Perform(Item a, Item b);
     }
 
-    internal class Swap: ISwap
+    //internal class Swap: ISwap
+    //{
+    //    public void Perform(Item a, Item b)
+    //    {
+    //        if (a == null || b == null)
+    //            return;
+
+    //        Inventory inventory1 = a.SearchParentContainer();
+    //        Inventory inventory2 = b.SearchParentContainer();
+
+    //        if (inventory1 == null || inventory2 == null)
+    //            return;
+
+    //        inventory1.Remove(a.uid);
+    //        inventory2.Remove(b.uid);
+
+    //        int slotId = (int)a.slotId;
+    //        int groupId = a.groupId;
+
+    //        a.slotId = b.slotId;
+    //        b.slotId = slotId;
+
+    //        a.groupId = b.groupId;
+    //        b.groupId = groupId;
+
+    //        inventory1.Add(b);
+    //        inventory2.Add(a);
+    //    }
+    //}
+    internal class Swap : ISwap
     {
         public void Perform(Item a, Item b)
         {

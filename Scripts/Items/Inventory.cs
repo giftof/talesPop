@@ -68,7 +68,7 @@ namespace TalesPop.Objects.Items
 
 
 
-    public abstract class Inventory : Item
+    public abstract class Inventory : Item, ISwapable<Item>
     {
         [JsonIgnore]
         private readonly TalesPopContainer<int, Item> mirrorContainer;
@@ -122,16 +122,6 @@ namespace TalesPop.Objects.Items
             return slotId;
         }
 
-        public void Add(Item item)
-        {
-            mirrorContainer.Add(item.uid, item);
-        }
-
-        public void Remove(int uid)
-        {
-            mirrorContainer.Remove(uid);
-        }
-
         public void TakeItem(Item item)
         {
             if (item is Stackable)
@@ -149,6 +139,24 @@ namespace TalesPop.Objects.Items
         public int[] KeyArray
         {
             get { return mirrorContainer.Keys.ToArray(); }
+        }
+
+        /*
+         * Implement ISwapable
+         */
+        public void Add(Item item)
+        {
+            mirrorContainer.Add(item.uid, item);
+        }
+
+        public void Remove(int uid)
+        {
+            mirrorContainer.Remove(uid);
+        }
+
+        public Inventory GetGroupObject(int groupId)
+        {
+            return null;
         }
 
         /*

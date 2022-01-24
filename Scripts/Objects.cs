@@ -26,6 +26,10 @@ namespace TalesPop.Objects
         public string name;
         [JsonProperty]
         public int nameId;
+        [JsonProperty]
+        public int groupId;
+        [JsonProperty]
+        public int? slotId;
 
         [JsonIgnore]
         protected JObject jObject;
@@ -41,6 +45,11 @@ namespace TalesPop.Objects
             this.jObject = jObject;
             SetProperties();
         }
+
+        /*
+         * Behaviours
+         */
+        // [Implement] get groupId object [Method]
 
         /*
          * Privates

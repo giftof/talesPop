@@ -24,10 +24,6 @@ namespace TalesPop.Objects.Items
         [JsonProperty]
         public int? capacity;
         [JsonProperty]
-        public int groupId;
-        [JsonProperty]
-        public int? slotId;
-        [JsonProperty]
         public int materialId;
 
         public Item(string json) : base(json) => SetProperties();
@@ -90,6 +86,7 @@ namespace TalesPop.Objects.Items
         public abstract int Occupied { get; internal set; }
         [JsonIgnore]
         public int GetGroupId => groupId;
+
         /*
          * Privates
          */
