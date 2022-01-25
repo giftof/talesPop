@@ -52,7 +52,7 @@ namespace TalesPop.Objects.Items
         public int Size => popContainer.Count;
         public void Clear() => popContainer.Clear();
         public void Remove(int uid) => popContainer.Remove(uid);
-        public void Add(Item item) => popContainer.Add(item.uid, item);
+        public void Add(Item item) => popContainer.Add(item.Uid, item);
 
         public void Interact() => Selected?.Interact();
         public void Collide() => Selected?.Collide(Collided);
@@ -69,7 +69,7 @@ namespace TalesPop.Objects.Items
             Inventory inventory = factory.Create(type, jObject, mirrorContainer) as Inventory;
 
             if (first)
-                popContainer.Add(inventory.uid, inventory);
+                popContainer.Add(inventory.Uid, inventory);
             processInventory.Push(inventory);
 
             foreach (JToken element in inventory.contents)
@@ -92,14 +92,14 @@ namespace TalesPop.Objects.Items
             Item     item       = IsInventoryType(itemType)
                                         ? CreateInventory(itemType, jObject)
                                         : factory.Create(itemType, jObject);
-            int?     slotId     = inventory.EmptySlotId(item?.slotId);
+            int?     slotId     = inventory.EmptySlotId(item?.SlotId);
 
             if (slotId == null || item == null || inventory?.Space == 0)
                 throw new Exception($"[Error: ItemManager: CreateItem] Item is null. something wrong. slotId: {slotId}, item: {item}, space: {inventory?.Space}");
                 //return null;
 
-            item.groupId = inventory.uid;
-            item.slotId = (int)slotId;
+            item.GroupId = inventory.Uid;
+            item.SlotId = (int)slotId;
             item.remove = RemoveDelegate;
             item.searchBag = SearchItem;
             inventory.Add(item);
@@ -115,8 +115,8 @@ namespace TalesPop.Objects.Items
                 inventory.Remove(uid);
         }
 
-        private static int GetUID(Item item) => item.uid;
-        private static int GetGroupId(Item item) => item.groupId;
+        private static int GetUID(Item item) => item.Uid;
+        private static int GetGroupId(Item item) => item.GroupId;
         private static int[] GetChildrenId(Item item)
         {
             if (item is Inventory inventory)
@@ -133,9 +133,9 @@ namespace TalesPop.Objects.Items
 
             if (SearchItem(key) is Inventory inventory)
             {
-                Debug.LogWarning($"SHOW BAG CONTENTS -- inventory [uid = {key}] [name = {inventory.name}]");
+                Debug.LogWarning($"SHOW BAG CONTENTS -- inventory [uid = {key}] [name = {inventory.Name}]");
                 foreach (KeyValuePair<int, Item> pair in inventory.CONTAINER)
-                    Debug.Log($"item = {pair.Value.name}, uid = {pair.Value.uid}");
+                    Debug.Log($"item = {pair.Value.Name}, uid = {pair.Value.Uid}");
             }
         }
         public MainContainer<int, Item> POP_CONTAINER() => popContainer;

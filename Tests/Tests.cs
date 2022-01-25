@@ -217,7 +217,7 @@ public class Tests
         itemManager.POP_CONTAINER().SHOW_CONTENTS();
         Debug.Log("------------------------------------------");
         Item self = itemManager.SearchItem(107);
-        (self as Inventory).Remove(self.uid);
+        (self as Inventory).Remove(self.Uid);
         itemManager.POP_CONTAINER().SHOW_CONTENTS();
     }
 
@@ -244,7 +244,7 @@ public class Tests
         equip1?.Interact();
         equip2?.Interact();
 
-        Debug.Log($"a1 uid = {a1?.uid}, a1 name = {a1.name}");
+        Debug.Log($"a1 uid = {a1?.Uid}, a1 name = {a1.Name}");
         a1?.Interact();
         w1?.Interact();
 
@@ -275,53 +275,53 @@ public class Tests
         //Item a1 = itemManager.SearchItem(0);
         //Item a2 = itemManager.SearchItem(3);
 
-        Debug.LogWarning($"p1?.name = {p1?.name}, p1?.uid = {p1?.uid}, p1?.Occupied = {p1?.Occupied}, p1?.groupId = {p1?.groupId}, p1?.slotId = {p1?.slotId}");
-        Debug.LogWarning($"p2?.name = {p2?.name}, p2?.uid = {p2?.uid}, p2?.Occupied = {p2?.Occupied}, p2?.groupId = {p2?.groupId}, p2?.slotId = {p2?.slotId}");
-        Debug.LogWarning($"p3?.name = {p3?.name}, p3?.uid = {p3?.uid}, p3?.Occupied = {p3?.Occupied}, p3?.groupId = {p3?.groupId}, p3?.slotId = {p3?.slotId}");
-        Debug.LogWarning($"p4?.name = {p4?.name}, p4?.uid = {p4?.uid}, p4?.Occupied = {p4?.Occupied}, p4?.groupId = {p4?.groupId}, p4?.slotId = {p4?.slotId}");
+        Debug.LogWarning($"p1?.name = {p1?.Name}, p1?.uid = {p1?.Uid}, p1?.Occupied = {p1?.Occupied}, p1?.groupId = {p1?.GroupId}, p1?.slotId = {p1?.SlotId}");
+        Debug.LogWarning($"p2?.name = {p2?.Name}, p2?.uid = {p2?.Uid}, p2?.Occupied = {p2?.Occupied}, p2?.groupId = {p2?.GroupId}, p2?.slotId = {p2?.SlotId}");
+        Debug.LogWarning($"p3?.name = {p3?.Name}, p3?.uid = {p3?.Uid}, p3?.Occupied = {p3?.Occupied}, p3?.groupId = {p3?.GroupId}, p3?.slotId = {p3?.SlotId}");
+        Debug.LogWarning($"p4?.name = {p4?.Name}, p4?.uid = {p4?.Uid}, p4?.Occupied = {p4?.Occupied}, p4?.groupId = {p4?.GroupId}, p4?.slotId = {p4?.SlotId}");
 
 
         p1?.Collide(p2);
-        Debug.LogWarning($"p1?.name = {p1?.name}, p1?.uid = {p1?.uid}, p1?.Occupied = {p1?.Occupied}, p1?.groupId = {p1?.groupId}, p1?.slotId = {p1?.slotId}");
-        Debug.LogWarning($"p2?.name = {p2?.name}, p2?.uid = {p2?.uid}, p2?.Occupied = {p2?.Occupied}, p2?.groupId = {p2?.groupId}, p2?.slotId = {p2?.slotId}");
-        Debug.LogWarning($"p3?.name = {p3?.name}, p3?.uid = {p3?.uid}, p3?.Occupied = {p3?.Occupied}, p3?.groupId = {p3?.groupId}, p3?.slotId = {p3?.slotId}");
-        Debug.LogWarning($"p4?.name = {p4?.name}, p4?.uid = {p4?.uid}, p4?.Occupied = {p4?.Occupied}, p4?.groupId = {p4?.groupId}, p4?.slotId = {p4?.slotId}");
+        Debug.LogWarning($"p1?.name = {p1?.Name}, p1?.uid = {p1?.Uid}, p1?.Occupied = {p1?.Occupied}, p1?.groupId = {p1?.GroupId}, p1?.slotId = {p1?.SlotId}");
+        Debug.LogWarning($"p2?.name = {p2?.Name}, p2?.uid = {p2?.Uid}, p2?.Occupied = {p2?.Occupied}, p2?.groupId = {p2?.GroupId}, p2?.slotId = {p2?.SlotId}");
+        Debug.LogWarning($"p3?.name = {p3?.Name}, p3?.uid = {p3?.Uid}, p3?.Occupied = {p3?.Occupied}, p3?.groupId = {p3?.GroupId}, p3?.slotId = {p3?.SlotId}");
+        Debug.LogWarning($"p4?.name = {p4?.Name}, p4?.uid = {p4?.Uid}, p4?.Occupied = {p4?.Occupied}, p4?.groupId = {p4?.GroupId}, p4?.slotId = {p4?.SlotId}");
 
         Item remove = itemManager.SearchItem(5);
         Debug.LogWarning($"remove is Exist? [{remove}]");
 
         p1?.Collide(p3);
-        Debug.LogWarning($"p1?.name = {p1?.name}, p1?.uid = {p1?.uid}, p1?.Occupied = {p1?.Occupied}, p1?.groupId = {p1?.groupId}, p1?.slotId = {p1?.slotId}");
-        Debug.LogWarning($"p3?.name = {p3?.name}, p3?.uid = {p3?.uid}, p3?.Occupied = {p3?.Occupied}, p3?.groupId = {p3?.groupId}, p3?.slotId = {p3?.slotId}");
-        Debug.LogWarning($"p4?.name = {p4?.name}, p4?.uid = {p4?.uid}, p4?.Occupied = {p4?.Occupied}, p4?.groupId = {p4?.groupId}, p4?.slotId = {p4?.slotId}");
+        Debug.LogWarning($"p1?.name = {p1?.Name}, p1?.uid = {p1?.Uid}, p1?.Occupied = {p1?.Occupied}, p1?.groupId = {p1?.GroupId}, p1?.slotId = {p1?.SlotId}");
+        Debug.LogWarning($"p3?.name = {p3?.Name}, p3?.uid = {p3?.Uid}, p3?.Occupied = {p3?.Occupied}, p3?.groupId = {p3?.GroupId}, p3?.slotId = {p3?.SlotId}");
+        Debug.LogWarning($"p4?.name = {p4?.Name}, p4?.uid = {p4?.Uid}, p4?.Occupied = {p4?.Occupied}, p4?.groupId = {p4?.GroupId}, p4?.slotId = {p4?.SlotId}");
 
         p3?.Collide(p4);
-        Debug.LogWarning($"p1?.name = {p1?.name}, p1?.uid = {p1?.uid}, p1?.Occupied = {p1?.Occupied}, p1?.groupId = {p1?.groupId}, p1?.slotId = {p1?.slotId}");
-        Debug.LogWarning($"p3?.name = {p3?.name}, p3?.uid = {p3?.uid}, p3?.Occupied = {p3?.Occupied}, p3?.groupId = {p3?.groupId}, p3?.slotId = {p3?.slotId}");
-        Debug.LogWarning($"p4?.name = {p4?.name}, p4?.uid = {p4?.uid}, p4?.Occupied = {p4?.Occupied}, p4?.groupId = {p4?.groupId}, p4?.slotId = {p4?.slotId}");
+        Debug.LogWarning($"p1?.name = {p1?.Name}, p1?.uid = {p1?.Uid}, p1?.Occupied = {p1?.Occupied}, p1?.groupId = {p1?.GroupId}, p1?.slotId = {p1?.SlotId}");
+        Debug.LogWarning($"p3?.name = {p3?.Name}, p3?.uid = {p3?.Uid}, p3?.Occupied = {p3?.Occupied}, p3?.groupId = {p3?.GroupId}, p3?.slotId = {p3?.SlotId}");
+        Debug.LogWarning($"p4?.name = {p4?.Name}, p4?.uid = {p4?.Uid}, p4?.Occupied = {p4?.Occupied}, p4?.groupId = {p4?.GroupId}, p4?.slotId = {p4?.SlotId}");
         itemManager.POP_CONTAINER().SHOW_CONTENTS();
 
         p1?.Collide(p4);
-        Debug.LogWarning($"p1?.name = {p1?.name}, p1?.uid = {p1?.uid}, p1?.Occupied = {p1?.Occupied}, p1?.groupId = {p1?.groupId}, p1?.slotId = {p1?.slotId}");
-        Debug.LogWarning($"p3?.name = {p3?.name}, p3?.uid = {p3?.uid}, p3?.Occupied = {p3?.Occupied}, p3?.groupId = {p3?.groupId}, p3?.slotId = {p3?.slotId}");
-        Debug.LogWarning($"p4?.name = {p4?.name}, p4?.uid = {p4?.uid}, p4?.Occupied = {p4?.Occupied}, p4?.groupId = {p4?.groupId}, p4?.slotId = {p4?.slotId}");
+        Debug.LogWarning($"p1?.name = {p1?.Name}, p1?.uid = {p1?.Uid}, p1?.Occupied = {p1?.Occupied}, p1?.groupId = {p1?.GroupId}, p1?.slotId = {p1?.SlotId}");
+        Debug.LogWarning($"p3?.name = {p3?.Name}, p3?.uid = {p3?.Uid}, p3?.Occupied = {p3?.Occupied}, p3?.groupId = {p3?.GroupId}, p3?.slotId = {p3?.SlotId}");
+        Debug.LogWarning($"p4?.name = {p4?.Name}, p4?.uid = {p4?.Uid}, p4?.Occupied = {p4?.Occupied}, p4?.groupId = {p4?.GroupId}, p4?.slotId = {p4?.SlotId}");
 
         itemManager.POP_CONTAINER().SHOW_CONTENTS();
 
         Debug.Log("");
 
         pouch1?.Collide(pouch2);
-        Debug.LogWarning($"p1?.name = {p1?.name}, p1?.uid = {p1?.uid}, p1?.Occupied = {p1?.Occupied}, p1?.groupId = {p1?.groupId}, p1?.slotId = {p1?.slotId}");
-        Debug.LogWarning($"p3?.name = {p3?.name}, p3?.uid = {p3?.uid}, p3?.Occupied = {p3?.Occupied}, p3?.groupId = {p3?.groupId}, p3?.slotId = {p3?.slotId}");
-        Debug.LogWarning($"p4?.name = {p4?.name}, p4?.uid = {p4?.uid}, p4?.Occupied = {p4?.Occupied}, p4?.groupId = {p4?.groupId}, p4?.slotId = {p4?.slotId}");
+        Debug.LogWarning($"p1?.name = {p1?.Name}, p1?.uid = {p1?.Uid}, p1?.Occupied = {p1?.Occupied}, p1?.groupId = {p1?.GroupId}, p1?.slotId = {p1?.SlotId}");
+        Debug.LogWarning($"p3?.name = {p3?.Name}, p3?.uid = {p3?.Uid}, p3?.Occupied = {p3?.Occupied}, p3?.groupId = {p3?.GroupId}, p3?.slotId = {p3?.SlotId}");
+        Debug.LogWarning($"p4?.name = {p4?.Name}, p4?.uid = {p4?.Uid}, p4?.Occupied = {p4?.Occupied}, p4?.groupId = {p4?.GroupId}, p4?.slotId = {p4?.SlotId}");
         Debug.Log("");
         itemManager.POP_CONTAINER().SHOW_CONTENTS();
         Debug.Log("");
 
         pouch2?.Collide(pouch1);
-        Debug.LogWarning($"p1?.name = {p1?.name}, p1?.uid = {p1?.uid}, p1?.Occupied = {p1?.Occupied}, p1?.groupId = {p1?.groupId}, p1?.slotId = {p1?.slotId}");
-        Debug.LogWarning($"p3?.name = {p3?.name}, p3?.uid = {p3?.uid}, p3?.Occupied = {p3?.Occupied}, p3?.groupId = {p3?.groupId}, p3?.slotId = {p3?.slotId}");
-        Debug.LogWarning($"p4?.name = {p4?.name}, p4?.uid = {p4?.uid}, p4?.Occupied = {p4?.Occupied}, p4?.groupId = {p4?.groupId}, p4?.slotId = {p4?.slotId}");
+        Debug.LogWarning($"p1?.name = {p1?.Name}, p1?.uid = {p1?.Uid}, p1?.Occupied = {p1?.Occupied}, p1?.groupId = {p1?.GroupId}, p1?.slotId = {p1?.SlotId}");
+        Debug.LogWarning($"p3?.name = {p3?.Name}, p3?.uid = {p3?.Uid}, p3?.Occupied = {p3?.Occupied}, p3?.groupId = {p3?.GroupId}, p3?.slotId = {p3?.SlotId}");
+        Debug.LogWarning($"p4?.name = {p4?.Name}, p4?.uid = {p4?.Uid}, p4?.Occupied = {p4?.Occupied}, p4?.groupId = {p4?.GroupId}, p4?.slotId = {p4?.SlotId}");
         Debug.Log("");
         /*
         //Debug.LogWarning($"a1?.name = {a1?.name}, a1?.uid = {a1?.uid}, a1?.Occupied = {a1?.Occupied}, a1?.groupId = {a1?.groupId}, a1?.slotId = {a1?.slotId}");
@@ -366,12 +366,12 @@ public class Tests
             if (element.Value == null)
                 continue;
 
-            Debug.Log($"name = {element.Value.name}");
+            Debug.Log($"name = {element.Value.Name}");
 
             if (element.Value.itemType.Equals(ItemType.ExtraPouch)
                 || element.Value.itemType.Equals(ItemType.Pouch))
             {
-                Debug.LogWarning($"Found BAG! = {element.Value.name}");
+                Debug.LogWarning($"Found BAG! = {element.Value.Name}");
                 DisplayBagContents((Inventory)element.Value);
             }
             else

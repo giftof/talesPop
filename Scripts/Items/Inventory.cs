@@ -68,7 +68,7 @@ namespace TalesPop.Objects.Items
 
 
 
-    public abstract class Inventory : Item, ISwapable<Item>
+    public abstract class Inventory : Item, ISwapableObject<Item>
     {
         [JsonIgnore]
         private readonly TalesPopContainer<int, Item> mirrorContainer;
@@ -91,7 +91,7 @@ namespace TalesPop.Objects.Items
             if (Space == 0)
                 return null;
 
-            if (presetId != null && mirrorContainer.C.FirstOrDefault(e => e.Value.slotId.Equals(presetId)).Value == null)
+            if (presetId != null && mirrorContainer.C.FirstOrDefault(e => e.Value.SlotId.Equals(presetId)).Value == null)
                 return presetId;
             return EmptySlotId();
         }
@@ -108,9 +108,9 @@ namespace TalesPop.Objects.Items
 
             IEnumerable<int?> slotList =
                 from item in mirrorContainer.C
-                where item.Value.slotId != null
-                orderby item.Value.slotId ascending
-                select item.Value.slotId;
+                where item.Value.SlotId != null
+                orderby item.Value.SlotId ascending
+                select item.Value.SlotId;
 
             foreach (int i in slotList)
             {
@@ -146,7 +146,7 @@ namespace TalesPop.Objects.Items
          */
         public void Add(Item item)
         {
-            mirrorContainer.Add(item.uid, item);
+            mirrorContainer.Add(item.Uid, item);
         }
 
         public void Remove(int uid)
@@ -185,8 +185,8 @@ namespace TalesPop.Objects.Items
             if (0 < Space)
             {
                 item.Remove();
-                item.groupId = uid;
-                item.slotId = EmptySlotId();
+                item.GroupId = Uid;
+                item.SlotId = EmptySlotId();
                 Add(item);
             }
         }
@@ -194,8 +194,8 @@ namespace TalesPop.Objects.Items
         private void TakeStackable(Item item)
         {
             Item[] array = mirrorContainer.C
-                .Where(e => e.Value.nameId.Equals(item.nameId))
-                .OrderBy(e => e.Value.slotId)
+                .Where(e => e.Value.NameId.Equals(item.NameId))
+                .OrderBy(e => e.Value.SlotId)
                 .Select(e => e.Value)
                 .ToArray();
 

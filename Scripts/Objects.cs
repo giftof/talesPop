@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using UnityEngine;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
-
+using TalesPop.Objects;
 
 
 namespace TalesPop.Objects
@@ -18,21 +18,25 @@ namespace TalesPop.Objects
         public const string nameId  = "nameId";
     }
 
-    public abstract class TalesObject
+    public abstract class TalesObject : IObject
     {
         [JsonProperty]
-        public int uid;
+        public int Uid { get; set; }
         [JsonProperty]
-        public string name;
+        public string Name { get; set; }
         [JsonProperty]
-        public int nameId;
+        public int NameId { get; set; }
         [JsonProperty]
-        public int groupId;
+        public int GroupId { get; set; }
         [JsonProperty]
-        public int? slotId;
+        public int? SlotId { get; set; }
 
         [JsonIgnore]
         protected JObject jObject;
+        [JsonIgnore]
+        protected IInteraction interact;
+        [JsonIgnore]
+        protected ICollide collide;
 
         public TalesObject(string json)
         {
@@ -56,9 +60,9 @@ namespace TalesPop.Objects
          */
         private void SetProperties()
         {
-            uid = jObject[ObjectArgs.uid].Value<int>();
-            name = jObject[ObjectArgs.name].Value<string>();
-            nameId = jObject[ObjectArgs.nameId].Value<int>();
+            Uid = jObject[ObjectArgs.uid].Value<int>();
+            Name = jObject[ObjectArgs.name].Value<string>();
+            NameId = jObject[ObjectArgs.nameId].Value<int>();
         }
 
     }

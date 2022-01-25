@@ -43,10 +43,6 @@ namespace TalesPop.Objects.Items
          * Behaviours
          */
         [JsonIgnore]
-        internal IInteraction interact;
-        [JsonIgnore]
-        internal ICollide collide;
-        [JsonIgnore]
         internal UnityAction<int, int> remove;
         [JsonIgnore]
         internal T_DELEGATE_T<Item, int> searchBag;
@@ -71,11 +67,11 @@ namespace TalesPop.Objects.Items
             return decrement;
         }
 
-        public void Remove() => remove?.Invoke(groupId, uid);
+        public void Remove() => remove?.Invoke(GroupId, Uid);
 
         public Inventory SearchParentContainer()
         {
-            if (searchBag?.Invoke(groupId) is Inventory inventory)
+            if (searchBag?.Invoke(GroupId) is Inventory inventory)
                 return inventory;
             return null;
         }
@@ -85,7 +81,7 @@ namespace TalesPop.Objects.Items
         [JsonIgnore]
         public abstract int Occupied { get; internal set; }
         [JsonIgnore]
-        public int GetGroupId => groupId;
+        public int GetGroupId => GroupId;
 
         /*
          * Privates
@@ -93,7 +89,7 @@ namespace TalesPop.Objects.Items
         private void SetProperties()
         {
             capacity = jObject[ItemArgs.capacity]?.Value<int>();
-            slotId = jObject[ItemArgs.slotId]? .Value<int>();
+            SlotId = jObject[ItemArgs.slotId]? .Value<int>();
         }
     }
 }

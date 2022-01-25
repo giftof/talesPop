@@ -6,9 +6,9 @@ using UnityEngine;
 
 
 
-namespace TalesPop.Objects.Items
+namespace TalesPop.Objects
 {
-    internal interface IInteraction
+    public interface IInteraction
     {
         public void Perform();
     }

@@ -190,7 +190,7 @@ namespace TalesPop.Datas
             foreach (var pair in container)
             {
                 TalesObject talesObject = pair.Value as TalesObject;
-                Debug.Log($"uid = {talesObject.uid}, name = {talesObject.name}");
+                Debug.Log($"uid = {talesObject.Uid}, name = {talesObject.Name}");
             }
             Debug.Log("main content end");
 
@@ -249,7 +249,7 @@ namespace TalesPop.Datas
             foreach (var pair in container)
             {
                 TalesObject talesObject = pair.Value as TalesObject;
-                Debug.Log($"uid = {talesObject.uid}, name = {talesObject.name}");
+                Debug.Log($"uid = {talesObject.Uid}, name = {talesObject.Name}");
             }
             Debug.Log($"mirror end");
         }
