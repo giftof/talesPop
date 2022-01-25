@@ -13,6 +13,9 @@ namespace TalesPop.Objects.Items
     public class GroupManager
     {
         private static readonly Dictionary<int, int> groupContainer = new Dictionary<int, int>();
+
+        // key < uid
+        // value < groupId
     }
 
     public class ItemManager

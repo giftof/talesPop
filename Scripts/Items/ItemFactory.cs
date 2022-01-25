@@ -41,6 +41,11 @@ namespace TalesPop.Objects.Items
                 ItemType.Weapon => new Weapon(jObject),
                 _ => null,
             };
+
+            List<TwoHand> twoHandList = new List<TwoHand>();
+            twoHandList.Add(new TwoHand(jObject));
+            // ...
+            twoHandList.GroupBy
         }
     }
 
