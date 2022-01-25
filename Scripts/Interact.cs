@@ -13,7 +13,7 @@ namespace TalesPop.Objects
         public void Perform();
     }
 
-    internal class ToggleBag : IInteraction
+    public class ToggleBag : IInteraction
     {
         public void Perform()
         {
@@ -21,7 +21,7 @@ namespace TalesPop.Objects
         }
     }
 
-    internal class Use : IInteraction
+    public class Use : IInteraction
     {
         public void Perform()
         {
@@ -29,7 +29,7 @@ namespace TalesPop.Objects
         }
     }
 
-    internal class Craft : IInteraction
+    public class Craft : IInteraction
     {
         public void Perform()
         {
@@ -37,7 +37,7 @@ namespace TalesPop.Objects
         }
     }
 
-    internal class Equip : IInteraction
+    public class Equip : IInteraction
     {
         public void Perform()
         {

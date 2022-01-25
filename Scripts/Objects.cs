@@ -11,11 +11,37 @@ namespace TalesPop.Objects
     public delegate T1 T_DELEGATE_T<T1, T2>(T2 _);
     public delegate T1 T_DELEGATE_TT<T1, T2, T3>(T2 _, T3 __);
 
+    public interface IResizeable
+    {
+        public int Increment(int amount);
+        public int Decrement(int amount);
+        [JsonIgnore]
+        public int Space { get; }
+        [JsonIgnore]
+        public int Occupied { get; }
+        public void Suicide();
+    }
+
     public static class ObjectArgs
     {
         public const string uid     = "uid";
         public const string name    = "name";
         public const string nameId  = "nameId";
+    }
+
+    public interface IObject
+    {
+        [JsonProperty]
+        public int Uid { get; set; }
+        [JsonProperty]
+        public string Name { get; set; }
+        [JsonProperty]
+        public int NameId { get; set; }
+        [JsonProperty]
+        public int GroupId { get; set; }
+        [JsonProperty]
+        public int? SlotId { get; set; }
+        public IObject ParentObject();
     }
 
     public abstract class TalesObject : IObject
@@ -53,6 +79,7 @@ namespace TalesPop.Objects
         /*
          * Behaviours
          */
+        public abstract IObject ParentObject();
         // [Implement] get groupId object [Method]
 
         /*

@@ -48,6 +48,10 @@ namespace TalesPop.Objects.Charactors
         }
 
 
+        public override IObject ParentObject()
+        {
+            throw new System.NotImplementedException();
+        }
 
         /*
          * Private

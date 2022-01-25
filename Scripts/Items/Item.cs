@@ -16,8 +16,8 @@ namespace TalesPop.Objects.Items
         public const string capacity    = "capacity";
         public const string slotId      = "slotId";
     }
-    
-    public abstract class Item : TalesObject
+
+    public abstract class Item : TalesObject, IResizeable
     {
         [JsonProperty]
         public ItemType itemType;
@@ -67,15 +67,26 @@ namespace TalesPop.Objects.Items
             return decrement;
         }
 
-        public void Remove() => remove?.Invoke(GroupId, Uid);
+        public void Suicide() => remove?.Invoke(GroupId, Uid);
 
+
+        /*
+         * Implement IObject
+         */
+        public override IObject ParentObject()
+        {
+            if (searchBag?.Invoke(GroupId) is Inventory inventory)
+                return inventory;
+            return null;
+        }
+/*
         public Inventory SearchParentContainer()
         {
             if (searchBag?.Invoke(GroupId) is Inventory inventory)
                 return inventory;
             return null;
         }
-
+*/
         [JsonIgnore]
         public abstract int Space { get; }
         [JsonIgnore]

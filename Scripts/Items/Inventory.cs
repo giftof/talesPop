@@ -68,7 +68,7 @@ namespace TalesPop.Objects.Items
 
 
 
-    public abstract class Inventory : Item, ISwapableObject<Item>
+    public abstract class Inventory : Item, ISwapableObject
     {
         [JsonIgnore]
         private readonly TalesPopContainer<int, Item> mirrorContainer;
@@ -122,15 +122,6 @@ namespace TalesPop.Objects.Items
             return slotId;
         }
 
-        public void TakeItem(Item item)
-        {
-            if (item is Stackable)
-                TakeStackable(item);
-
-            if (item is Solidable)
-                TakeSolidable(item);
-        }
-
         public Item[] ContentArray
         {
             get { return mirrorContainer.Values.ToArray(); }
@@ -154,11 +145,24 @@ namespace TalesPop.Objects.Items
             mirrorContainer.Remove(uid);
         }
 
-        public Inventory GetGroupObject(int groupId)
+        public void TakeItem(Item item)
         {
-            return null;
+            if (item is Stackable)
+                TakeStackable(item);
+
+            if (item is Solidable)
+                TakeSolidable(item);
         }
 
+        public bool EnableDestination { get; set; }
+        public bool EnableSource { get; set; }
+
+        /*
+                public Inventory GetGroupObject(int groupId)
+                {
+                    return null;
+                }
+        */
         /*
          * Abstract
          */
@@ -184,7 +188,7 @@ namespace TalesPop.Objects.Items
         {
             if (0 < Space)
             {
-                item.Remove();
+                item.Suicide();
                 item.GroupId = Uid;
                 item.SlotId = EmptySlotId();
                 Add(item);
@@ -215,6 +219,16 @@ namespace TalesPop.Objects.Items
          */
         public override int Decrement(int _) => 0;
         public override int Increment(int _) => 0;
+
+        public void Add<T>(T obj)
+        {
+            throw new System.NotImplementedException();
+        }
+
+        public void TakeItem<T>(T item)
+        {
+            throw new System.NotImplementedException();
+        }
 
         /*
          * TEST_CODE
