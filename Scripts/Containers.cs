@@ -21,6 +21,9 @@ namespace TalesPop.Datas
     {
         protected readonly Dictionary<Key, Value> container;
 
+        /*
+         * Constructor
+         */
         public TalesPopContainer() => container = new Dictionary<Key, Value>();
 
         internal TalesPopContainer(Dictionary<Key, Value> mirrorContainer) => container = mirrorContainer;
@@ -88,7 +91,13 @@ namespace TalesPop.Datas
         private readonly ACQUIRE_KEY_ARRAY_DELEGATE<Key, Value> getChildrenId;
         private readonly Dictionary<Key, MirrorContainer<Key, Value>> mirrorContainer;
 
-        public MainContainer(ACQUIRE_KEY_DELEGATE<Key, Value> getUID, ACQUIRE_KEY_DELEGATE<Key, Value> getGroupId, ACQUIRE_KEY_ARRAY_DELEGATE<Key, Value> getChildrenId) : base()
+        /*
+         * Constructor
+         */
+        public MainContainer(
+            ACQUIRE_KEY_DELEGATE<Key, Value> getUID,
+            ACQUIRE_KEY_DELEGATE<Key, Value> getGroupId,
+            ACQUIRE_KEY_ARRAY_DELEGATE<Key, Value> getChildrenId) : base()
         {
             this.getUID = getUID;
             this.getGroupId = getGroupId;
@@ -214,6 +223,9 @@ namespace TalesPop.Datas
         internal REMOVE<Key> remove;
         internal Key key;
 
+        /*
+         * Constructor
+         */
         internal MirrorContainer(Dictionary<Key, Value> mirrorContainer) : base(mirrorContainer) { }
 
         /*

@@ -316,7 +316,9 @@ public class Test : MonoBehaviour
         itemManager.Remove(103);
         itemManager.POP_CONTAINER().SHOW_CONTENTS();
         Debug.Log("------------------------------------------");
-        itemManager.Remove(106);
+        //itemManager.SearchItem(106).Suicide();
+        pouch.Remove(106);
+        //itemManager.Remove(106);
         itemManager.POP_CONTAINER().SHOW_CONTENTS();
         Debug.Log("------------------------------------------");
         Item self = itemManager.SearchItem(107);
