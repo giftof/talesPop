@@ -8,7 +8,7 @@ namespace TalesPop.Objects
     public interface ISwapableObject : IObject
     {
         public void Remove(int UID);
-        public void Add<T>(T obj);
+        public void Add<T>(T obj) where T : IObject;
         public bool EnableDestination { get; set; }
         public bool EnableSource { get; set; }
         public void TakeItem<T>(T item);
@@ -88,6 +88,7 @@ namespace TalesPop.Objects
             if (!(source is ISwapableObject obj) || !obj.EnableSource)
                 return;
 
+            Debug.Log("Before Implement");
             /*
              * If source is EnableSource
              * make empty item from destination

@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
 using TalesPop.Datas;
+using TalesPop.Objects;
 using UnityEngine;
 
 
@@ -135,7 +136,7 @@ namespace TalesPop.Objects.Items
         /*
          * Implement ISwapable
          */
-        public void Add(Item item)
+        public void Add<Item>(Item item)
         {
             mirrorContainer.Add(item.Uid, item);
         }
@@ -145,7 +146,7 @@ namespace TalesPop.Objects.Items
             mirrorContainer.Remove(uid);
         }
 
-        public void TakeItem(Item item)
+        public void TakeItem<Item>(Item item)
         {
             if (item is Stackable)
                 TakeStackable(item);
@@ -157,12 +158,6 @@ namespace TalesPop.Objects.Items
         public bool EnableDestination { get; set; }
         public bool EnableSource { get; set; }
 
-        /*
-                public Inventory GetGroupObject(int groupId)
-                {
-                    return null;
-                }
-        */
         /*
          * Abstract
          */
@@ -219,16 +214,6 @@ namespace TalesPop.Objects.Items
          */
         public override int Decrement(int _) => 0;
         public override int Increment(int _) => 0;
-
-        public void Add<T>(T obj)
-        {
-            throw new System.NotImplementedException();
-        }
-
-        public void TakeItem<T>(T item)
-        {
-            throw new System.NotImplementedException();
-        }
 
         /*
          * TEST_CODE

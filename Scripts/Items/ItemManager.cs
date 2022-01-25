@@ -96,7 +96,6 @@ namespace TalesPop.Objects.Items
 
             if (slotId == null || item == null || inventory?.Space == 0)
                 throw new Exception($"[Error: ItemManager: CreateItem] Item is null. something wrong. slotId: {slotId}, item: {item}, space: {inventory?.Space}");
-                //return null;
 
             item.GroupId = inventory.Uid;
             item.SlotId = (int)slotId;
@@ -130,7 +129,6 @@ namespace TalesPop.Objects.Items
         public IReadOnlyDictionary<int, Item> CONTAINER() => popContainer.C;
         public void SHOW_BAG_CONTENTS(int key)
         {
-
             if (SearchItem(key) is Inventory inventory)
             {
                 Debug.LogWarning($"SHOW BAG CONTENTS -- inventory [uid = {key}] [name = {inventory.Name}]");
