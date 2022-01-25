@@ -10,6 +10,11 @@ namespace TalesPop.Objects.Items
 {
     using static Common;
 
+    public class GroupManager
+    {
+        private static readonly Dictionary<int, int> groupContainer = new Dictionary<int, int>();
+    }
+
     public class ItemManager
     {
         private static readonly MainContainer<int, Item> popContainer = new MainContainer<int, Item>(GetUID, GetGroupId, GetChildrenId);
